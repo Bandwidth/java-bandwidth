@@ -1,9 +1,8 @@
 package com.bandwidth.sdk.driver;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
@@ -12,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,20 +40,24 @@ public class HttpRestDriver implements IRestDriver {
         this.secret = secret;
 
         httpclient = new DefaultHttpClient();
-        httpclient.getParams().setParameter("http.protocol.version", HttpVersion.HTTP_1_1);
-        httpclient.getParams().setParameter("http.socket.timeout", new Integer(READ_TIMEOUT));
-        httpclient.getParams().setParameter("http.connection.timeout", new Integer(CONNECTION_TIMEOUT));
-        httpclient.getParams().setParameter("http.protocol.content-charset", "UTF-8");
-        httpclient
-                .getCredentialsProvider().setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT), new UsernamePasswordCredentials(token, secret));
     }
 
     @Override
     public JSONObject requestAccountInfo() throws IOException {
         String path = getAccountPath();
         BandwidthRestResponse response = request(path, HttpMethod.GET, Collections.<NameValuePair>emptyList());
+        if (response.isError())
+            throw new IOException(response.getResponseText());
 
-        return new JSONObject();
+        if (response.isJson()) {
+            try {
+                return (JSONObject) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
     }
 
     private String getAccountPath() {
@@ -107,6 +111,9 @@ public class HttpRestDriver implements IRestDriver {
 
         request.addHeader(new BasicHeader("Accept", "application/json"));
         request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
+        String s = token + ":" + secret;
+        String auth = new String(Base64.encodeBase64(s.getBytes()));
+        request.setHeader(new BasicHeader("Authorization", "Basic " + auth));
 
         return request;
     }

@@ -13,6 +13,7 @@ public class BandwidthRestClientExample {
     public static void main(String[] args) throws IOException {
         BandwidthRestClient client = new BandwidthRestClient("<userId>", "<token>", "<secret>");
         AccountInfo accountInfo = client.getAccount().getAccountInfo();
-        System.out.println(accountInfo); // todo
+
+        System.out.println(accountInfo);
     }
 }

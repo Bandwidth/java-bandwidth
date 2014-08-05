@@ -18,7 +18,6 @@ public class BandwidthAccount {
 
     public AccountInfo getAccountInfo() throws IOException {
         JSONObject jsonObject = client.getRestDriver().requestAccountInfo();
-        System.out.println(jsonObject);
-        return new AccountInfo(0, "jahj");
+        return AccountInfo.from(jsonObject);
     }
 }
