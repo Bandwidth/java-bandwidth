@@ -10,7 +10,9 @@ import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -18,8 +20,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author vpotapenko
@@ -40,7 +44,9 @@ public class HttpRestDriver implements IRestDriver {
         httpClient = new DefaultHttpClient();
     }
 
-    /** For testing */
+    /**
+     * For testing
+     */
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
@@ -61,6 +67,37 @@ public class HttpRestDriver implements IRestDriver {
         } else {
             throw new IOException("Response is not a JSON format.");
         }
+    }
+
+    @Override
+    public JSONArray requestAccountTransactions(Map<String, String> params)throws IOException{
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        for (String key : params.keySet()) {
+            pairs.add(new BasicNameValuePair(key, params.get(key)));
+        }
+
+        BandwidthRestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, pairs);
+        if (response.isError())
+            throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getAccountTransactionPath() {
+        String[] parts = new String[]{
+                RestConstants.API_ENDPOINT,
+                RestConstants.API_VERSION,
+                String.format(RestConstants.ACCOUNT_TRANSACTIONS_PATTERN, userId)
+        };
+        return StringUtils.join(parts, '/');
     }
 
     private String getAccountPath() {

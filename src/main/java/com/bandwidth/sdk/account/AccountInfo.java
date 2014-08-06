@@ -10,7 +10,7 @@ public class AccountInfo {
     public final String accountType;
     public final double balance;
 
-    public AccountInfo(String accountType, double balance) {
+    private AccountInfo(String accountType, double balance) {
         this.accountType = accountType;
         this.balance = balance;
     }

@@ -1,8 +1,10 @@
 package com.bandwidth.sdk.driver;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author vpotapenko
@@ -10,4 +12,7 @@ import java.io.IOException;
 public interface IRestDriver {
 
     JSONObject requestAccountInfo() throws IOException;
+
+    JSONArray requestAccountTransactions(Map<String, String> params) throws IOException;
+
 }
