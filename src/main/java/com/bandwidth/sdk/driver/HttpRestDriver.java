@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -25,21 +26,23 @@ import java.util.List;
  */
 public class HttpRestDriver implements IRestDriver {
 
-    private static final int CONNECTION_TIMEOUT = 10000;
-    private static final int READ_TIMEOUT = 30500;
-
     private final String userId;
     private final String token;
     private final String secret;
 
-    private final DefaultHttpClient httpclient;
+    private HttpClient httpClient;
 
     public HttpRestDriver(String userId, String token, String secret) {
         this.userId = userId;
         this.token = token;
         this.secret = secret;
 
-        httpclient = new DefaultHttpClient();
+        httpClient = new DefaultHttpClient();
+    }
+
+    /** For testing */
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class HttpRestDriver implements IRestDriver {
 
         HttpResponse response;
         try {
-            response = httpclient.execute(request);
+            response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
 
             Header[] contentTypeHeaders = response.getHeaders("Content-Type");
@@ -106,7 +109,7 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
-    private HttpUriRequest setupRequest(String path, HttpMethod method, final List<NameValuePair> params) {
+    public HttpUriRequest setupRequest(String path, HttpMethod method, final List<NameValuePair> params) {
         HttpUriRequest request = buildMethod(method, path, params);
 
         request.addHeader(new BasicHeader("Accept", "application/json"));
