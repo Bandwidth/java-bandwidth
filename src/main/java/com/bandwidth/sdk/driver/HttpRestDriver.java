@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.driver;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
@@ -93,18 +94,18 @@ public class HttpRestDriver implements IRestDriver {
 
     private String getAccountTransactionPath() {
         String[] parts = new String[]{
-                RestConstants.API_ENDPOINT,
-                RestConstants.API_VERSION,
-                String.format(RestConstants.ACCOUNT_TRANSACTIONS_PATTERN, userId)
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.ACCOUNT_TRANSACTIONS_PATTERN, userId)
         };
         return StringUtils.join(parts, '/');
     }
 
     private String getAccountPath() {
         String[] parts = new String[]{
-                RestConstants.API_ENDPOINT,
-                RestConstants.API_VERSION,
-                String.format(RestConstants.ACCOUNT_PATTERN, userId)
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.ACCOUNT_PATTERN, userId)
         };
         return StringUtils.join(parts, '/');
     }
