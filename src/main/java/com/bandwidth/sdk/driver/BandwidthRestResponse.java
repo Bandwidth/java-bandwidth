@@ -38,6 +38,8 @@ public class BandwidthRestResponse {
      */
     private String contentType;
 
+    private String location;
+
     /**
      * Instantiates a new twilio rest response.
      *
@@ -191,5 +193,13 @@ public class BandwidthRestResponse {
         String lowercaseContentType = this.contentType.toLowerCase();
         return (lowercaseContentType.contains("text/xml") ||
                 lowercaseContentType.contains("application/xml"));
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

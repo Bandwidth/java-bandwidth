@@ -6,9 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -18,7 +19,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class HttpRestDriver implements IRestDriver {
     @Override
     public JSONObject requestAccountInfo() throws IOException {
         String path = getAccountPath();
-        BandwidthRestResponse response = request(path, HttpMethod.GET, Collections.<NameValuePair>emptyList());
+        BandwidthRestResponse response = request(path, HttpMethod.GET);
         if (response.isError())
             throw new IOException(response.getResponseText());
 
@@ -72,12 +72,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestAccountTransactions(Map<String, String> params) throws IOException {
-        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-        for (String key : params.keySet()) {
-            pairs.add(new BasicNameValuePair(key, params.get(key)));
-        }
-
-        BandwidthRestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, pairs);
+        BandwidthRestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, params);
         if (response.isError())
             throw new IOException(response.getResponseText());
 
@@ -94,12 +89,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestApplications(Map<String, String> params) throws IOException {
-        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-        for (String key : params.keySet()) {
-            pairs.add(new BasicNameValuePair(key, params.get(key)));
-        }
-
-        BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.GET, pairs);
+        BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.GET, params);
         if (response.isError())
             throw new IOException(response.getResponseText());
 
@@ -111,6 +101,30 @@ public class HttpRestDriver implements IRestDriver {
             }
         } else {
             throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    @Override
+    public JSONObject createApplication(Map<String, String> params) throws IOException {
+        BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        String location = response.getLocation();
+        if (location != null) {
+            response = request(location, HttpMethod.GET);
+            if (response.isError()) throw new IOException(response.getResponseText());
+
+            if (response.isJson()) {
+                try {
+                    return (JSONObject) new JSONParser().parse(response.getResponseText());
+                } catch (org.json.simple.parser.ParseException e) {
+                    throw new IOException(e);
+                }
+            } else {
+                throw new IOException("Response is not a JSON format.");
+            }
+        } else {
+            throw new IOException("There is no location of new application.");
         }
     }
 
@@ -141,8 +155,12 @@ public class HttpRestDriver implements IRestDriver {
         return StringUtils.join(parts, '/');
     }
 
+    private BandwidthRestResponse request(final String path, HttpMethod method) throws IOException {
+        return request(path, method, Collections.<String, String>emptyMap());
+    }
+
     private BandwidthRestResponse request(final String path, HttpMethod method,
-                                          final List<NameValuePair> paramList) throws IOException {
+                                          final Map<String, String> paramList) throws IOException {
 
         HttpUriRequest request = setupRequest(path, method, paramList);
 
@@ -151,7 +169,6 @@ public class HttpRestDriver implements IRestDriver {
             response = httpClient.execute(request);
             HttpEntity entity = response.getEntity();
 
-            Header[] contentTypeHeaders = response.getHeaders("Content-Type");
             String responseBody = "";
 
             if (entity != null) {
@@ -163,10 +180,14 @@ public class HttpRestDriver implements IRestDriver {
 
             BandwidthRestResponse restResponse = new BandwidthRestResponse(request.getURI().toString(), responseBody, statusCode);
 
-            // For now we only set the first content type seen
-            for (Header h : contentTypeHeaders) {
-                restResponse.setContentType(h.getValue());
-                break;
+            Header[] headers = response.getHeaders("Content-Type");
+            if (headers.length > 0) {
+                restResponse.setContentType(headers[0].getValue());
+            }
+
+            headers = response.getHeaders("Location");
+            if (headers.length > 0) {
+                restResponse.setLocation(headers[0].getValue());
             }
 
             return restResponse;
@@ -178,7 +199,7 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
-    public HttpUriRequest setupRequest(String path, HttpMethod method, final List<NameValuePair> params) {
+    public HttpUriRequest setupRequest(String path, HttpMethod method, final Map<String, String> params) {
         HttpUriRequest request = buildMethod(method, path, params);
 
         request.addHeader(new BasicHeader("Accept", "application/json"));
@@ -190,7 +211,7 @@ public class HttpRestDriver implements IRestDriver {
         return request;
     }
 
-    private HttpUriRequest buildMethod(HttpMethod method, final String path, final List<NameValuePair> params) {
+    private HttpUriRequest buildMethod(HttpMethod method, final String path, final Map<String, String> params) {
         switch (method) {
             case GET:
                 return generateGetRequest(path, params);
@@ -199,53 +220,46 @@ public class HttpRestDriver implements IRestDriver {
             case PUT:
                 return generatePutRequest(path, params);
             case DELETE:
-                return generateDeleteRequest(path, params);
+                return generateDeleteRequest(path);
             default:
                 throw new RuntimeException("Must not be here.");
         }
     }
 
-    private HttpGet generateGetRequest(final String path, final List<NameValuePair> params) {
-        URI uri = buildUri(path, params);
+    private HttpGet generateGetRequest(final String path, final Map<String, String> paramMap) {
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        for (String key : paramMap.keySet()) {
+            pairs.add(new BasicNameValuePair(key, paramMap.get(key)));
+        }
+        URI uri = buildUri(path, pairs);
         return new HttpGet(uri);
     }
 
-    private HttpPost generatePostRequest(final String path, final List<NameValuePair> params) {
+    private HttpPost generatePostRequest(final String path, final Map<String, String> paramMap) {
         URI uri = buildUri(path);
 
-        UrlEncodedFormEntity entity = buildEntityBody(params);
+        String s = JSONObject.toJSONString(paramMap);
 
         HttpPost post = new HttpPost(uri);
-        post.setEntity(entity);
+        post.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
 
         return post;
     }
 
-    private HttpPut generatePutRequest(final String path, final List<NameValuePair> params) {
+    private HttpPut generatePutRequest(final String path, final Map<String, String> paramMap) {
         URI uri = buildUri(path);
 
-        UrlEncodedFormEntity entity = buildEntityBody(params);
+        String s = JSONObject.toJSONString(paramMap);
 
         HttpPut put = new HttpPut(uri);
-        put.setEntity(entity);
+        put.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
 
         return put;
     }
 
-    private HttpDelete generateDeleteRequest(final String path, final List<NameValuePair> params) {
+    private HttpDelete generateDeleteRequest(final String path) {
         URI uri = buildUri(path);
         return new HttpDelete(uri);
-    }
-
-    private UrlEncodedFormEntity buildEntityBody(final List<NameValuePair> params) {
-        UrlEncodedFormEntity entity;
-        try {
-            entity = new UrlEncodedFormEntity(params, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-
-        return entity;
     }
 
     private URI buildUri(final String path) {

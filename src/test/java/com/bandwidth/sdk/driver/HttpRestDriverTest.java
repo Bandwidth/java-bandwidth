@@ -2,7 +2,6 @@ package com.bandwidth.sdk.driver;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.BasicHttpEntity;
@@ -37,7 +36,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPrepareGetRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.GET, Collections.<NameValuePair>emptyList());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.GET, Collections.<String, String>emptyMap());
         assertThat(request, instanceOf(HttpGet.class));
 
         HttpGet httpGet = (HttpGet) request;
@@ -50,7 +49,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPreparePostRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.POST, Collections.<NameValuePair>emptyList());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.POST, Collections.<String, String>emptyMap());
         assertThat(request, instanceOf(HttpPost.class));
 
         HttpPost httpPost = (HttpPost) request;
@@ -63,7 +62,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPreparePutRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.PUT, Collections.<NameValuePair>emptyList());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.PUT, Collections.<String, String>emptyMap());
         assertThat(request, instanceOf(HttpPut.class));
 
         HttpPut httpPut = (HttpPut) request;
@@ -76,7 +75,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPrepareDeleteRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.DELETE, Collections.<NameValuePair>emptyList());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.DELETE, Collections.<String, String>emptyMap());
         assertThat(request, instanceOf(HttpDelete.class));
 
         HttpDelete httpDelete = (HttpDelete) request;

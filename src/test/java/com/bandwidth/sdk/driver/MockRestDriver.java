@@ -36,6 +36,12 @@ public class MockRestDriver implements IRestDriver {
         return arrayResult;
     }
 
+    @Override
+    public JSONObject createApplication(Map<String, String> params) throws IOException {
+        requests.add(new RestRequest("createApplication"));
+        return result;
+    }
+
     public static class RestRequest {
 
         public final String name;

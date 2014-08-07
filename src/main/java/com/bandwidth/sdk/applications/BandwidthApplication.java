@@ -16,6 +16,11 @@ public class BandwidthApplication {
     private String incomingSmsUrl;
     private boolean autoAnswer;
 
+    private String incomingCallFallbackUrl;
+    private Long incomingCallUrlCallbackTimeout;
+    private Long incomingSmsUrlCallbackTimeout;
+    private String callbackHttpMethod;
+
     private boolean deleted;
 
     public static BandwidthApplication from(BandwidthRestClient client, JSONObject jsonObject) {
@@ -26,6 +31,10 @@ public class BandwidthApplication {
         application.incomingCallUrl = (String) jsonObject.get("incomingCallUrl");
         application.incomingSmsUrl = (String) jsonObject.get("incomingSmsUrl");
         application.autoAnswer = (Boolean) jsonObject.get("autoAnswer");
+        application.incomingCallUrlCallbackTimeout = (Long) jsonObject.get("incomingCallUrlCallbackTimeout");
+        application.incomingSmsUrlCallbackTimeout = (Long) jsonObject.get("incomingSmsUrlCallbackTimeout");
+        application.callbackHttpMethod = (String) jsonObject.get("callbackHttpMethod");
+        application.incomingCallFallbackUrl = (String) jsonObject.get("incomingCallFallbackUrl");
 
         return application;
     }
@@ -66,6 +75,10 @@ public class BandwidthApplication {
                 ", incomingCallUrl='" + incomingCallUrl + '\'' +
                 ", incomingSmsUrl='" + incomingSmsUrl + '\'' +
                 ", autoAnswer=" + autoAnswer +
+                ", incomingCallUrlCallbackTimeout='" + incomingCallUrlCallbackTimeout + '\'' +
+                ", incomingSmsUrlCallbackTimeout='" + incomingSmsUrlCallbackTimeout + '\'' +
+                ", callbackHttpMethod='" + callbackHttpMethod + '\'' +
+                ", incomingCallFallbackUrl='" + incomingCallFallbackUrl + '\'' +
                 ", deleted=" + deleted +
                 '}';
     }
