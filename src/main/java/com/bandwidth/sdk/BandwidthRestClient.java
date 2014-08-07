@@ -1,6 +1,7 @@
 package com.bandwidth.sdk;
 
 import com.bandwidth.sdk.account.BandwidthAccount;
+import com.bandwidth.sdk.applications.BandwidthApplications;
 import com.bandwidth.sdk.driver.HttpRestDriver;
 import com.bandwidth.sdk.driver.IRestDriver;
 
@@ -17,6 +18,10 @@ public class BandwidthRestClient {
 
     public BandwidthAccount getAccount() {
         return new BandwidthAccount(this);
+    }
+
+    public BandwidthApplications getApplications() {
+        return new BandwidthApplications(this);
     }
 
     public IRestDriver getRestDriver() {

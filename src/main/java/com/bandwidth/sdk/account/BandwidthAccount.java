@@ -20,21 +20,21 @@ public class BandwidthAccount {
         this.client = client;
     }
 
-    public AccountInfo getAccountInfo() throws IOException {
+    public BandwidthAccountInfo getAccountInfo() throws IOException {
         JSONObject jsonObject = client.getRestDriver().requestAccountInfo();
-        return AccountInfo.from(jsonObject);
+        return BandwidthAccountInfo.from(jsonObject);
     }
 
     public TransactionsBuilder getTransactions() {
         return new TransactionsBuilder(this);
     }
 
-    private List<AccountTransaction> getTransactions(Map<String, String> params) throws IOException {
+    private List<BandwidthAccountTransaction> getTransactions(Map<String, String> params) throws IOException {
         JSONArray array = client.getRestDriver().requestAccountTransactions(params);
 
-        List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
+        List<BandwidthAccountTransaction> transactions = new ArrayList<BandwidthAccountTransaction>();
         for (Object obj : array) {
-            transactions.add(AccountTransaction.from((JSONObject) obj));
+            transactions.add(BandwidthAccountTransaction.from((JSONObject) obj));
         }
         return transactions;
     }
@@ -84,7 +84,7 @@ public class BandwidthAccount {
             return this;
         }
 
-        public List<AccountTransaction> get() throws IOException {
+        public List<BandwidthAccountTransaction> get() throws IOException {
             Map<String, String> params = new HashMap<String, String>();
 
             SimpleDateFormat simpleDateFormat = null;
@@ -102,7 +102,7 @@ public class BandwidthAccount {
             if (maxItems != null) params.put("maxItems", String.valueOf(maxItems));
             if (type != null) params.put("type", type);
             if (page != null) params.put("page", String.valueOf(page));
-            if (page != null) params.put("size", String.valueOf(size));
+            if (size != null) params.put("size", String.valueOf(size));
 
             return account.getTransactions(params);
         }

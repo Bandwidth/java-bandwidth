@@ -30,6 +30,12 @@ public class MockRestDriver implements IRestDriver {
         return arrayResult;
     }
 
+    @Override
+    public JSONArray requestApplications(Map<String, String> params) throws IOException {
+        requests.add(new RestRequest("requestApplications", params));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

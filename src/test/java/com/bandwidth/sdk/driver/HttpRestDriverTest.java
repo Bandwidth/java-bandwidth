@@ -130,8 +130,8 @@ public class HttpRestDriverTest {
         params.put("size", "10");
         JSONArray array = driver.requestAccountTransactions(params);
         assertThat(array, notNullValue());
-        assertThat(((JSONObject)array.get(0)).get("id").toString(), equalTo("id1"));
-        assertThat(((JSONObject)array.get(0)).get("number").toString(), equalTo("+number1"));
+        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
+        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("+number1"));
 
         HttpUriRequest request = httpClient.lastRequest;
         assertThat(request, instanceOf(HttpGet.class));
@@ -139,5 +139,33 @@ public class HttpRestDriverTest {
         HttpGet httpGet = (HttpGet) request;
         assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/account/transactions?maxItems=1000&size=10")));
 
+    }
+
+    @Test
+    public void shouldRequestApplications() throws IOException {
+        MockHttpClient httpClient = new MockHttpClient();
+        driver.setHttpClient(httpClient);
+
+        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
+        response.addHeader(new BasicHeader("Content-Type", "application/json"));
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(new ByteArrayInputStream("[{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false},{\"id\":\"id2\",\"incomingCallUrl\":\"http:///call/callback.json\",\"incomingSmsUrl\":\"http:///sms/callback.json\",\"name\":\"App2\",\"autoAnswer\":true}]".getBytes()));
+        response.setEntity(entity);
+
+        httpClient.response = response;
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("page", "2");
+        params.put("size", "10");
+        JSONArray array = driver.requestApplications(params);
+        assertThat(array, notNullValue());
+        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
+        assertThat(((JSONObject) array.get(0)).get("incomingCallUrl").toString(), equalTo("https://postBack"));
+
+        HttpUriRequest request = httpClient.lastRequest;
+        assertThat(request, instanceOf(HttpGet.class));
+
+        HttpGet httpGet = (HttpGet) request;
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/applications?page=2&size=10")));
     }
 }

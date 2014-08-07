@@ -10,7 +10,7 @@ import java.util.Calendar;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class AccountTransactionTest {
+public class BandwidthAccountTransactionTest {
 
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
@@ -23,17 +23,17 @@ public class AccountTransactionTest {
                 "    \"productType\": \"sms-out\",\n" +
                 "    \"number\": \"1672617-17281\"\n" +
                 "  }");
-        AccountTransaction transaction = AccountTransaction.from(jsonObject);
+        BandwidthAccountTransaction transaction = BandwidthAccountTransaction.from(jsonObject);
 
-        assertThat(transaction.id, equalTo("81782"));
-        assertThat(transaction.amount, equalTo(0.0075));
-        assertThat(transaction.type, equalTo("charge"));
-        assertThat(transaction.units, equalTo(1l));
-        assertThat(transaction.productType, equalTo("sms-out"));
-        assertThat(transaction.number, equalTo("1672617-17281"));
+        assertThat(transaction.getId(), equalTo("81782"));
+        assertThat(transaction.getAmount(), equalTo(0.0075));
+        assertThat(transaction.getType(), equalTo("charge"));
+        assertThat(transaction.getUnits(), equalTo(1l));
+        assertThat(transaction.getProductType(), equalTo("sms-out"));
+        assertThat(transaction.getNumber(), equalTo("1672617-17281"));
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(transaction.dateTime);
+        calendar.setTime(transaction.getDateTime());
         calendar.set(2013, Calendar.FEBRUARY, 21, 13, 39, 9);
         assertThat(calendar.get(Calendar.YEAR), equalTo(2013));
         assertThat(calendar.get(Calendar.MONTH), equalTo(Calendar.FEBRUARY));

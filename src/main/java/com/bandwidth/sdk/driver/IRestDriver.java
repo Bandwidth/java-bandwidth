@@ -15,4 +15,6 @@ public interface IRestDriver {
 
     JSONArray requestAccountTransactions(Map<String, String> params) throws IOException;
 
+    JSONArray requestApplications(Map<String, String> params) throws IOException;
+
 }

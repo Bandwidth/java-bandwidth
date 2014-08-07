@@ -71,7 +71,7 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public JSONArray requestAccountTransactions(Map<String, String> params)throws IOException{
+    public JSONArray requestAccountTransactions(Map<String, String> params) throws IOException {
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         for (String key : params.keySet()) {
             pairs.add(new BasicNameValuePair(key, params.get(key)));
@@ -90,6 +90,37 @@ public class HttpRestDriver implements IRestDriver {
         } else {
             throw new IOException("Response is not a JSON format.");
         }
+    }
+
+    @Override
+    public JSONArray requestApplications(Map<String, String> params) throws IOException {
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        for (String key : params.keySet()) {
+            pairs.add(new BasicNameValuePair(key, params.get(key)));
+        }
+
+        BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.GET, pairs);
+        if (response.isError())
+            throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getApplicationsPath() {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.APPLICATIONS_PATTERN, userId)
+        };
+        return StringUtils.join(parts, '/');
     }
 
     private String getAccountTransactionPath() {

@@ -16,4 +16,5 @@ public abstract class BandwidthConstants {
 
     public static final String ACCOUNT_PATTERN = "users/%s/account"; // userId as a parameter
     public static final String ACCOUNT_TRANSACTIONS_PATTERN = "users/%s/account/transactions"; // userId as a parameter
+    public static final String APPLICATIONS_PATTERN = "users/%s/applications"; // userId as a parameter
 }

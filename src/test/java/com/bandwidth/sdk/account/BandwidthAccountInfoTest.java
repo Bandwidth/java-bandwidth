@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class AccountInfoTest {
+public class BandwidthAccountInfoTest {
 
     @SuppressWarnings("unchecked")
     @Test
@@ -15,9 +15,9 @@ public class AccountInfoTest {
         jsonObject.put("accountType", "accType");
         jsonObject.put("balance", "100");
 
-        AccountInfo accountInfo = AccountInfo.from(jsonObject);
-        assertThat(accountInfo.accountType, equalTo("accType"));
-        assertThat(accountInfo.balance, equalTo(100d));
+        BandwidthAccountInfo bandwidthAccountInfo = BandwidthAccountInfo.from(jsonObject);
+        assertThat(bandwidthAccountInfo.getAccountType(), equalTo("accType"));
+        assertThat(bandwidthAccountInfo.getBalance(), equalTo(100d));
     }
 
     @SuppressWarnings("unchecked")
@@ -27,7 +27,7 @@ public class AccountInfoTest {
         jsonObject.put("accountType", "accType");
         jsonObject.put("balance", "not valid double value");
 
-        AccountInfo accountInfo = AccountInfo.from(jsonObject);
+        BandwidthAccountInfo.from(jsonObject);
     }
 
 }
