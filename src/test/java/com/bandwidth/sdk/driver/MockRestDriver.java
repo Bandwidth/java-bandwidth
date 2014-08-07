@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,14 @@ public class MockRestDriver implements IRestDriver {
     @Override
     public JSONObject createApplication(Map<String, String> params) throws IOException {
         requests.add(new RestRequest("createApplication"));
+        return result;
+    }
+
+    @Override
+    public JSONObject requestApplicationById(String id) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", id);
+        requests.add(new RestRequest("requestApplicationById", params));
         return result;
     }
 

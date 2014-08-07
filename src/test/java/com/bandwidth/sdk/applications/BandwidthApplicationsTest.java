@@ -58,4 +58,17 @@ public class BandwidthApplicationsTest {
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createApplication"));
     }
+
+    @Test
+    public void shouldGetApplicationById() throws ParseException, IOException {
+        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false}");
+
+        BandwidthApplication application = applications.getApplicationById("id1");
+        assertThat(application.getId(), equalTo("id1"));
+        assertThat(application.getName(), equalTo("App1"));
+        assertThat(application.getIncomingCallUrl(), equalTo("https://postBack"));
+        assertThat(application.getIncomingSmsUrl(), equalTo("https://message"));
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestApplicationById"));
+    }
 }

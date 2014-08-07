@@ -18,4 +18,6 @@ public interface IRestDriver {
     JSONArray requestApplications(Map<String, String> params) throws IOException;
 
     JSONObject createApplication(Map<String, String> params) throws IOException;
+
+    JSONObject requestApplicationById(String id) throws IOException;
 }

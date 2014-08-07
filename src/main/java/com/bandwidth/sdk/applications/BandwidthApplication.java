@@ -82,4 +82,46 @@ public class BandwidthApplication {
                 ", deleted=" + deleted +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BandwidthApplication)) return false;
+
+        BandwidthApplication that = (BandwidthApplication) o;
+
+        if (autoAnswer != that.autoAnswer) return false;
+        if (deleted != that.deleted) return false;
+        if (callbackHttpMethod != null ? !callbackHttpMethod.equals(that.callbackHttpMethod) : that.callbackHttpMethod != null)
+            return false;
+        if (!id.equals(that.id)) return false;
+        if (incomingCallFallbackUrl != null ? !incomingCallFallbackUrl.equals(that.incomingCallFallbackUrl) : that.incomingCallFallbackUrl != null)
+            return false;
+        if (incomingCallUrl != null ? !incomingCallUrl.equals(that.incomingCallUrl) : that.incomingCallUrl != null)
+            return false;
+        if (incomingCallUrlCallbackTimeout != null ? !incomingCallUrlCallbackTimeout.equals(that.incomingCallUrlCallbackTimeout) : that.incomingCallUrlCallbackTimeout != null)
+            return false;
+        if (incomingSmsUrl != null ? !incomingSmsUrl.equals(that.incomingSmsUrl) : that.incomingSmsUrl != null)
+            return false;
+        if (incomingSmsUrlCallbackTimeout != null ? !incomingSmsUrlCallbackTimeout.equals(that.incomingSmsUrlCallbackTimeout) : that.incomingSmsUrlCallbackTimeout != null)
+            return false;
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (incomingCallUrl != null ? incomingCallUrl.hashCode() : 0);
+        result = 31 * result + (incomingSmsUrl != null ? incomingSmsUrl.hashCode() : 0);
+        result = 31 * result + (autoAnswer ? 1 : 0);
+        result = 31 * result + (incomingCallFallbackUrl != null ? incomingCallFallbackUrl.hashCode() : 0);
+        result = 31 * result + (incomingCallUrlCallbackTimeout != null ? incomingCallUrlCallbackTimeout.hashCode() : 0);
+        result = 31 * result + (incomingSmsUrlCallbackTimeout != null ? incomingSmsUrlCallbackTimeout.hashCode() : 0);
+        result = 31 * result + (callbackHttpMethod != null ? callbackHttpMethod.hashCode() : 0);
+        result = 31 * result + (deleted ? 1 : 0);
+        return result;
+    }
 }

@@ -25,6 +25,15 @@ public class BandwidthApplications {
         return new ApplicationsListBuilder(this);
     }
 
+    public BandwidthApplication getApplicationById(String id) throws IOException {
+        JSONObject jsonObject = client.getRestDriver().requestApplicationById(id);
+        return BandwidthApplication.from(client, jsonObject);
+    }
+
+    public ApplicationBuilder newApplication(String name) {
+        return new ApplicationBuilder(this, name);
+    }
+
     private List<BandwidthApplication> getApplications(Map<String, String> params) throws IOException {
         JSONArray array = client.getRestDriver().requestApplications(params);
 
@@ -33,10 +42,6 @@ public class BandwidthApplications {
             applications.add(BandwidthApplication.from(client, (JSONObject) obj));
         }
         return applications;
-    }
-
-    public ApplicationBuilder newApplication(String name) {
-        return new ApplicationBuilder(this, name);
     }
 
     private BandwidthApplication createApplication(Map<String, String> params) throws IOException {
