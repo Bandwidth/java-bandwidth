@@ -51,6 +51,11 @@ public class MockRestDriver implements IRestDriver {
         return result;
     }
 
+    @Override
+    public void deleteApplication(String id) throws IOException {
+        requests.add(new RestRequest("deleteApplication"));
+    }
+
     public static class RestRequest {
 
         public final String name;

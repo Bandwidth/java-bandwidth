@@ -145,6 +145,12 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public void deleteApplication(String id) throws IOException {
+        BandwidthRestResponse response = request(getApplicationPath(id), HttpMethod.DELETE);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
     private String getApplicationPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
