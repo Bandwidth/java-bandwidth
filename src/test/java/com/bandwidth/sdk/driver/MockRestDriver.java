@@ -61,6 +61,12 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("updateApplication", params));
     }
 
+    @Override
+    public JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException {
+        requests.add(new RestRequest("requestLocalAvailableNumbers", params));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

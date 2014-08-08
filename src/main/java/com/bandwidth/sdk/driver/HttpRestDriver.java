@@ -56,8 +56,7 @@ public class HttpRestDriver implements IRestDriver {
     public JSONObject requestAccountInfo() throws IOException {
         String path = getAccountPath();
         BandwidthRestResponse response = request(path, HttpMethod.GET);
-        if (response.isError())
-            throw new IOException(response.getResponseText());
+        if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
             try {
@@ -73,8 +72,7 @@ public class HttpRestDriver implements IRestDriver {
     @Override
     public JSONArray requestAccountTransactions(Map<String, String> params) throws IOException {
         BandwidthRestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, params);
-        if (response.isError())
-            throw new IOException(response.getResponseText());
+        if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
             try {
@@ -90,8 +88,7 @@ public class HttpRestDriver implements IRestDriver {
     @Override
     public JSONArray requestApplications(Map<String, String> params) throws IOException {
         BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.GET, params);
-        if (response.isError())
-            throw new IOException(response.getResponseText());
+        if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
             try {
@@ -157,11 +154,36 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException {
+        BandwidthRestResponse response = request(getLocalAvailableNumbersPath(), HttpMethod.GET, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getLocalAvailableNumbersPath() {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                BandwidthConstants.LOCAL_AVAILABLE_NUMBERS_PATH,
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getApplicationPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
-                String.format(BandwidthConstants.APPLICATIONS_PATTERN, userId),
+                String.format(BandwidthConstants.APPLICATIONS_PATH, userId),
                 id
         };
         return StringUtils.join(parts, '/');
@@ -171,7 +193,7 @@ public class HttpRestDriver implements IRestDriver {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
-                String.format(BandwidthConstants.APPLICATIONS_PATTERN, userId)
+                String.format(BandwidthConstants.APPLICATIONS_PATH, userId)
         };
         return StringUtils.join(parts, '/');
     }
@@ -180,7 +202,7 @@ public class HttpRestDriver implements IRestDriver {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
-                String.format(BandwidthConstants.ACCOUNT_TRANSACTIONS_PATTERN, userId)
+                String.format(BandwidthConstants.ACCOUNT_TRANSACTIONS_PATH, userId)
         };
         return StringUtils.join(parts, '/');
     }
@@ -189,7 +211,7 @@ public class HttpRestDriver implements IRestDriver {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
-                String.format(BandwidthConstants.ACCOUNT_PATTERN, userId)
+                String.format(BandwidthConstants.ACCOUNT_PATH, userId)
         };
         return StringUtils.join(parts, '/');
     }

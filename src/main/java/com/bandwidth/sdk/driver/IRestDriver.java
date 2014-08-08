@@ -24,4 +24,6 @@ public interface IRestDriver {
     void deleteApplication(String id) throws IOException;
 
     void updateApplication(String id, Map<String, String> params) throws IOException;
+
+    JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException;
 }

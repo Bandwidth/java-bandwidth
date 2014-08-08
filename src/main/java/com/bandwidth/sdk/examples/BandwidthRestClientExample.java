@@ -5,6 +5,8 @@ import com.bandwidth.sdk.account.BandwidthAccountTransaction;
 import com.bandwidth.sdk.account.BandwidthAccount;
 import com.bandwidth.sdk.applications.BandwidthApplication;
 import com.bandwidth.sdk.applications.BandwidthApplications;
+import com.bandwidth.sdk.availableNumbers.BandwidthAvailableNumbers;
+import com.bandwidth.sdk.availableNumbers.BandwidthNumber;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +21,18 @@ public class BandwidthRestClientExample {
 
         printAccount(client);
         printApplications(client);
+        printAvailableNumbers(client);
+    }
+
+    private static void printAvailableNumbers(BandwidthRestClient client) throws IOException {
+        System.out.println("\nAvailableNumbers:");
+        BandwidthAvailableNumbers availableNumbers = client.getAvailableNumbers();
+
+        System.out.println("Local:");
+        List<BandwidthNumber> numbers = availableNumbers.getLocalNumbers().state("CA").quantity(2).get();
+        for (BandwidthNumber number : numbers) {
+            System.out.println(number);
+        }
     }
 
     private static void printApplications(BandwidthRestClient client) throws IOException {

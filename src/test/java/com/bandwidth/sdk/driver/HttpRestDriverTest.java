@@ -167,4 +167,31 @@ public class HttpRestDriverTest {
         HttpGet httpGet = (HttpGet) request;
         assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/applications?page=2&size=10")));
     }
+
+    @Test
+    public void shouldRequestLocalAvailableNumbers() throws IOException {
+        MockHttpClient httpClient = new MockHttpClient();
+        driver.setHttpClient(httpClient);
+
+        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
+        response.addHeader(new BasicHeader("Content-Type", "application/json"));
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(new ByteArrayInputStream("[{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num1\",\"nationalNumber\":\"nationalNum1\",\"rateCenter\":\"STOCKTON\",\"city\":\"STOCKTON\"},{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num2\",\"nationalNumber\":\"nationalNum2\",\"rateCenter\":\"STOCKTON\",\"city\":\"STOCKTON\"}]".getBytes()));
+        response.setEntity(entity);
+
+        httpClient.response = response;
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("quantity", "2");
+        JSONArray array = driver.requestLocalAvailableNumbers(params);
+        assertThat(array, notNullValue());
+        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("num1"));
+        assertThat(((JSONObject) array.get(0)).get("nationalNumber").toString(), equalTo("nationalNum1"));
+
+        HttpUriRequest request = httpClient.lastRequest;
+        assertThat(request, instanceOf(HttpGet.class));
+
+        HttpGet httpGet = (HttpGet) request;
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/availableNumbers/local?quantity=2")));
+    }
 }
