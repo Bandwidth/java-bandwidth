@@ -47,4 +47,45 @@ public class BandwidthApplicationTest {
         assertThat(mockRestDriver.requests.get(0).name, equalTo("deleteApplication"));
     }
 
+    @Test
+    public void shouldUpdateAttributesOnServer() throws ParseException, IOException {
+        MockRestDriver mockRestDriver = new MockRestDriver();
+
+        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
+        client.setRestDriver(mockRestDriver);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"autoAnswer\":true,\"incomingSmsUrl\":\"http:\\/\\/sms\\/callback.json\",\"name\":\"App1\",\"incomingCallUrl\":\"http:\\/\\/call\\/callback.json\"}");
+        BandwidthApplication application = BandwidthApplication.from(client, jsonObject);
+
+        assertThat(application.getId(), equalTo("id1"));
+        application.setName("App2");
+        application.setIncomingCallUrl("anotherUrl");
+        application.commit();
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateApplication"));
+        assertThat(mockRestDriver.requests.get(0).params.get("id"), nullValue());
+        assertThat(mockRestDriver.requests.get(0).params.get("name"), equalTo("App2"));
+        assertThat(mockRestDriver.requests.get(0).params.get("incomingCallUrl"), equalTo("anotherUrl"));
+    }
+
+    @Test
+    public void shouldRevertAttributesFromServer() throws ParseException, IOException {
+        MockRestDriver mockRestDriver = new MockRestDriver();
+
+        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
+        client.setRestDriver(mockRestDriver);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"autoAnswer\":true,\"incomingSmsUrl\":\"http:\\/\\/sms\\/callback.json\",\"name\":\"App1\",\"incomingCallUrl\":\"http:\\/\\/call\\/callback.json\"}");
+        BandwidthApplication application = BandwidthApplication.from(client, jsonObject);
+
+        assertThat(application.getId(), equalTo("id1"));
+        application.setName("App2");
+        assertThat(application.getName(), equalTo("App2"));
+
+        mockRestDriver.result = jsonObject;
+        application.revert();
+
+        assertThat(application.getName(), equalTo("App1"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestApplicationById"));
+    }
 }

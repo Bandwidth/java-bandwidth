@@ -22,4 +22,6 @@ public interface IRestDriver {
     JSONObject requestApplicationById(String id) throws IOException;
 
     void deleteApplication(String id) throws IOException;
+
+    void updateApplication(String id, Map<String, String> params) throws IOException;
 }

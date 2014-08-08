@@ -56,6 +56,11 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("deleteApplication"));
     }
 
+    @Override
+    public void updateApplication(String id, Map<String, String> params) throws IOException {
+        requests.add(new RestRequest("updateApplication", params));
+    }
+
     public static class RestRequest {
 
         public final String name;
