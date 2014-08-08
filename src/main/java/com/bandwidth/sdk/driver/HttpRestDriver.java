@@ -170,6 +170,31 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public JSONArray requestTollFreeAvailableNumbers(Map<String, String> params) throws IOException {
+        BandwidthRestResponse response = request(getTollFreeAvailableNumbersPath(), HttpMethod.GET, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getTollFreeAvailableNumbersPath() {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                BandwidthConstants.TOLL_FREE_AVAILABLE_NUMBERS_PATH,
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getLocalAvailableNumbersPath() {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

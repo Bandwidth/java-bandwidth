@@ -194,4 +194,31 @@ public class HttpRestDriverTest {
         HttpGet httpGet = (HttpGet) request;
         assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/availableNumbers/local?quantity=2")));
     }
+
+    @Test
+    public void shouldRequestTollFreeAvailableNumbers() throws IOException {
+        MockHttpClient httpClient = new MockHttpClient();
+        driver.setHttpClient(httpClient);
+
+        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
+        response.addHeader(new BasicHeader("Content-Type", "application/json"));
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(new ByteArrayInputStream("[{\"price\":\"0.00\",\"number\":\"n1\",\"nationalNumber\":\"nn1\"},{\"price\":\"0.00\",\"number\":\"n2\",\"nationalNumber\":\"nn2\"}]".getBytes()));
+        response.setEntity(entity);
+
+        httpClient.response = response;
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("quantity", "2");
+        JSONArray array = driver.requestTollFreeAvailableNumbers(params);
+        assertThat(array, notNullValue());
+        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("n1"));
+        assertThat(((JSONObject) array.get(0)).get("nationalNumber").toString(), equalTo("nn1"));
+
+        HttpUriRequest request = httpClient.lastRequest;
+        assertThat(request, instanceOf(HttpGet.class));
+
+        HttpGet httpGet = (HttpGet) request;
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/availableNumbers/tollFree?quantity=2")));
+    }
 }

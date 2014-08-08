@@ -25,6 +25,10 @@ public class BandwidthAvailableNumbers {
         return new LocalRequestBuilder(this);
     }
 
+    public TollFreeRequestBuilder getTollFreeNumbers() {
+        return new TollFreeRequestBuilder(this);
+    }
+
     private List<BandwidthNumber> getLocalNumbers(Map<String, String> params) throws IOException {
         JSONArray array = client.getRestDriver().requestLocalAvailableNumbers(params);
 
@@ -33,6 +37,40 @@ public class BandwidthAvailableNumbers {
             numbers.add(BandwidthNumber.from((JSONObject) obj));
         }
         return numbers;
+    }
+
+    private List<BandwidthNumber> getTollFreeNumbers(Map<String, String> params) throws IOException {
+        JSONArray array = client.getRestDriver().requestTollFreeAvailableNumbers(params);
+
+        List<BandwidthNumber> numbers = new ArrayList<BandwidthNumber>();
+        for (Object obj : array) {
+            numbers.add(BandwidthNumber.from((JSONObject) obj));
+        }
+        return numbers;
+    }
+
+    public static class TollFreeRequestBuilder {
+
+        private final BandwidthAvailableNumbers availableNumbers;
+        private final Map<String, String> params = new HashMap<String, String>();
+
+        public TollFreeRequestBuilder(BandwidthAvailableNumbers availableNumbers) {
+            this.availableNumbers = availableNumbers;
+        }
+
+        public List<BandwidthNumber> get() throws IOException {
+            return availableNumbers.getTollFreeNumbers(params);
+        }
+
+        public TollFreeRequestBuilder quantity(int quantity) {
+            params.put("quantity", String.valueOf(quantity));
+            return this;
+        }
+
+        public TollFreeRequestBuilder pattern(String pattern) {
+            params.put("pattern", pattern);
+            return this;
+        }
     }
 
     public static class LocalRequestBuilder {

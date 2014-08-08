@@ -67,6 +67,12 @@ public class MockRestDriver implements IRestDriver {
         return arrayResult;
     }
 
+    @Override
+    public JSONArray requestTollFreeAvailableNumbers(Map<String, String> params) throws IOException {
+        requests.add(new RestRequest("requestTollFreeAvailableNumbers", params));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

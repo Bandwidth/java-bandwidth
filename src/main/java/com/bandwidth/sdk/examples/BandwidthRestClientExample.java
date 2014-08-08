@@ -33,6 +33,12 @@ public class BandwidthRestClientExample {
         for (BandwidthNumber number : numbers) {
             System.out.println(number);
         }
+
+        System.out.println("\nTollFree:");
+        numbers = availableNumbers.getTollFreeNumbers().quantity(2).get();
+        for (BandwidthNumber number : numbers) {
+            System.out.println(number);
+        }
     }
 
     private static void printApplications(BandwidthRestClient client) throws IOException {

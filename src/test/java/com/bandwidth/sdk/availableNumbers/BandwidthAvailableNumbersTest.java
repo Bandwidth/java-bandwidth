@@ -43,4 +43,19 @@ public class BandwidthAvailableNumbersTest {
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestLocalAvailableNumbers"));
         assertThat(mockRestDriver.requests.get(0).params.get("quantity"), equalTo("5"));
     }
+
+    @Test
+    public void shouldGetTollFreeNumbers() throws ParseException, IOException {
+        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"price\":\"0.00\",\"number\":\"n1\",\"nationalNumber\":\"nn1\"},{\"price\":\"0.00\",\"number\":\"n2\",\"nationalNumber\":\"nn2\"}]");
+
+        List<BandwidthNumber> numbers = availableNumbers.getTollFreeNumbers().quantity(5).get();
+        assertThat(numbers.size(), equalTo(2));
+        assertThat(numbers.get(0).getNumber(), equalTo("n1"));
+        assertThat(numbers.get(0).getNationalNumber(), equalTo("nn1"));
+        assertThat(numbers.get(1).getNumber(), equalTo("n2"));
+        assertThat(numbers.get(1).getNationalNumber(), equalTo("nn2"));
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestTollFreeAvailableNumbers"));
+        assertThat(mockRestDriver.requests.get(0).params.get("quantity"), equalTo("5"));
+    }
 }
