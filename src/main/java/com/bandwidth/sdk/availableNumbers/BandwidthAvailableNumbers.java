@@ -29,7 +29,7 @@ public class BandwidthAvailableNumbers {
         return new TollFreeRequestBuilder(this);
     }
 
-    private List<BandwidthNumber> getLocalNumbers(Map<String, String> params) throws IOException {
+    private List<BandwidthNumber> getLocalNumbers(Map<String, Object> params) throws IOException {
         JSONArray array = client.getRestDriver().requestLocalAvailableNumbers(params);
 
         List<BandwidthNumber> numbers = new ArrayList<BandwidthNumber>();
@@ -39,7 +39,7 @@ public class BandwidthAvailableNumbers {
         return numbers;
     }
 
-    private List<BandwidthNumber> getTollFreeNumbers(Map<String, String> params) throws IOException {
+    private List<BandwidthNumber> getTollFreeNumbers(Map<String, Object> params) throws IOException {
         JSONArray array = client.getRestDriver().requestTollFreeAvailableNumbers(params);
 
         List<BandwidthNumber> numbers = new ArrayList<BandwidthNumber>();
@@ -52,7 +52,7 @@ public class BandwidthAvailableNumbers {
     public static class TollFreeRequestBuilder {
 
         private final BandwidthAvailableNumbers availableNumbers;
-        private final Map<String, String> params = new HashMap<String, String>();
+        private final Map<String, Object> params = new HashMap<String, Object>();
 
         public TollFreeRequestBuilder(BandwidthAvailableNumbers availableNumbers) {
             this.availableNumbers = availableNumbers;
@@ -76,7 +76,7 @@ public class BandwidthAvailableNumbers {
     public static class LocalRequestBuilder {
 
         private final BandwidthAvailableNumbers availableNumbers;
-        private final Map<String, String> params = new HashMap<String, String>();
+        private final Map<String, Object> params = new HashMap<String, Object>();
 
         public LocalRequestBuilder(BandwidthAvailableNumbers availableNumbers) {
             this.availableNumbers = availableNumbers;

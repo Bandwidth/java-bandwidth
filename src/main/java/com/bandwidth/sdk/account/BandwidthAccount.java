@@ -29,7 +29,7 @@ public class BandwidthAccount {
         return new TransactionsBuilder(this);
     }
 
-    private List<BandwidthAccountTransaction> getTransactions(Map<String, String> params) throws IOException {
+    private List<BandwidthAccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
         JSONArray array = client.getRestDriver().requestAccountTransactions(params);
 
         List<BandwidthAccountTransaction> transactions = new ArrayList<BandwidthAccountTransaction>();
@@ -85,7 +85,7 @@ public class BandwidthAccount {
         }
 
         public List<BandwidthAccountTransaction> get() throws IOException {
-            Map<String, String> params = new HashMap<String, String>();
+            Map<String, Object> params = new HashMap<String, Object>();
 
             SimpleDateFormat simpleDateFormat = null;
             if (fromDate != null) {

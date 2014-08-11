@@ -4,10 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author vpotapenko
@@ -26,26 +23,26 @@ public class MockRestDriver implements IRestDriver {
     }
 
     @Override
-    public JSONArray requestAccountTransactions(Map<String, String> params) {
+    public JSONArray requestAccountTransactions(Map<String, Object> params) {
         requests.add(new RestRequest("requestAccountTransactions", params));
         return arrayResult;
     }
 
     @Override
-    public JSONArray requestApplications(Map<String, String> params) throws IOException {
+    public JSONArray requestApplications(Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("requestApplications", params));
         return arrayResult;
     }
 
     @Override
-    public JSONObject createApplication(Map<String, String> params) throws IOException {
+    public JSONObject createApplication(Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("createApplication"));
         return result;
     }
 
     @Override
     public JSONObject requestApplicationById(String id) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", id);
         requests.add(new RestRequest("requestApplicationById", params));
         return result;
@@ -57,18 +54,18 @@ public class MockRestDriver implements IRestDriver {
     }
 
     @Override
-    public void updateApplication(String id, Map<String, String> params) throws IOException {
+    public void updateApplication(String id, Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("updateApplication", params));
     }
 
     @Override
-    public JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException {
+    public JSONArray requestLocalAvailableNumbers(Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("requestLocalAvailableNumbers", params));
         return arrayResult;
     }
 
     @Override
-    public JSONArray requestTollFreeAvailableNumbers(Map<String, String> params) throws IOException {
+    public JSONArray requestTollFreeAvailableNumbers(Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("requestTollFreeAvailableNumbers", params));
         return arrayResult;
     }
@@ -79,16 +76,22 @@ public class MockRestDriver implements IRestDriver {
         return arrayResult;
     }
 
+    @Override
+    public JSONObject createBridge(Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("createBridge", params));
+        return result;
+    }
+
     public static class RestRequest {
 
         public final String name;
-        public final Map<String, String> params;
+        public final Map<String, Object> params;
 
         public RestRequest(String name) {
             this(name, null);
         }
 
-        public RestRequest(String name, Map<String, String> params) {
+        public RestRequest(String name, Map<String, Object> params) {
             this.name = name;
             this.params = params;
         }

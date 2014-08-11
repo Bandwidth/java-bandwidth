@@ -70,7 +70,7 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public JSONArray requestAccountTransactions(Map<String, String> params) throws IOException {
+    public JSONArray requestAccountTransactions(Map<String, Object> params) throws IOException {
         BandwidthRestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
@@ -86,7 +86,7 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public JSONArray requestApplications(Map<String, String> params) throws IOException {
+    public JSONArray requestApplications(Map<String, Object> params) throws IOException {
         BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
@@ -102,7 +102,7 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public JSONObject createApplication(Map<String, String> params) throws IOException {
+    public JSONObject createApplication(Map<String, Object> params) throws IOException {
         BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
@@ -149,13 +149,13 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public void updateApplication(String id, Map<String, String> params) throws IOException {
+    public void updateApplication(String id, Map<String, Object> params) throws IOException {
         BandwidthRestResponse response = request(getApplicationPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
-    public JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException {
+    public JSONArray requestLocalAvailableNumbers(Map<String, Object> params) throws IOException {
         BandwidthRestResponse response = request(getLocalAvailableNumbersPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
@@ -171,7 +171,7 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public JSONArray requestTollFreeAvailableNumbers(Map<String, String> params) throws IOException {
+    public JSONArray requestTollFreeAvailableNumbers(Map<String, Object> params) throws IOException {
         BandwidthRestResponse response = request(getTollFreeAvailableNumbersPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
@@ -199,6 +199,30 @@ public class HttpRestDriver implements IRestDriver {
             }
         } else {
             throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    @Override
+    public JSONObject createBridge(Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getBridgesPath(), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        String location = response.getLocation();
+        if (location != null) {
+            response = request(location, HttpMethod.GET);
+            if (response.isError()) throw new IOException(response.getResponseText());
+
+            if (response.isJson()) {
+                try {
+                    return (JSONObject) new JSONParser().parse(response.getResponseText());
+                } catch (org.json.simple.parser.ParseException e) {
+                    throw new IOException(e);
+                }
+            } else {
+                throw new IOException("Response is not a JSON format.");
+            }
+        } else {
+            throw new IOException("There is no location of new application.");
         }
     }
 
@@ -267,11 +291,11 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     private BandwidthRestResponse request(final String path, HttpMethod method) throws IOException {
-        return request(path, method, Collections.<String, String>emptyMap());
+        return request(path, method, Collections.<String, Object>emptyMap());
     }
 
     private BandwidthRestResponse request(final String path, HttpMethod method,
-                                          final Map<String, String> paramList) throws IOException {
+                                          final Map<String, Object> paramList) throws IOException {
 
         HttpUriRequest request = setupRequest(path, method, paramList);
 
@@ -310,7 +334,7 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
-    public HttpUriRequest setupRequest(String path, HttpMethod method, final Map<String, String> params) {
+    public HttpUriRequest setupRequest(String path, HttpMethod method, final Map<String, Object> params) {
         HttpUriRequest request = buildMethod(method, path, params);
 
         request.addHeader(new BasicHeader("Accept", "application/json"));
@@ -322,7 +346,7 @@ public class HttpRestDriver implements IRestDriver {
         return request;
     }
 
-    private HttpUriRequest buildMethod(HttpMethod method, final String path, final Map<String, String> params) {
+    private HttpUriRequest buildMethod(HttpMethod method, final String path, final Map<String, Object> params) {
         switch (method) {
             case GET:
                 return generateGetRequest(path, params);
@@ -337,16 +361,16 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
-    private HttpGet generateGetRequest(final String path, final Map<String, String> paramMap) {
+    private HttpGet generateGetRequest(final String path, final Map<String, Object> paramMap) {
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         for (String key : paramMap.keySet()) {
-            pairs.add(new BasicNameValuePair(key, paramMap.get(key)));
+            pairs.add(new BasicNameValuePair(key, paramMap.get(key).toString()));
         }
         URI uri = buildUri(path, pairs);
         return new HttpGet(uri);
     }
 
-    private HttpPost generatePostRequest(final String path, final Map<String, String> paramMap) {
+    private HttpPost generatePostRequest(final String path, final Map<String, Object> paramMap) {
         URI uri = buildUri(path);
 
         String s = JSONObject.toJSONString(paramMap);
@@ -357,7 +381,7 @@ public class HttpRestDriver implements IRestDriver {
         return post;
     }
 
-    private HttpPut generatePutRequest(final String path, final Map<String, String> paramMap) {
+    private HttpPut generatePutRequest(final String path, final Map<String, Object> paramMap) {
         URI uri = buildUri(path);
 
         String s = JSONObject.toJSONString(paramMap);

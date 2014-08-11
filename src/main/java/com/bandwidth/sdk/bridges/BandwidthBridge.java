@@ -2,6 +2,7 @@ package com.bandwidth.sdk.bridges;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -48,13 +49,13 @@ public class BandwidthBridge {
         SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
         try {
             String time = (String) jsonObject.get("completedTime");
-            bridge.completedTime = dateFormat.parse(time);
+            if (StringUtils.isNotEmpty(time)) bridge.completedTime = dateFormat.parse(time);
 
             time = (String) jsonObject.get("createdTime");
-            bridge.createdTime = dateFormat.parse(time);
+            if (StringUtils.isNotEmpty(time)) bridge.createdTime = dateFormat.parse(time);
 
             time = (String) jsonObject.get("activatedTime");
-            bridge.activatedTime = dateFormat.parse(time);
+            if (StringUtils.isNotEmpty(time)) bridge.activatedTime = dateFormat.parse(time);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

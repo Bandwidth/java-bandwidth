@@ -34,7 +34,7 @@ public class BandwidthApplications {
         return new ApplicationBuilder(this, name);
     }
 
-    private List<BandwidthApplication> getApplications(Map<String, String> params) throws IOException {
+    private List<BandwidthApplication> getApplications(Map<String, Object> params) throws IOException {
         JSONArray array = client.getRestDriver().requestApplications(params);
 
         List<BandwidthApplication> applications = new ArrayList<BandwidthApplication>();
@@ -44,7 +44,7 @@ public class BandwidthApplications {
         return applications;
     }
 
-    private BandwidthApplication createApplication(Map<String, String> params) throws IOException {
+    private BandwidthApplication createApplication(Map<String, Object> params) throws IOException {
         JSONObject jsonObject = client.getRestDriver().createApplication(params);
         return BandwidthApplication.from(client, jsonObject);
     }
@@ -71,7 +71,7 @@ public class BandwidthApplications {
         }
 
         public List<BandwidthApplication> get() throws IOException {
-            Map<String, String> params = new HashMap<String, String>();
+            Map<String, Object> params = new HashMap<String, Object>();
 
             if (page != null) params.put("page", String.valueOf(page));
             if (size != null) params.put("size", String.valueOf(size));
@@ -135,7 +135,7 @@ public class BandwidthApplications {
         }
 
         public BandwidthApplication create() throws IOException {
-            Map<String, String> params = new HashMap<String, String>();
+            Map<String, Object> params = new HashMap<String, Object>();
 
             params.put("name", name);
 

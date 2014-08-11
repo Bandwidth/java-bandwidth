@@ -36,7 +36,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPrepareGetRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.GET, Collections.<String, String>emptyMap());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.GET, Collections.<String, Object>emptyMap());
         assertThat(request, instanceOf(HttpGet.class));
 
         HttpGet httpGet = (HttpGet) request;
@@ -49,7 +49,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPreparePostRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.POST, Collections.<String, String>emptyMap());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.POST, Collections.<String, Object>emptyMap());
         assertThat(request, instanceOf(HttpPost.class));
 
         HttpPost httpPost = (HttpPost) request;
@@ -62,7 +62,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPreparePutRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.PUT, Collections.<String, String>emptyMap());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.PUT, Collections.<String, Object>emptyMap());
         assertThat(request, instanceOf(HttpPut.class));
 
         HttpPut httpPut = (HttpPut) request;
@@ -75,7 +75,7 @@ public class HttpRestDriverTest {
 
     @Test
     public void shouldPrepareDeleteRequest() {
-        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.DELETE, Collections.<String, String>emptyMap());
+        HttpUriRequest request = driver.setupRequest("https://api.catapult.inetwork.com", HttpMethod.DELETE, Collections.<String, Object>emptyMap());
         assertThat(request, instanceOf(HttpDelete.class));
 
         HttpDelete httpDelete = (HttpDelete) request;
@@ -124,7 +124,7 @@ public class HttpRestDriverTest {
 
         httpClient.response = response;
 
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("maxItems", "1000");
         params.put("size", "10");
         JSONArray array = driver.requestAccountTransactions(params);
@@ -153,7 +153,7 @@ public class HttpRestDriverTest {
 
         httpClient.response = response;
 
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("page", "2");
         params.put("size", "10");
         JSONArray array = driver.requestApplications(params);
@@ -181,7 +181,7 @@ public class HttpRestDriverTest {
 
         httpClient.response = response;
 
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("quantity", "2");
         JSONArray array = driver.requestLocalAvailableNumbers(params);
         assertThat(array, notNullValue());
@@ -208,7 +208,7 @@ public class HttpRestDriverTest {
 
         httpClient.response = response;
 
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("quantity", "2");
         JSONArray array = driver.requestTollFreeAvailableNumbers(params);
         assertThat(array, notNullValue());

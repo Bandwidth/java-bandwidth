@@ -13,21 +13,23 @@ public interface IRestDriver {
 
     JSONObject requestAccountInfo() throws IOException;
 
-    JSONArray requestAccountTransactions(Map<String, String> params) throws IOException;
+    JSONArray requestAccountTransactions(Map<String, Object> params) throws IOException;
 
-    JSONArray requestApplications(Map<String, String> params) throws IOException;
+    JSONArray requestApplications(Map<String, Object> params) throws IOException;
 
-    JSONObject createApplication(Map<String, String> params) throws IOException;
+    JSONObject createApplication(Map<String, Object> params) throws IOException;
 
     JSONObject requestApplicationById(String id) throws IOException;
 
     void deleteApplication(String id) throws IOException;
 
-    void updateApplication(String id, Map<String, String> params) throws IOException;
+    void updateApplication(String id, Map<String, Object> params) throws IOException;
 
-    JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException;
+    JSONArray requestLocalAvailableNumbers(Map<String, Object> params) throws IOException;
 
-    JSONArray requestTollFreeAvailableNumbers(Map<String, String> params) throws IOException;
+    JSONArray requestTollFreeAvailableNumbers(Map<String, Object> params) throws IOException;
 
     JSONArray requestBridges() throws IOException;
+
+    JSONObject createBridge(Map<String, Object> params) throws IOException;
 }

@@ -123,7 +123,7 @@ public class BandwidthApplication {
     public void commit() throws IOException {
         if (id == null) return;
 
-        Map<String, String> params = toMap();
+        Map<String, Object> params = toMap();
         params.remove("id");
 
         client.getRestDriver().updateApplication(getId(), params);
@@ -156,8 +156,8 @@ public class BandwidthApplication {
                 '}';
     }
 
-    private Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<String, String>();
+    private Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
 
         map.put("id", id);
         map.put("name", name);

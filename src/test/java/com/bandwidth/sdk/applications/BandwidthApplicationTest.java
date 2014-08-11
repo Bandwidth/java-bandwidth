@@ -64,8 +64,8 @@ public class BandwidthApplicationTest {
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateApplication"));
         assertThat(mockRestDriver.requests.get(0).params.get("id"), nullValue());
-        assertThat(mockRestDriver.requests.get(0).params.get("name"), equalTo("App2"));
-        assertThat(mockRestDriver.requests.get(0).params.get("incomingCallUrl"), equalTo("anotherUrl"));
+        assertThat(mockRestDriver.requests.get(0).params.get("name").toString(), equalTo("App2"));
+        assertThat(mockRestDriver.requests.get(0).params.get("incomingCallUrl").toString(), equalTo("anotherUrl"));
     }
 
     @Test
