@@ -91,6 +91,11 @@ public class MockRestDriver implements IRestDriver {
         return result;
     }
 
+    @Override
+    public void updateBridge(String id, Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("updateBridge", params));
+    }
+
     public static class RestRequest {
 
         public final String name;

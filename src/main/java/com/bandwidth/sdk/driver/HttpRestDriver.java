@@ -242,6 +242,12 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public void updateBridge(String id, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getBridgePath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
     private String getBridgePath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

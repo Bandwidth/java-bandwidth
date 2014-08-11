@@ -1,8 +1,8 @@
 package com.bandwidth.sdk.examples;
 
 import com.bandwidth.sdk.BandwidthRestClient;
-import com.bandwidth.sdk.account.BandwidthAccountTransaction;
 import com.bandwidth.sdk.account.BandwidthAccount;
+import com.bandwidth.sdk.account.BandwidthAccountTransaction;
 import com.bandwidth.sdk.applications.BandwidthApplication;
 import com.bandwidth.sdk.applications.BandwidthApplications;
 import com.bandwidth.sdk.availableNumbers.BandwidthAvailableNumbers;

@@ -6,10 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author vpotapenko
@@ -61,6 +61,22 @@ public class BandwidthBridge {
         }
 
         return bridge;
+    }
+
+    public void setCallIds(String[] callIds) {
+        this.callIds = callIds;
+    }
+
+    public void setBridgeAudio(boolean bridgeAudio) {
+        this.bridgeAudio = bridgeAudio;
+    }
+
+    public void commit() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("bridgeAudio", String.valueOf(bridgeAudio));
+        params.put("callIds", callIds == null ? Collections.emptyList() : Arrays.asList(callIds));
+
+        client.getRestDriver().updateBridge(id, params);
     }
 
     public String getId() {
