@@ -246,4 +246,29 @@ public class HttpRestDriverTest {
         HttpGet httpGet = (HttpGet) request;
         assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/bridges")));
     }
+
+    @Test
+    public void shouldRequestBridgeById() throws IOException {
+        MockHttpClient httpClient = new MockHttpClient();
+        driver.setHttpClient(httpClient);
+
+        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
+        response.addHeader(new BasicHeader("Content-Type", "application/json"));
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(new ByteArrayInputStream("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}".getBytes()));
+        response.setEntity(entity);
+
+        httpClient.response = response;
+
+        JSONObject jsonObject = driver.requestBridgeById("id1");
+        assertThat(jsonObject, notNullValue());
+        assertThat(jsonObject.get("id").toString(), equalTo("id1"));
+        assertThat(jsonObject.get("state").toString(), equalTo("created"));
+
+        HttpUriRequest request = httpClient.lastRequest;
+        assertThat(request, instanceOf(HttpGet.class));
+
+        HttpGet httpGet = (HttpGet) request;
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/bridges/id1")));
+    }
 }

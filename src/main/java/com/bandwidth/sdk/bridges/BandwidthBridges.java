@@ -31,6 +31,11 @@ public class BandwidthBridges {
         return bridges;
     }
 
+    public BandwidthBridge getBridgeById(String id) throws IOException {
+        JSONObject jsonObject = client.getRestDriver().requestBridgeById(id);
+        return BandwidthBridge.from(client, jsonObject);
+    }
+
     public NewBridgeBuilder newBridge() {
         return new NewBridgeBuilder(this);
     }

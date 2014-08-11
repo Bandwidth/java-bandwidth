@@ -32,4 +32,6 @@ public interface IRestDriver {
     JSONArray requestBridges() throws IOException;
 
     JSONObject createBridge(Map<String, Object> params) throws IOException;
+
+    JSONObject requestBridgeById(String id) throws IOException;
 }

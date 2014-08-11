@@ -34,6 +34,12 @@ public class BandwidthRestClientExample {
         for (BandwidthBridge bridge : bridgeList) {
             System.out.println(bridge);
         }
+
+        if (bridgeList.size() > 0) {
+            BandwidthBridge bridge = bridges.getBridgeById(bridgeList.get(0).getId());
+            System.out.println("\nBridge by Id");
+            System.out.println(bridge);
+        }
     }
 
     private static void printAvailableNumbers(BandwidthRestClient client) throws IOException {

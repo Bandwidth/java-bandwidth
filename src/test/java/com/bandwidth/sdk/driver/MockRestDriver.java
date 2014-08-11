@@ -4,7 +4,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author vpotapenko
@@ -79,6 +82,12 @@ public class MockRestDriver implements IRestDriver {
     @Override
     public JSONObject createBridge(Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("createBridge", params));
+        return result;
+    }
+
+    @Override
+    public JSONObject requestBridgeById(String id) throws IOException {
+        requests.add(new RestRequest("requestBridgeById"));
         return result;
     }
 
