@@ -73,6 +73,12 @@ public class MockRestDriver implements IRestDriver {
         return arrayResult;
     }
 
+    @Override
+    public JSONArray requestBridges() {
+        requests.add(new RestRequest("requestBridges"));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

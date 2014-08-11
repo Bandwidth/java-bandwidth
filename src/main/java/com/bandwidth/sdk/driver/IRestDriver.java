@@ -28,4 +28,6 @@ public interface IRestDriver {
     JSONArray requestLocalAvailableNumbers(Map<String, String> params) throws IOException;
 
     JSONArray requestTollFreeAvailableNumbers(Map<String, String> params) throws IOException;
+
+    JSONArray requestBridges() throws IOException;
 }

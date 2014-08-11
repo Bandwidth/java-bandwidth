@@ -3,6 +3,7 @@ package com.bandwidth.sdk;
 import com.bandwidth.sdk.account.BandwidthAccount;
 import com.bandwidth.sdk.applications.BandwidthApplications;
 import com.bandwidth.sdk.availableNumbers.BandwidthAvailableNumbers;
+import com.bandwidth.sdk.bridges.BandwidthBridges;
 import com.bandwidth.sdk.driver.HttpRestDriver;
 import com.bandwidth.sdk.driver.IRestDriver;
 
@@ -27,6 +28,10 @@ public class BandwidthRestClient {
 
     public BandwidthAvailableNumbers getAvailableNumbers() {
         return new BandwidthAvailableNumbers(this);
+    }
+
+    public BandwidthBridges getBridges() {
+        return new BandwidthBridges(this);
     }
 
     public IRestDriver getRestDriver() {

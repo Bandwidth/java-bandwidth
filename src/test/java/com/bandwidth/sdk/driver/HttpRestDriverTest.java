@@ -221,4 +221,29 @@ public class HttpRestDriverTest {
         HttpGet httpGet = (HttpGet) request;
         assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/availableNumbers/tollFree?quantity=2")));
     }
+
+    @Test
+    public void shouldRequestBridges() throws IOException {
+        MockHttpClient httpClient = new MockHttpClient();
+        driver.setHttpClient(httpClient);
+
+        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
+        response.addHeader(new BasicHeader("Content-Type", "application/json"));
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(new ByteArrayInputStream("[ {    \"id\": \"id1\",    \"state\": \"completed\",    \"bridgeAudio\": \"true\",    \"calls\":\"https://v1/users/userId/bridges/bridgeId/calls\",    \"createdTime\": \"2013-04-22T13:55:30Z\",    \"activatedTime\": \"2013-04-22T13:55:30Z\",    \"completedTime\": \"2013-04-22T13:56:30Z\"  },  {    \"id\": \"id2\",    \"state\": \"completed\",    \"bridgeAudio\": \"true\",    \"calls\":\"https://v1/users/userId/bridges/bridgeId/calls\",    \"createdTime\": \"2013-04-22T13:58:30Z\",    \"activatedTime\": \"2013-04-22T13:58:30Z\",    \"completedTime\": \"2013-04-22T13:59:30Z\"  }]".getBytes()));
+        response.setEntity(entity);
+
+        httpClient.response = response;
+
+        JSONArray array = driver.requestBridges();
+        assertThat(array, notNullValue());
+        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
+        assertThat(((JSONObject) array.get(0)).get("state").toString(), equalTo("completed"));
+
+        HttpUriRequest request = httpClient.lastRequest;
+        assertThat(request, instanceOf(HttpGet.class));
+
+        HttpGet httpGet = (HttpGet) request;
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/bridges")));
+    }
 }

@@ -7,6 +7,8 @@ import com.bandwidth.sdk.applications.BandwidthApplication;
 import com.bandwidth.sdk.applications.BandwidthApplications;
 import com.bandwidth.sdk.availableNumbers.BandwidthAvailableNumbers;
 import com.bandwidth.sdk.availableNumbers.BandwidthNumber;
+import com.bandwidth.sdk.bridges.BandwidthBridge;
+import com.bandwidth.sdk.bridges.BandwidthBridges;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +24,16 @@ public class BandwidthRestClientExample {
         printAccount(client);
         printApplications(client);
         printAvailableNumbers(client);
+        printBridges(client);
+    }
+
+    private static void printBridges(BandwidthRestClient client) throws IOException {
+        System.out.println("\nBridges:");
+        BandwidthBridges bridges = client.getBridges();
+        List<BandwidthBridge> bridgeList = bridges.getBridges();
+        for (BandwidthBridge bridge : bridgeList) {
+            System.out.println(bridge);
+        }
     }
 
     private static void printAvailableNumbers(BandwidthRestClient client) throws IOException {
