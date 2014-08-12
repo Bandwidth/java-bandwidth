@@ -42,4 +42,52 @@ public class BandwidthBridgeTest {
         assertThat(mockRestDriver.requests.get(0).params.get("bridgeAudio").toString(), equalTo("true"));
     }
 
+    @Test
+    public void shouldPostAudioOnServer() throws ParseException, IOException {
+        MockRestDriver mockRestDriver = new MockRestDriver();
+
+        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
+        client.setRestDriver(mockRestDriver);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
+        BandwidthBridge bridge = BandwidthBridge.from(client, jsonObject);
+
+        bridge.createAudio().fileUrl("some url").commit();
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("some url"));
+    }
+
+    @Test
+    public void shouldStopAudioOnServer() throws ParseException, IOException {
+        MockRestDriver mockRestDriver = new MockRestDriver();
+
+        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
+        client.setRestDriver(mockRestDriver);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
+        BandwidthBridge bridge = BandwidthBridge.from(client, jsonObject);
+
+        bridge.stopAudioFilePlaying();
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
+    }
+
+    @Test
+    public void shouldStopSentenceOnServer() throws ParseException, IOException {
+        MockRestDriver mockRestDriver = new MockRestDriver();
+
+        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
+        client.setRestDriver(mockRestDriver);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
+        BandwidthBridge bridge = BandwidthBridge.from(client, jsonObject);
+
+        bridge.stopSentence();
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo(""));
+    }
+
 }

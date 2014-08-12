@@ -36,4 +36,6 @@ public interface IRestDriver {
     JSONObject requestBridgeById(String id) throws IOException;
 
     void updateBridge(String id, Map<String, Object> params) throws IOException;
+
+    void createBridgeAudio(String id, Map<String, Object> params) throws IOException;
 }

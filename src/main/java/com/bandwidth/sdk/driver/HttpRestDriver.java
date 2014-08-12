@@ -248,6 +248,21 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public void createBridgeAudio(String id, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getBridgeAudioPath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
+    private String getBridgeAudioPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.BRIDGE_AUDIO_PATH, userId, id),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getBridgePath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

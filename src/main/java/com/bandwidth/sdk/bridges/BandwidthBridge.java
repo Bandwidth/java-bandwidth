@@ -111,6 +111,22 @@ public class BandwidthBridge {
         return activatedTime;
     }
 
+    public AudioBuilder createAudio() {
+        return new AudioBuilder(this);
+    }
+
+    public void stopAudioFilePlaying() throws IOException {
+        new AudioBuilder(this).fileUrl(StringUtils.EMPTY).commit();
+    }
+
+    public void stopSentence() throws IOException {
+        new AudioBuilder(this).sentence(StringUtils.EMPTY).commit();
+    }
+
+    private void saveAudio(Map<String, Object> params) throws IOException {
+        client.getRestDriver().createBridgeAudio(getId(), params);
+    }
+
     @Override
     public String toString() {
         return "BandwidthBridge{" +
@@ -123,5 +139,68 @@ public class BandwidthBridge {
                 ", createdTime=" + createdTime +
                 ", activatedTime=" + activatedTime +
                 '}';
+    }
+
+    public static class AudioBuilder {
+
+        private final BandwidthBridge bridge;
+        private final Map<String, Object> params = new HashMap<String, Object>();
+
+        public AudioBuilder(BandwidthBridge bridge) {
+            this.bridge = bridge;
+        }
+
+        public AudioBuilder fileUrl(String fileUrl) {
+            params.put("fileUrl", fileUrl);
+            return this;
+        }
+
+        public AudioBuilder sentence(String sentence) {
+            params.put("sentence", sentence);
+            return this;
+        }
+
+        public AudioBuilder gender(Gender gender) {
+            params.put("gender", gender.name());
+            return this;
+        }
+
+        public AudioBuilder locale(SentenceLocale locale) {
+            params.put("locale", locale.restValue);
+            return this;
+        }
+
+        public AudioBuilder voice(String voice) {
+            params.put("voice", voice);
+            return this;
+        }
+
+        public AudioBuilder loopEnabled(boolean loopEnabled) {
+            params.put("loopEnabled", String.valueOf(loopEnabled));
+            return this;
+        }
+
+        public void commit() throws IOException {
+            bridge.saveAudio(params);
+        }
+    }
+
+    public static enum Gender {
+        male, female
+    }
+
+    public static enum SentenceLocale {
+        English_US("en_US"),
+        English_UK("en_UK"),
+        Spain("es_MX"),
+        French("fr_FR"),
+        German("de_DE"),
+        Italian("it_IT");
+
+        public final String restValue;
+
+        SentenceLocale(String restValue) {
+            this.restValue = restValue;
+        }
     }
 }
