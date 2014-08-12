@@ -254,6 +254,31 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public JSONArray requestCalls(Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallsPath(), HttpMethod.GET, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getCallsPath() {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CALLS_PATH, userId),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getBridgeAudioPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

@@ -112,15 +112,15 @@ public class BandwidthBridge {
     }
 
     public AudioBuilder createAudio() {
-        return new AudioBuilder(this);
+        return new AudioBuilder();
     }
 
     public void stopAudioFilePlaying() throws IOException {
-        new AudioBuilder(this).fileUrl(StringUtils.EMPTY).commit();
+        new AudioBuilder().fileUrl(StringUtils.EMPTY).commit();
     }
 
     public void stopSentence() throws IOException {
-        new AudioBuilder(this).sentence(StringUtils.EMPTY).commit();
+        new AudioBuilder().sentence(StringUtils.EMPTY).commit();
     }
 
     private void saveAudio(Map<String, Object> params) throws IOException {
@@ -141,14 +141,9 @@ public class BandwidthBridge {
                 '}';
     }
 
-    public static class AudioBuilder {
+    public class AudioBuilder {
 
-        private final BandwidthBridge bridge;
         private final Map<String, Object> params = new HashMap<String, Object>();
-
-        public AudioBuilder(BandwidthBridge bridge) {
-            this.bridge = bridge;
-        }
 
         public AudioBuilder fileUrl(String fileUrl) {
             params.put("fileUrl", fileUrl);
@@ -181,7 +176,7 @@ public class BandwidthBridge {
         }
 
         public void commit() throws IOException {
-            bridge.saveAudio(params);
+            saveAudio(params);
         }
     }
 

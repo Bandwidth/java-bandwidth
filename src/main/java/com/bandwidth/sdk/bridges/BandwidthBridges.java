@@ -37,7 +37,7 @@ public class BandwidthBridges {
     }
 
     public NewBridgeBuilder newBridge() {
-        return new NewBridgeBuilder(this);
+        return new NewBridgeBuilder();
     }
 
     private BandwidthBridge createBridge(Map<String, Object> params) throws IOException {
@@ -45,16 +45,10 @@ public class BandwidthBridges {
         return BandwidthBridge.from(client, jsonObject);
     }
 
-    public static class NewBridgeBuilder {
-
-        private final BandwidthBridges bridges;
+    public class NewBridgeBuilder {
 
         private Boolean bridgeAudio;
         private List<String> callIds = new ArrayList<String>();
-
-        public NewBridgeBuilder(BandwidthBridges bridges) {
-            this.bridges = bridges;
-        }
 
         public NewBridgeBuilder bridgeAudio(Boolean bridgeAudio) {
             this.bridgeAudio = bridgeAudio;
@@ -71,7 +65,7 @@ public class BandwidthBridges {
             if (bridgeAudio != null) params.put("bridgeAudio", String.valueOf(bridgeAudio));
             if (!callIds.isEmpty()) params.put("callIds", callIds);
 
-            return bridges.createBridge(params);
+            return createBridge(params);
         }
     }
 }

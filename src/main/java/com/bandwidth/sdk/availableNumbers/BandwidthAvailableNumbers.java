@@ -22,11 +22,11 @@ public class BandwidthAvailableNumbers {
     }
 
     public LocalRequestBuilder getLocalNumbers() {
-        return new LocalRequestBuilder(this);
+        return new LocalRequestBuilder();
     }
 
     public TollFreeRequestBuilder getTollFreeNumbers() {
-        return new TollFreeRequestBuilder(this);
+        return new TollFreeRequestBuilder();
     }
 
     private List<BandwidthNumber> getLocalNumbers(Map<String, Object> params) throws IOException {
@@ -49,17 +49,12 @@ public class BandwidthAvailableNumbers {
         return numbers;
     }
 
-    public static class TollFreeRequestBuilder {
+    public class TollFreeRequestBuilder {
 
-        private final BandwidthAvailableNumbers availableNumbers;
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public TollFreeRequestBuilder(BandwidthAvailableNumbers availableNumbers) {
-            this.availableNumbers = availableNumbers;
-        }
-
         public List<BandwidthNumber> get() throws IOException {
-            return availableNumbers.getTollFreeNumbers(params);
+            return getTollFreeNumbers(params);
         }
 
         public TollFreeRequestBuilder quantity(int quantity) {
@@ -73,17 +68,12 @@ public class BandwidthAvailableNumbers {
         }
     }
 
-    public static class LocalRequestBuilder {
+    public class LocalRequestBuilder {
 
-        private final BandwidthAvailableNumbers availableNumbers;
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public LocalRequestBuilder(BandwidthAvailableNumbers availableNumbers) {
-            this.availableNumbers = availableNumbers;
-        }
-
         public List<BandwidthNumber> get() throws IOException {
-            return availableNumbers.getLocalNumbers(params);
+            return getLocalNumbers(params);
         }
 
         public LocalRequestBuilder city(String city) {

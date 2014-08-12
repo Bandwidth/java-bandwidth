@@ -22,7 +22,7 @@ public class BandwidthApplications {
     }
 
     public ApplicationsListBuilder getApplications() {
-        return new ApplicationsListBuilder(this);
+        return new ApplicationsListBuilder();
     }
 
     public BandwidthApplication getApplicationById(String id) throws IOException {
@@ -31,7 +31,7 @@ public class BandwidthApplications {
     }
 
     public ApplicationBuilder newApplication(String name) {
-        return new ApplicationBuilder(this, name);
+        return new ApplicationBuilder(name);
     }
 
     private List<BandwidthApplication> getApplications(Map<String, Object> params) throws IOException {
@@ -49,16 +49,10 @@ public class BandwidthApplications {
         return BandwidthApplication.from(client, jsonObject);
     }
 
-    public static class ApplicationsListBuilder {
-
-        private final BandwidthApplications applications;
+    public class ApplicationsListBuilder {
 
         private Integer page;
         private Integer size;
-
-        public ApplicationsListBuilder(BandwidthApplications applications) {
-            this.applications = applications;
-        }
 
         public ApplicationsListBuilder page(Integer page) {
             this.page = page;
@@ -76,13 +70,11 @@ public class BandwidthApplications {
             if (page != null) params.put("page", String.valueOf(page));
             if (size != null) params.put("size", String.valueOf(size));
 
-            return applications.getApplications(params);
+            return getApplications(params);
         }
     }
 
-    public static class ApplicationBuilder {
-
-        private final BandwidthApplications applications;
+    public class ApplicationBuilder {
 
         private String name;
         private String incomingCallUrl;
@@ -94,8 +86,7 @@ public class BandwidthApplications {
         private Long incomingSmsUrlCallbackTimeout;
         private String callbackHttpMethod;
 
-        public ApplicationBuilder(BandwidthApplications applications, String name) {
-            this.applications = applications;
+        public ApplicationBuilder(String name) {
             this.name = name;
         }
 
@@ -149,7 +140,7 @@ public class BandwidthApplications {
                 params.put("incomingSmsUrlCallbackTimeout", String.valueOf(incomingSmsUrlCallbackTimeout));
             if (callbackHttpMethod != null) params.put("callbackHttpMethod", callbackHttpMethod);
 
-            return applications.createApplication(params);
+            return createApplication(params);
         }
     }
 }

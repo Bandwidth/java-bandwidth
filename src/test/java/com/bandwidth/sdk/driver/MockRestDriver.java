@@ -101,6 +101,12 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("createBridgeAudio", params));
     }
 
+    @Override
+    public JSONArray requestCalls(Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("requestCalls", params));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

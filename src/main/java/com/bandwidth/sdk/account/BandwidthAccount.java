@@ -26,7 +26,7 @@ public class BandwidthAccount {
     }
 
     public TransactionsBuilder getTransactions() {
-        return new TransactionsBuilder(this);
+        return new TransactionsBuilder();
     }
 
     private List<BandwidthAccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
@@ -39,9 +39,7 @@ public class BandwidthAccount {
         return transactions;
     }
 
-    public static class TransactionsBuilder {
-
-        private final BandwidthAccount account;
+    public class TransactionsBuilder {
 
         private Integer maxItems;
         private Date fromDate;
@@ -49,10 +47,6 @@ public class BandwidthAccount {
         private String type;
         private Integer page;
         private Integer size;
-
-        private TransactionsBuilder(BandwidthAccount account) {
-            this.account = account;
-        }
 
         public TransactionsBuilder maxItems(int maxItems) {
             this.maxItems = maxItems;
@@ -104,7 +98,7 @@ public class BandwidthAccount {
             if (page != null) params.put("page", String.valueOf(page));
             if (size != null) params.put("size", String.valueOf(size));
 
-            return account.getTransactions(params);
+            return getTransactions(params);
         }
     }
 }

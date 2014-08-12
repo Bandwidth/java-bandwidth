@@ -4,6 +4,7 @@ import com.bandwidth.sdk.account.BandwidthAccount;
 import com.bandwidth.sdk.applications.BandwidthApplications;
 import com.bandwidth.sdk.availableNumbers.BandwidthAvailableNumbers;
 import com.bandwidth.sdk.bridges.BandwidthBridges;
+import com.bandwidth.sdk.calls.BandwidthCalls;
 import com.bandwidth.sdk.driver.HttpRestDriver;
 import com.bandwidth.sdk.driver.IRestDriver;
 
@@ -32,6 +33,10 @@ public class BandwidthRestClient {
 
     public BandwidthBridges getBridges() {
         return new BandwidthBridges(this);
+    }
+
+    public BandwidthCalls getCalls() {
+        return new BandwidthCalls(this);
     }
 
     public IRestDriver getRestDriver() {
