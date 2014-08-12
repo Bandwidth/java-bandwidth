@@ -107,6 +107,12 @@ public class MockRestDriver implements IRestDriver {
         return arrayResult;
     }
 
+    @Override
+    public JSONArray requestBridgeCalls(String id) {
+        requests.add(new RestRequest("requestBridgeCalls"));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

@@ -40,4 +40,6 @@ public interface IRestDriver {
     void createBridgeAudio(String id, Map<String, Object> params) throws IOException;
 
     JSONArray requestCalls(Map<String, Object> params) throws IOException;
+
+    JSONArray requestBridgeCalls(String id) throws IOException;
 }

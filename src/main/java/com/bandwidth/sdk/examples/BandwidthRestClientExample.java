@@ -51,6 +51,12 @@ public class BandwidthRestClientExample {
             BandwidthBridge bridge = bridges.getBridgeById(bridgeList.get(0).getId());
             System.out.println("\nBridge by Id");
             System.out.println(bridge);
+
+            System.out.println("\nCalls of Bridge");
+            List<BandwidthCall> bridgeCalls = bridge.getBridgeCalls();
+            for (BandwidthCall call : bridgeCalls) {
+                System.out.println(call);
+            }
         }
     }
 

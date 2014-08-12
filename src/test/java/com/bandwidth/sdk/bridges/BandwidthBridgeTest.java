@@ -1,13 +1,16 @@
 package com.bandwidth.sdk.bridges;
 
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.calls.BandwidthCall;
 import com.bandwidth.sdk.driver.MockRestDriver;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -88,6 +91,23 @@ public class BandwidthBridgeTest {
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
         assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo(""));
+    }
+
+    @Test
+    public void shouldGetBridgeCalls() throws ParseException, IOException {
+        MockRestDriver mockRestDriver = new MockRestDriver();
+
+        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
+        client.setRestDriver(mockRestDriver);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
+        BandwidthBridge bridge = BandwidthBridge.from(client, jsonObject);
+
+        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"},{\"to\":\"+33333333333\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"out\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+44444444444\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id2\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}]");
+        List<BandwidthCall> bridgeCalls = bridge.getBridgeCalls();
+
+        assertThat(bridgeCalls.get(0).getFrom(), equalTo("+22222222222"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestBridgeCalls"));
     }
 
 }

@@ -2,6 +2,7 @@ package com.bandwidth.sdk.bridges;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.calls.BandwidthCall;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -61,6 +62,16 @@ public class BandwidthBridge {
         }
 
         return bridge;
+    }
+
+    public List<BandwidthCall> getBridgeCalls() throws IOException {
+        JSONArray jsonArray = client.getRestDriver().requestBridgeCalls(id);
+
+        List<BandwidthCall> callList = new ArrayList<BandwidthCall>();
+        for (Object obj : jsonArray) {
+            callList.add(BandwidthCall.from(client, (JSONObject) obj));
+        }
+        return callList;
     }
 
     public void setCallIds(String[] callIds) {
