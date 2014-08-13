@@ -3,15 +3,13 @@ package com.bandwidth.sdk.calls;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author vpotapenko
@@ -119,6 +117,16 @@ public class BandwidthCall {
 
     public boolean isRecordingEnabled() {
         return recordingEnabled;
+    }
+
+    public List<BandwidthEvent> getEventsList() throws IOException {
+        JSONArray array = client.getRestDriver().requestCallEvents(id);
+
+        List<BandwidthEvent> list = new ArrayList<BandwidthEvent>();
+        for (Object object : array) {
+            list.add(BandwidthEvent.from((JSONObject) object));
+        }
+        return list;
     }
 
     public void hangUp() throws IOException {

@@ -11,6 +11,7 @@ import com.bandwidth.sdk.bridges.BandwidthBridge;
 import com.bandwidth.sdk.bridges.BandwidthBridges;
 import com.bandwidth.sdk.calls.BandwidthCall;
 import com.bandwidth.sdk.calls.BandwidthCalls;
+import com.bandwidth.sdk.calls.BandwidthEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,6 +43,12 @@ public class BandwidthRestClientExample {
             BandwidthCall call = calls.getCallById(callList.get(0).getId());
             System.out.println("\nCall by Id");
             System.out.println(call);
+
+            System.out.println("\nCall events");
+            List<BandwidthEvent> eventsList = call.getEventsList();
+            for (BandwidthEvent event : eventsList) {
+                System.out.println(event);
+            }
         }
     }
 

@@ -25,4 +25,5 @@ public abstract class BandwidthConstants {
     public static final String CALLS_PATH = "users/%s/calls"; // userId as a parameter
     public static final String CALL_AUDIO_PATH = "users/%s/calls/%s/audio"; // userId and callId as parameters
     public static final String CALL_DTMF_PATH = "users/%s/calls/%s/dtmf"; // userId and callId as parameters
+    public static final String CALL_EVENTS_PATH = "users/%s/calls/%s/events"; // userId and callId as parameters
 }

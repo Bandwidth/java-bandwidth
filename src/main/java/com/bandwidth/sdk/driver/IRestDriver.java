@@ -52,4 +52,6 @@ public interface IRestDriver {
     void createCallAudio(String id, Map<String, Object> params) throws IOException;
 
     void sendCallDtmf(String id, Map<String, Object> params) throws IOException;
+
+    JSONArray requestCallEvents(String id) throws IOException;
 }

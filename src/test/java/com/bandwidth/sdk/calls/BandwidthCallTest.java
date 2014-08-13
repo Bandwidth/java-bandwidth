@@ -2,12 +2,14 @@ package com.bandwidth.sdk.calls;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -187,5 +189,24 @@ public class BandwidthCallTest {
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("sendCallDtmf"));
         assertThat(mockRestDriver.requests.get(0).params.get("dtmfOut").toString(), equalTo("1234"));
+    }
+
+    @Test
+    public void shouldGetEventsList() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}]");
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        BandwidthCall call = BandwidthCall.from(client, jsonObject);
+        List<BandwidthEvent> eventsList = call.getEventsList();
+
+        assertThat(eventsList.size(), equalTo(1));
+        assertThat(eventsList.get(0).getId(), equalTo("ce-hsdbdbdhd"));
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallEvents"));
     }
 }
