@@ -326,6 +326,12 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public void updateCall(String id, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallPath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
     private String getCallPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

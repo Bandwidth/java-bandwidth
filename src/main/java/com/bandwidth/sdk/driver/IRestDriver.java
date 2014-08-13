@@ -46,4 +46,6 @@ public interface IRestDriver {
     JSONObject createCall(Map<String, Object> params) throws IOException;
 
     JSONObject requestCallById(String callId) throws IOException;
+
+    void updateCall(String id, Map<String, Object> params) throws IOException;
 }

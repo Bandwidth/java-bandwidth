@@ -5,9 +5,12 @@ import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -36,6 +39,11 @@ public class BandwidthCall {
 
     public static BandwidthCall from(BandwidthRestClient client, JSONObject jsonObject) {
         BandwidthCall call = new BandwidthCall(client);
+        updateProperties(jsonObject, call);
+        return call;
+    }
+
+    private static void updateProperties(JSONObject jsonObject, BandwidthCall call) {
         call.id = (String) jsonObject.get("id");
         call.direction = Direction.valueOf((String) jsonObject.get("direction"));
         call.state = State.byName((String) jsonObject.get("state"));
@@ -59,8 +67,6 @@ public class BandwidthCall {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-
-        return call;
     }
 
     private BandwidthCall(BandwidthRestClient client) {
@@ -113,6 +119,16 @@ public class BandwidthCall {
 
     public boolean isRecordingEnabled() {
         return recordingEnabled;
+    }
+
+    public void hangUp() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("state", State.completed.name());
+
+        client.getRestDriver().updateCall(id, params);
+
+        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        updateProperties(jsonObject, this);
     }
 
     @Override
