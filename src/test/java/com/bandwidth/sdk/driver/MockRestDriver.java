@@ -130,6 +130,11 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("updateCall", params));
     }
 
+    @Override
+    public void createCallAudio(String id, Map<String, Object> params) {
+        requests.add(new RestRequest("createCallAudio", params));
+    }
+
     public static class RestRequest {
 
         public final String name;

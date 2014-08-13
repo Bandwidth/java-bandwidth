@@ -23,4 +23,5 @@ public abstract class BandwidthConstants {
     public static final String BRIDGE_AUDIO_PATH = "users/%s/bridges/%s/audio"; // userId and bridgeId as parameters
     public static final String BRIDGE_CALLS_PATH = "users/%s/bridges/%s/calls"; // userId and bridgeId as parameters
     public static final String CALLS_PATH = "users/%s/calls"; // userId as a parameter
+    public static final String CALL_AUDIO_PATH = "users/%s/calls/%s/audio"; // userId and callId as parameters
 }

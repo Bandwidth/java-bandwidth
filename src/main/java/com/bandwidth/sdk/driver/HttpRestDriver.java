@@ -332,6 +332,22 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public void createCallAudio(String id, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallAudioPath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
+    private String getCallAudioPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CALL_AUDIO_PATH, userId, id),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
+
     private String getCallPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

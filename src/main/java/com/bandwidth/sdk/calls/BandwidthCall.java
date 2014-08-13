@@ -183,6 +183,22 @@ public class BandwidthCall {
         return new TransferBuilder(transferTo);
     }
 
+    public AudioBuilder createAudio() {
+        return new AudioBuilder();
+    }
+
+    public void stopAudioFilePlaying() throws IOException {
+        new AudioBuilder().fileUrl(StringUtils.EMPTY).commit();
+    }
+
+    public void stopSentence() throws IOException {
+        new AudioBuilder().sentence(StringUtils.EMPTY).commit();
+    }
+
+    private void saveAudio(Map<String, Object> params) throws IOException {
+        client.getRestDriver().createCallAudio(getId(), params);
+    }
+
     @Override
     public String toString() {
         return "BandwidthCall{" +
@@ -245,6 +261,45 @@ public class BandwidthCall {
                 params.put("whisperAudio", whisperAudio);
             }
             transfer(params);
+        }
+    }
+
+    public class AudioBuilder {
+
+        private final Map<String, Object> params = new HashMap<String, Object>();
+
+        public AudioBuilder fileUrl(String fileUrl) {
+            params.put("fileUrl", fileUrl);
+            return this;
+        }
+
+        public AudioBuilder sentence(String sentence) {
+            params.put("sentence", sentence);
+            return this;
+        }
+
+        public AudioBuilder gender(Gender gender) {
+            params.put("gender", gender.name());
+            return this;
+        }
+
+        public AudioBuilder locale(SentenceLocale locale) {
+            params.put("locale", locale.restValue);
+            return this;
+        }
+
+        public AudioBuilder voice(String voice) {
+            params.put("voice", voice);
+            return this;
+        }
+
+        public AudioBuilder loopEnabled(boolean loopEnabled) {
+            params.put("loopEnabled", String.valueOf(loopEnabled));
+            return this;
+        }
+
+        public void commit() throws IOException {
+            saveAudio(params);
         }
     }
 }
