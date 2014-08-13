@@ -49,6 +49,12 @@ public class BandwidthRestClientExample {
             for (BandwidthEvent event : eventsList) {
                 System.out.println(event);
             }
+
+            if (!eventsList.isEmpty()) {
+                BandwidthEvent event = call.getEventById(eventsList.get(0).getId());
+                System.out.println("\nCall event by Id");
+                System.out.println(event);
+            }
         }
     }
 

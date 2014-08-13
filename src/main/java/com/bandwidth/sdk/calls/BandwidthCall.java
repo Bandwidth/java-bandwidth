@@ -129,6 +129,11 @@ public class BandwidthCall {
         return list;
     }
 
+    public BandwidthEvent getEventById(String eventId) throws IOException {
+        JSONObject jsonObject = client.getRestDriver().requestCallEventById(id, eventId);
+        return BandwidthEvent.from(jsonObject);
+    }
+
     public void hangUp() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", State.completed.name());

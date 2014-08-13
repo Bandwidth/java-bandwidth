@@ -54,4 +54,6 @@ public interface IRestDriver {
     void sendCallDtmf(String id, Map<String, Object> params) throws IOException;
 
     JSONArray requestCallEvents(String id) throws IOException;
+
+    JSONObject requestCallEventById(String callId, String eventId) throws IOException;
 }
