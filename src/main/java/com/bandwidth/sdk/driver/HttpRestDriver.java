@@ -286,6 +286,30 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public JSONObject createCall(Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallsPath(), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        String location = response.getLocation();
+        if (location != null) {
+            response = request(location, HttpMethod.GET);
+            if (response.isError()) throw new IOException(response.getResponseText());
+
+            if (response.isJson()) {
+                try {
+                    return (JSONObject) new JSONParser().parse(response.getResponseText());
+                } catch (org.json.simple.parser.ParseException e) {
+                    throw new IOException(e);
+                }
+            } else {
+                throw new IOException("Response is not a JSON format.");
+            }
+        } else {
+            throw new IOException("There is no location of new application.");
+        }
+    }
+
     private String getCallsPath() {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

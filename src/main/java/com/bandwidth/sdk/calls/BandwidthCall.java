@@ -38,7 +38,7 @@ public class BandwidthCall {
         BandwidthCall call = new BandwidthCall(client);
         call.id = (String) jsonObject.get("id");
         call.direction = Direction.valueOf((String) jsonObject.get("direction"));
-        call.state = State.valueOf((String) jsonObject.get("state"));
+        call.state = State.byName((String) jsonObject.get("state"));
         call.from = (String) jsonObject.get("from");
         call.to = (String) jsonObject.get("to");
         call.callbackUrl = (String) jsonObject.get("callbackUrl");

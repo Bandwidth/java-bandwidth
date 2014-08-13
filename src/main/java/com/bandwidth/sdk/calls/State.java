@@ -9,5 +9,15 @@ public enum State {
     rejected,
     active,
     completed,
-    transferring
+    transferring,
+    error,
+    undefined;
+
+    public static State byName(String name) {
+        try {
+            return valueOf(name);
+        } catch (Exception e) {
+            return undefined;
+        }
+    }
 }

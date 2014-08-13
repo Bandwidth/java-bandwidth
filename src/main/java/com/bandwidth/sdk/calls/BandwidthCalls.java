@@ -25,6 +25,10 @@ public class BandwidthCalls {
         return new CallsListBuilder();
     }
 
+    public NewCallBuilder newCall() {
+        return new NewCallBuilder();
+    }
+
     private List<BandwidthCall> getCalls(Map<String, Object> params) throws IOException {
         JSONArray jsonArray = client.getRestDriver().requestCalls(params);
 
@@ -33,6 +37,11 @@ public class BandwidthCalls {
             calls.add(BandwidthCall.from(client, (JSONObject) obj));
         }
         return calls;
+    }
+
+    private BandwidthCall newCall(Map<String, Object> params) throws IOException {
+        JSONObject jsonObject = client.getRestDriver().createCall(params);
+        return BandwidthCall.from(client, jsonObject);
     }
 
     public class CallsListBuilder {
@@ -69,9 +78,44 @@ public class BandwidthCalls {
             return this;
         }
 
-        public List<BandwidthCall> get() throws IOException{
+        public List<BandwidthCall> get() throws IOException {
             return getCalls(params);
         }
+    }
+
+    public class NewCallBuilder {
+
+        private final Map<String, Object> params = new HashMap<String, Object>();
+
+        public NewCallBuilder callbackUrl(String callbackUrl) {
+            params.put("callbackUrl", callbackUrl);
+            return this;
+        }
+
+        public NewCallBuilder from(String from) {
+            params.put("from", from);
+            return this;
+        }
+
+        public NewCallBuilder to(String to) {
+            params.put("to", to);
+            return this;
+        }
+
+        public NewCallBuilder recordingEnabled(boolean recordingEnabled) {
+            params.put("recordingEnabled", recordingEnabled);
+            return this;
+        }
+
+        public NewCallBuilder bridgeId(String bridgeId) {
+            params.put("bridgeId", bridgeId);
+            return this;
+        }
+
+        public BandwidthCall create() throws IOException {
+            return newCall(params);
+        }
+
     }
 
 }
