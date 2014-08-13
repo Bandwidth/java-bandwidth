@@ -135,6 +135,11 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("createCallAudio", params));
     }
 
+    @Override
+    public void sendCallDtmf(String id, Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("sendCallDtmf", params));
+    }
+
     public static class RestRequest {
 
         public final String name;

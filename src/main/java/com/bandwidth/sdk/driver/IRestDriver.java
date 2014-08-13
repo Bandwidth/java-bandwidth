@@ -50,4 +50,6 @@ public interface IRestDriver {
     void updateCall(String id, Map<String, Object> params) throws IOException;
 
     void createCallAudio(String id, Map<String, Object> params) throws IOException;
+
+    void sendCallDtmf(String id, Map<String, Object> params) throws IOException;
 }

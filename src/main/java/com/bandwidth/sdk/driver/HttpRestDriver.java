@@ -338,6 +338,21 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public void sendCallDtmf(String id, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallDtmfPath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
+    private String getCallDtmfPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CALL_DTMF_PATH, userId, id),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getCallAudioPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
@@ -346,7 +361,6 @@ public class HttpRestDriver implements IRestDriver {
         };
         return StringUtils.join(parts, '/');
     }
-
 
     private String getCallPath(String id) {
         String[] parts = new String[]{

@@ -171,4 +171,21 @@ public class BandwidthCallTest {
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallAudio"));
         assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
     }
+
+    @Test
+    public void shouldSendDtmf() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.result = jsonObject;
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        BandwidthCall call = BandwidthCall.from(client, jsonObject);
+        call.sendDtmf("1234");
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("sendCallDtmf"));
+        assertThat(mockRestDriver.requests.get(0).params.get("dtmfOut").toString(), equalTo("1234"));
+    }
 }

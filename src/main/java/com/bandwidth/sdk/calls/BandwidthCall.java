@@ -199,6 +199,12 @@ public class BandwidthCall {
         client.getRestDriver().createCallAudio(getId(), params);
     }
 
+    public void sendDtmf(String dtmf) throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("dtmfOut", dtmf);
+        client.getRestDriver().sendCallDtmf(getId(), params);
+    }
+
     @Override
     public String toString() {
         return "BandwidthCall{" +
