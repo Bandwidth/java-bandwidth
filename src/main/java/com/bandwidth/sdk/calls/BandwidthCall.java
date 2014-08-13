@@ -2,7 +2,6 @@ package com.bandwidth.sdk.calls;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
-import com.bandwidth.sdk.bridges.BandwidthBridge;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -152,13 +151,32 @@ public class BandwidthCall {
         updateProperties(jsonObject, this);
     }
 
+    public void recordingOn() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("recordingEnabled", "true");
+
+        client.getRestDriver().updateCall(id, params);
+
+        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        updateProperties(jsonObject, this);
+    }
+
+    public void recordingOff() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("recordingEnabled", "false");
+
+        client.getRestDriver().updateCall(id, params);
+
+        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        updateProperties(jsonObject, this);
+    }
+
     private void transfer(Map<String, Object> params) throws IOException {
         params.put("state", State.transferring.name());
         client.getRestDriver().updateCall(id, params);
 
         JSONObject jsonObject = client.getRestDriver().requestCallById(id);
         updateProperties(jsonObject, this);
-
     }
 
     public TransferBuilder transfer(String transferTo) {

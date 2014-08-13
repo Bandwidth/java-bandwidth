@@ -86,6 +86,30 @@ public class BandwidthCallTest {
     }
 
     @Test
+    public void shouldSwitchRecordingState() throws ParseException, IOException {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.result = jsonObject;
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        BandwidthCall call = BandwidthCall.from(client, jsonObject);
+
+        call.recordingOn();
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
+        assertThat(mockRestDriver.requests.get(0).params.get("recordingEnabled").toString(), equalTo("true"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+
+        mockRestDriver.requests.clear();
+        call.recordingOff();
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
+        assertThat(mockRestDriver.requests.get(0).params.get("recordingEnabled").toString(), equalTo("false"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+    }
+
+    @Test
     public void shouldTransferCall() throws ParseException, IOException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
@@ -118,7 +142,7 @@ public class BandwidthCallTest {
         assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
         assertThat(mockRestDriver.requests.get(0).params.get("transferTo").toString(), equalTo("8917727272"));
         assertThat(mockRestDriver.requests.get(0).params.get("transferCallerId").toString(), equalTo("callerId"));
-        assertThat(((Map<String, Object>)mockRestDriver.requests.get(0).params.get("whisperAudio")).get("sentence").toString(), equalTo("Hello"));
+        assertThat(((Map<String, Object>) mockRestDriver.requests.get(0).params.get("whisperAudio")).get("sentence").toString(), equalTo("Hello"));
         assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
     }
 }
