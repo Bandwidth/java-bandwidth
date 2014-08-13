@@ -3,6 +3,8 @@ package com.bandwidth.sdk.bridges;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.calls.BandwidthCall;
+import com.bandwidth.sdk.calls.Gender;
+import com.bandwidth.sdk.calls.SentenceLocale;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -188,25 +190,6 @@ public class BandwidthBridge {
 
         public void commit() throws IOException {
             saveAudio(params);
-        }
-    }
-
-    public static enum Gender {
-        male, female
-    }
-
-    public static enum SentenceLocale {
-        English_US("en_US"),
-        English_UK("en_UK"),
-        Spain("es_MX"),
-        French("fr_FR"),
-        German("de_DE"),
-        Italian("it_IT");
-
-        public final String restValue;
-
-        SentenceLocale(String restValue) {
-            this.restValue = restValue;
         }
     }
 }

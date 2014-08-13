@@ -2,6 +2,7 @@ package com.bandwidth.sdk.calls;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.bridges.BandwidthBridge;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -131,6 +132,39 @@ public class BandwidthCall {
         updateProperties(jsonObject, this);
     }
 
+    public void answerOnIncoming() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("state", State.active.name());
+
+        client.getRestDriver().updateCall(id, params);
+
+        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        updateProperties(jsonObject, this);
+    }
+
+    public void rejectIncoming() throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("state", State.rejected.name());
+
+        client.getRestDriver().updateCall(id, params);
+
+        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        updateProperties(jsonObject, this);
+    }
+
+    private void transfer(Map<String, Object> params) throws IOException {
+        params.put("state", State.transferring.name());
+        client.getRestDriver().updateCall(id, params);
+
+        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        updateProperties(jsonObject, this);
+
+    }
+
+    public TransferBuilder transfer(String transferTo) {
+        return new TransferBuilder(transferTo);
+    }
+
     @Override
     public String toString() {
         return "BandwidthCall{" +
@@ -147,5 +181,52 @@ public class BandwidthCall {
                 ", chargeableDuration=" + chargeableDuration +
                 ", recordingEnabled=" + recordingEnabled +
                 '}';
+    }
+
+    public class TransferBuilder {
+
+        private Map<String, Object> params = new HashMap<String, Object>();
+        private Map<String, Object> whisperAudio = new HashMap<String, Object>();
+
+        public TransferBuilder(String number) {
+            params.put("transferTo", number);
+        }
+
+        public TransferBuilder callbackUrl(String callbackUrl) {
+            params.put("callbackUrl", callbackUrl);
+            return this;
+        }
+
+        public TransferBuilder transferCallerId(String transferCallerId) {
+            params.put("transferCallerId", transferCallerId);
+            return this;
+        }
+
+        public TransferBuilder sentence(String sentence) {
+            whisperAudio.put("sentence", sentence);
+            return this;
+        }
+
+        public TransferBuilder gender(Gender gender) {
+            whisperAudio.put("gender", gender.name());
+            return this;
+        }
+
+        public TransferBuilder voice(String voice) {
+            whisperAudio.put("voice", voice);
+            return this;
+        }
+
+        public TransferBuilder locale(SentenceLocale locale) {
+            whisperAudio.put("locale", locale);
+            return this;
+        }
+
+        public void commit() throws IOException {
+            if (!whisperAudio.isEmpty()) {
+                params.put("whisperAudio", whisperAudio);
+            }
+            transfer(params);
+        }
     }
 }
