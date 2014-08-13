@@ -29,6 +29,11 @@ public class BandwidthCalls {
         return new NewCallBuilder();
     }
 
+    public BandwidthCall getCallById(String callId) throws IOException {
+        JSONObject jsonObject = client.getRestDriver().requestCallById(callId);
+        return BandwidthCall.from(client, jsonObject);
+    }
+
     private List<BandwidthCall> getCalls(Map<String, Object> params) throws IOException {
         JSONArray jsonArray = client.getRestDriver().requestCalls(params);
 

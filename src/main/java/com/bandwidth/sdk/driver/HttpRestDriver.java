@@ -310,6 +310,32 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public JSONObject requestCallById(String callId) throws IOException {
+        BandwidthRestResponse response = request(getCallPath(callId), HttpMethod.GET);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONObject) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getCallPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CALLS_PATH, userId),
+                id
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getCallsPath() {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

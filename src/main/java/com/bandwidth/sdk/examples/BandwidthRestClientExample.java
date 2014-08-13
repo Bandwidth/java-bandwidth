@@ -33,8 +33,14 @@ public class BandwidthRestClientExample {
     private static void printCalls(BandwidthRestClient client) throws IOException {
         System.out.println("\nCalls:");
         BandwidthCalls calls = client.getCalls();
-        List<BandwidthCall> callList = calls.getCalls().size(2).get();
+        List<BandwidthCall> callList = calls.getCalls().size(10).get();
         for (BandwidthCall call : callList) {
+            System.out.println(call);
+        }
+
+        if (!callList.isEmpty()) {
+            BandwidthCall call = calls.getCallById(callList.get(0).getId());
+            System.out.println("\nCall by Id");
             System.out.println(call);
         }
     }

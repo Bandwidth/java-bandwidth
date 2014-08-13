@@ -44,4 +44,6 @@ public interface IRestDriver {
     JSONArray requestBridgeCalls(String id) throws IOException;
 
     JSONObject createCall(Map<String, Object> params) throws IOException;
+
+    JSONObject requestCallById(String callId) throws IOException;
 }
