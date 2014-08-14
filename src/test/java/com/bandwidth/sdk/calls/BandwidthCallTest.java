@@ -227,4 +227,43 @@ public class BandwidthCallTest {
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallEventById"));
     }
+
+    @Test
+    public void shouldGetRecordingsList() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+                "  {\n" +
+                "    \"endTime\": \"2013-02-08T12:06:55Z\",\n" +
+                "    \"id\": \"Id1\",\n" +
+                "    \"media\": \"https://.../v1/users/.../media/{callId}-1.wav\",\n" +
+                "    \"call\": \"https://.../v1/users/.../calls/{callId}\",\n" +
+                "    \"startTime\": \"2013-02-08T12:05:17Z\",\n" +
+                "    \"state\": \"complete\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"endTime\": \"2013-02-08T13:15:65Z\",\n" +
+                "    \"id\": \"Id2\",\n" +
+                "    \"media\": \"https://.../v1/users/.../media/{callId}-2.wav\",\n" +
+                "    \"call\": \"https://.../v1/users/.../calls/{callId}\",\n" +
+                "    \"startTime\": \"2013-02-08T13:15:55Z\",\n" +
+                "    \"state\": \"complete\"\n" +
+                "  }\n" +
+                "]");
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        BandwidthCall call = BandwidthCall.from(client, jsonObject);
+        List<BandwidthRecording> recordings = call.getRecordings();
+
+        assertThat(recordings.size(), equalTo(2));
+        assertThat(recordings.get(0).getId(), equalTo("Id1"));
+        assertThat(recordings.get(0).getMedia(), equalTo("https://.../v1/users/.../media/{callId}-1.wav"));
+        assertThat(recordings.get(0).getState(), equalTo("complete"));
+        assertThat(recordings.get(0).getCall(), equalTo("https://.../v1/users/.../calls/{callId}"));
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallRecordings"));
+    }
 }

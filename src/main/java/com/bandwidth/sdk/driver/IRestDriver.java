@@ -56,4 +56,6 @@ public interface IRestDriver {
     JSONArray requestCallEvents(String id) throws IOException;
 
     JSONObject requestCallEventById(String callId, String eventId) throws IOException;
+
+    JSONArray requestCallRecordings(String id) throws IOException;
 }

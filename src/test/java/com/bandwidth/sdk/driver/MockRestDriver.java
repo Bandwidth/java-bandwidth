@@ -152,6 +152,12 @@ public class MockRestDriver implements IRestDriver {
         return result;
     }
 
+    @Override
+    public JSONArray requestCallRecordings(String id) throws IOException {
+        requests.add(new RestRequest("requestCallRecordings"));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

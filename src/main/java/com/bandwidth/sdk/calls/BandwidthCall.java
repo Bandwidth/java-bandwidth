@@ -119,6 +119,16 @@ public class BandwidthCall {
         return recordingEnabled;
     }
 
+    public List<BandwidthRecording> getRecordings() throws IOException {
+        JSONArray array = client.getRestDriver().requestCallRecordings(id);
+
+        List<BandwidthRecording> list = new ArrayList<BandwidthRecording>();
+        for (Object object : array) {
+            list.add(BandwidthRecording.from((JSONObject) object));
+        }
+        return list;
+    }
+
     public List<BandwidthEvent> getEventsList() throws IOException {
         JSONArray array = client.getRestDriver().requestCallEvents(id);
 
