@@ -228,6 +228,19 @@ public class BandwidthCall {
         client.getRestDriver().sendCallDtmf(getId(), params);
     }
 
+    public GatherBuilder createGather() {
+        return new GatherBuilder();
+    }
+
+    private void createGather(Map<String, Object> params) throws IOException {
+        client.getRestDriver().createCallGather(getId(), params);
+    }
+
+    public BandwidthGather getGatherById(String gatherId) throws IOException{
+        JSONObject jsonObject = client.getRestDriver().requestCallGatherById(id, gatherId);
+        return BandwidthGather.from(client, id, jsonObject);
+    }
+
     @Override
     public String toString() {
         return "BandwidthCall{" +
@@ -330,5 +343,74 @@ public class BandwidthCall {
         public void commit() throws IOException {
             saveAudio(params);
         }
+    }
+
+    public class GatherBuilder {
+
+        private Map<String, Object> params = new HashMap<String, Object>();
+        private Map<String, Object> prompt = new HashMap<String, Object>();
+
+        public void commit() throws IOException {
+            if (!prompt.isEmpty()) params.put("prompt", prompt);
+
+            createGather(params);
+        }
+
+        public GatherBuilder maxDigits(int maxDigits) {
+            params.put("maxDigits", String.valueOf(maxDigits));
+            return this;
+        }
+
+        public GatherBuilder interDigitTimeout(int maxDigits) {
+            params.put("interDigitTimeout", String.valueOf(maxDigits));
+            return this;
+        }
+
+        public GatherBuilder terminatingDigits(String terminatingDigits) {
+            params.put("terminatingDigits", terminatingDigits);
+            return this;
+        }
+
+        public GatherBuilder suppressDtmf(boolean suppressDtmf) {
+            params.put("suppressDtmf", String.valueOf(suppressDtmf));
+            return this;
+        }
+
+        public GatherBuilder tag(String tag) {
+            params.put("tag", tag);
+            return this;
+        }
+
+        public GatherBuilder promptSentence(String promptSentence) {
+            prompt.put("sentence", promptSentence);
+            return this;
+        }
+
+        public GatherBuilder promptGender(Gender gender) {
+            prompt.put("gender", gender.name());
+            return this;
+        }
+
+        public GatherBuilder promptLocale(SentenceLocale locale) {
+            prompt.put("locale", locale.restValue);
+            return this;
+        }
+
+        public GatherBuilder promptFileUrl(String promptFileUrl) {
+            prompt.put("fileUrl", promptFileUrl);
+            return this;
+        }
+
+        public GatherBuilder promptLoopEnabled(boolean promptLoopEnabled) {
+            prompt.put("loopEnabled", String.valueOf(promptLoopEnabled));
+            return this;
+        }
+
+        public GatherBuilder promptBargeable(boolean promptBargeable) {
+            prompt.put("bargeable", String.valueOf(promptBargeable));
+            return this;
+        }
+
+
     }
 }

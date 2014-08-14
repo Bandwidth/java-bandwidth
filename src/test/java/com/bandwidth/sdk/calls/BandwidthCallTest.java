@@ -266,4 +266,47 @@ public class BandwidthCallTest {
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallRecordings"));
     }
+
+    @Test
+    public void shouldCreateGather() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.result = jsonObject;
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        BandwidthCall call = BandwidthCall.from(client, jsonObject);
+        call.createGather().maxDigits(5).promptSentence("Hello").commit();
+
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallGather"));
+        assertThat(mockRestDriver.requests.get(0).params.get("maxDigits").toString(), equalTo("5"));
+        assertThat(((Map<String, Object>) mockRestDriver.requests.get(0).params.get("prompt")).get("sentence").toString(), equalTo("Hello"));
+    }
+
+    @Test
+    public void shouldGetGatherById() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\n" +
+                        "  \"id\": \"gtr-kj4xloaq5vbpfxyeypndgxa\",\n" +
+                        "  \"state\": \"completed\",\n" +
+                        "  \"reason\": \"max-digits\",\n" +
+                        "  \"createdTime\": \"2014-02-12T19:33:56Z\",\n" +
+                        "  \"completedTime\": \"2014-02-12T19:33:59Z\",\n" +
+                        "  \"call\": \"https://api.catapult.inetwork.com/v1/users/u-xa2n3oxk6it4efbglisna6a/calls/c-isw3qup6gvr3ywcsentygnq\",\n" +
+                        "  \"digits\": \"123\"\n" +
+                        "}");
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        BandwidthCall call = BandwidthCall.from(client, jsonObject);
+        BandwidthGather gather = call.getGatherById("gtr-kj4xloaq5vbpfxyeypndgxa");
+
+        assertThat(gather.getId(), equalTo("gtr-kj4xloaq5vbpfxyeypndgxa"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallGatherById"));
+    }
 }

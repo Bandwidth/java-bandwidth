@@ -58,4 +58,10 @@ public interface IRestDriver {
     JSONObject requestCallEventById(String callId, String eventId) throws IOException;
 
     JSONArray requestCallRecordings(String id) throws IOException;
+
+    void createCallGather(String id, Map<String, Object> params) throws IOException;
+
+    JSONObject requestCallGatherById(String callId, String gatherId) throws IOException;
+
+    void updateCallGather(String callId, String gatherId, Map<String, Object> params) throws IOException;
 }

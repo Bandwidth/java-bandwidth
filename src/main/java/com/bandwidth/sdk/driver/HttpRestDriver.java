@@ -392,6 +392,53 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public void createCallGather(String id, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallGatherPath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
+    @Override
+    public JSONObject requestCallGatherById(String callId, String gatherId) throws IOException {
+        BandwidthRestResponse response = request(getCallGatherPath(callId, gatherId), HttpMethod.GET);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONObject) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    @Override
+    public void updateCallGather(String callId, String gatherId, Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getCallGatherPath(callId, gatherId), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
+    private String getCallGatherPath(String callId, String gatherId) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CALL_GATHER_PATH, userId, callId),
+                gatherId
+        };
+        return StringUtils.join(parts, '/');
+    }
+
+    private String getCallGatherPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CALL_GATHER_PATH, userId, id),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getCallRecordingsPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
