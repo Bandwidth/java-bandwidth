@@ -21,7 +21,7 @@ public class Account {
     }
 
     public AccountInfo getAccountInfo() throws IOException {
-        JSONObject jsonObject = client.getRestDriver().requestAccountInfo();
+        JSONObject jsonObject = client.requestAccountInfo();
         return AccountInfo.from(jsonObject);
     }
 
@@ -30,7 +30,7 @@ public class Account {
     }
 
     private List<AccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
-        JSONArray array = client.getRestDriver().requestAccountTransactions(params);
+        JSONArray array = client.requestAccountTransactions(params);
 
         List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
         for (Object obj : array) {

@@ -30,12 +30,12 @@ public class Calls {
     }
 
     public Call getCallById(String callId) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().requestCallById(callId);
+        JSONObject jsonObject = client.requestCallById(callId);
         return Call.from(client, jsonObject);
     }
 
     private List<Call> getCalls(Map<String, Object> params) throws IOException {
-        JSONArray jsonArray = client.getRestDriver().requestCalls(params);
+        JSONArray jsonArray = client.requestCalls(params);
 
         List<Call> calls = new ArrayList<Call>();
         for (Object obj : jsonArray) {
@@ -45,7 +45,7 @@ public class Calls {
     }
 
     private Call newCall(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().createCall(params);
+        JSONObject jsonObject = client.createCall(params);
         return Call.from(client, jsonObject);
     }
 

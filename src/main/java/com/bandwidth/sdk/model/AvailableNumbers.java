@@ -30,7 +30,7 @@ public class AvailableNumbers {
     }
 
     private List<Number> getLocalNumbers(Map<String, Object> params) throws IOException {
-        JSONArray array = client.getRestDriver().requestLocalAvailableNumbers(params);
+        JSONArray array = client.requestLocalAvailableNumbers(params);
 
         List<Number> numbers = new ArrayList<Number>();
         for (Object obj : array) {
@@ -40,7 +40,7 @@ public class AvailableNumbers {
     }
 
     private List<Number> getTollFreeNumbers(Map<String, Object> params) throws IOException {
-        JSONArray array = client.getRestDriver().requestTollFreeAvailableNumbers(params);
+        JSONArray array = client.requestTollFreeAvailableNumbers(params);
 
         List<Number> numbers = new ArrayList<Number>();
         for (Object obj : array) {

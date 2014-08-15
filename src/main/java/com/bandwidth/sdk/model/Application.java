@@ -111,7 +111,7 @@ public class Application {
     public void revert() throws IOException {
         if (id == null) return;
 
-        JSONObject jsonObject = client.getRestDriver().requestApplicationById(getId());
+        JSONObject jsonObject = client.requestApplicationById(getId());
         updateProperties(jsonObject, this);
     }
 
@@ -126,7 +126,7 @@ public class Application {
         Map<String, Object> params = toMap();
         params.remove("id");
 
-        client.getRestDriver().updateApplication(getId(), params);
+        client.updateApplication(getId(), params);
     }
 
     /**
@@ -137,7 +137,7 @@ public class Application {
     public void delete() throws IOException {
         if (id == null) return;
 
-        client.getRestDriver().deleteApplication(getId());
+        client.deleteApplication(getId());
         id = null;
     }
 

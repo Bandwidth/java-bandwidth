@@ -19,7 +19,7 @@ public class Conferences {
     }
 
     public Conference getConferenceById(String id) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().requestConferenceById(id);
+        JSONObject jsonObject = client.requestConferenceById(id);
         return Conference.from(jsonObject);
     }
 
@@ -28,7 +28,7 @@ public class Conferences {
     }
 
     private Conference createConference(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().createConference(params);
+        JSONObject jsonObject = client.createConference(params);
         return Conference.from(jsonObject);
     }
 

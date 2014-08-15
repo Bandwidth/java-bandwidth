@@ -22,7 +22,7 @@ public class Bridges {
     }
 
     public List<Bridge> getBridges() throws IOException {
-        JSONArray array = client.getRestDriver().requestBridges();
+        JSONArray array = client.requestBridges();
 
         List<Bridge> bridges = new ArrayList<Bridge>();
         for (Object obj : array) {
@@ -32,7 +32,7 @@ public class Bridges {
     }
 
     public Bridge getBridgeById(String id) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().requestBridgeById(id);
+        JSONObject jsonObject = client.requestBridgeById(id);
         return Bridge.from(client, jsonObject);
     }
 
@@ -41,7 +41,7 @@ public class Bridges {
     }
 
     private Bridge createBridge(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().createBridge(params);
+        JSONObject jsonObject = client.createBridge(params);
         return Bridge.from(client, jsonObject);
     }
 

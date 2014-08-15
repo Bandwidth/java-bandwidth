@@ -64,9 +64,9 @@ public class Gather {
     public void complete() throws IOException{
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
-        client.getRestDriver().updateCallGather(callId, id, params);
+        client.updateCallGather(callId, id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallGatherById(callId, id);
+        JSONObject jsonObject = client.requestCallGatherById(callId, id);
         updateProperties(jsonObject, this);
     }
 

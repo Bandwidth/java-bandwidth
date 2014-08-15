@@ -120,7 +120,7 @@ public class Call {
     }
 
     public List<Recording> getRecordings() throws IOException {
-        JSONArray array = client.getRestDriver().requestCallRecordings(id);
+        JSONArray array = client.requestCallRecordings(id);
 
         List<Recording> list = new ArrayList<Recording>();
         for (Object object : array) {
@@ -130,7 +130,7 @@ public class Call {
     }
 
     public List<Event> getEventsList() throws IOException {
-        JSONArray array = client.getRestDriver().requestCallEvents(id);
+        JSONArray array = client.requestCallEvents(id);
 
         List<Event> list = new ArrayList<Event>();
         for (Object object : array) {
@@ -140,7 +140,7 @@ public class Call {
     }
 
     public Event getEventById(String eventId) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().requestCallEventById(id, eventId);
+        JSONObject jsonObject = client.requestCallEventById(id, eventId);
         return Event.from(jsonObject);
     }
 
@@ -148,9 +148,9 @@ public class Call {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", CallState.completed.name());
 
-        client.getRestDriver().updateCall(id, params);
+        client.updateCall(id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        JSONObject jsonObject = client.requestCallById(id);
         updateProperties(jsonObject, this);
     }
 
@@ -158,9 +158,9 @@ public class Call {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", CallState.active.name());
 
-        client.getRestDriver().updateCall(id, params);
+        client.updateCall(id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        JSONObject jsonObject = client.requestCallById(id);
         updateProperties(jsonObject, this);
     }
 
@@ -168,9 +168,9 @@ public class Call {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", CallState.rejected.name());
 
-        client.getRestDriver().updateCall(id, params);
+        client.updateCall(id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        JSONObject jsonObject = client.requestCallById(id);
         updateProperties(jsonObject, this);
     }
 
@@ -178,9 +178,9 @@ public class Call {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "true");
 
-        client.getRestDriver().updateCall(id, params);
+        client.updateCall(id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        JSONObject jsonObject = client.requestCallById(id);
         updateProperties(jsonObject, this);
     }
 
@@ -188,17 +188,17 @@ public class Call {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "false");
 
-        client.getRestDriver().updateCall(id, params);
+        client.updateCall(id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        JSONObject jsonObject = client.requestCallById(id);
         updateProperties(jsonObject, this);
     }
 
     private void transfer(Map<String, Object> params) throws IOException {
         params.put("state", CallState.transferring.name());
-        client.getRestDriver().updateCall(id, params);
+        client.updateCall(id, params);
 
-        JSONObject jsonObject = client.getRestDriver().requestCallById(id);
+        JSONObject jsonObject = client.requestCallById(id);
         updateProperties(jsonObject, this);
     }
 
@@ -219,13 +219,13 @@ public class Call {
     }
 
     private void saveAudio(Map<String, Object> params) throws IOException {
-        client.getRestDriver().createCallAudio(getId(), params);
+        client.createCallAudio(getId(), params);
     }
 
     public void sendDtmf(String dtmf) throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("dtmfOut", dtmf);
-        client.getRestDriver().sendCallDtmf(getId(), params);
+        client.sendCallDtmf(id, params);
     }
 
     public GatherBuilder createGather() {
@@ -233,11 +233,11 @@ public class Call {
     }
 
     private void createGather(Map<String, Object> params) throws IOException {
-        client.getRestDriver().createCallGather(getId(), params);
+        client.createCallGather(id, params);
     }
 
     public Gather getGatherById(String gatherId) throws IOException{
-        JSONObject jsonObject = client.getRestDriver().requestCallGatherById(id, gatherId);
+        JSONObject jsonObject = client.requestCallGatherById(id, gatherId);
         return Gather.from(client, id, jsonObject);
     }
 

@@ -26,7 +26,7 @@ public class Applications {
     }
 
     public Application getApplicationById(String id) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().requestApplicationById(id);
+        JSONObject jsonObject = client.requestApplicationById(id);
         return Application.from(client, jsonObject);
     }
 
@@ -35,7 +35,7 @@ public class Applications {
     }
 
     private List<Application> getApplications(Map<String, Object> params) throws IOException {
-        JSONArray array = client.getRestDriver().requestApplications(params);
+        JSONArray array = client.requestApplications(params);
 
         List<Application> applications = new ArrayList<Application>();
         for (Object obj : array) {
@@ -45,7 +45,7 @@ public class Applications {
     }
 
     private Application createApplication(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.getRestDriver().createApplication(params);
+        JSONObject jsonObject = client.createApplication(params);
         return Application.from(client, jsonObject);
     }
 

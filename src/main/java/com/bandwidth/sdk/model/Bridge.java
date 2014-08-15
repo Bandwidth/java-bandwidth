@@ -64,7 +64,7 @@ public class Bridge {
     }
 
     public List<Call> getBridgeCalls() throws IOException {
-        JSONArray jsonArray = client.getRestDriver().requestBridgeCalls(id);
+        JSONArray jsonArray = client.requestBridgeCalls(id);
 
         List<Call> callList = new ArrayList<Call>();
         for (Object obj : jsonArray) {
@@ -86,7 +86,7 @@ public class Bridge {
         params.put("bridgeAudio", String.valueOf(bridgeAudio));
         params.put("callIds", callIds == null ? Collections.emptyList() : Arrays.asList(callIds));
 
-        client.getRestDriver().updateBridge(id, params);
+        client.updateBridge(id, params);
     }
 
     public String getId() {
@@ -134,7 +134,7 @@ public class Bridge {
     }
 
     private void saveAudio(Map<String, Object> params) throws IOException {
-        client.getRestDriver().createBridgeAudio(getId(), params);
+        client.createBridgeAudio(getId(), params);
     }
 
     @Override
