@@ -420,6 +420,65 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public JSONObject createConference(Map<String, Object> params) throws IOException {
+        BandwidthRestResponse response = request(getConferencesPath(), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        String location = response.getLocation();
+        if (location != null) {
+            response = request(location, HttpMethod.GET);
+            if (response.isError()) throw new IOException(response.getResponseText());
+
+            if (response.isJson()) {
+                try {
+                    return (JSONObject) new JSONParser().parse(response.getResponseText());
+                } catch (org.json.simple.parser.ParseException e) {
+                    throw new IOException(e);
+                }
+            } else {
+                throw new IOException("Response is not a JSON format.");
+            }
+        } else {
+            throw new IOException("There is no location of new application.");
+        }
+    }
+
+    @Override
+    public JSONObject requestConferenceById(String id) throws IOException {
+        BandwidthRestResponse response = request(getConferencePath(id), HttpMethod.GET);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONObject) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getConferencePath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CONFERENCES_PATH, userId),
+                id
+        };
+        return StringUtils.join(parts, '/');
+    }
+
+    private String getConferencesPath() {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CONFERENCES_PATH, userId),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getCallGatherPath(String callId, String gatherId) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

@@ -174,6 +174,18 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("updateCallGather", params));
     }
 
+    @Override
+    public JSONObject createConference(Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("createConference", params));
+        return result;
+    }
+
+    @Override
+    public JSONObject requestConferenceById(String id) throws IOException {
+        requests.add(new RestRequest("requestConferenceById"));
+        return result;
+    }
+
     public static class RestRequest {
 
         public final String name;
