@@ -202,23 +202,23 @@ public class Call {
         updateProperties(jsonObject, this);
     }
 
-    public TransferBuilder transfer(String transferTo) {
-        return new TransferBuilder(transferTo);
+    public CallTransferBuilder callTransferBuilder(String transferTo) {
+        return new CallTransferBuilder(transferTo);
     }
 
-    public AudioBuilder createAudio() {
-        return new AudioBuilder();
+    public CallAudioBuilder callAudioBuilder() {
+        return new CallAudioBuilder();
     }
 
     public void stopAudioFilePlaying() throws IOException {
-        new AudioBuilder().fileUrl(StringUtils.EMPTY).commit();
+        new CallAudioBuilder().fileUrl(StringUtils.EMPTY).create();
     }
 
     public void stopSentence() throws IOException {
-        new AudioBuilder().sentence(StringUtils.EMPTY).commit();
+        new CallAudioBuilder().sentence(StringUtils.EMPTY).create();
     }
 
-    private void saveAudio(Map<String, Object> params) throws IOException {
+    private void createCallAudio(Map<String, Object> params) throws IOException {
         client.createCallAudio(getId(), params);
     }
 
@@ -228,8 +228,8 @@ public class Call {
         client.sendCallDtmf(id, params);
     }
 
-    public GatherBuilder createGather() {
-        return new GatherBuilder();
+    public CallGatherBuilder callGatherBuilder() {
+        return new CallGatherBuilder();
     }
 
     private void createGather(Map<String, Object> params) throws IOException {
@@ -259,46 +259,46 @@ public class Call {
                 '}';
     }
 
-    public class TransferBuilder {
+    public class CallTransferBuilder {
 
         private Map<String, Object> params = new HashMap<String, Object>();
         private Map<String, Object> whisperAudio = new HashMap<String, Object>();
 
-        public TransferBuilder(String number) {
+        public CallTransferBuilder(String number) {
             params.put("transferTo", number);
         }
 
-        public TransferBuilder callbackUrl(String callbackUrl) {
+        public CallTransferBuilder callbackUrl(String callbackUrl) {
             params.put("callbackUrl", callbackUrl);
             return this;
         }
 
-        public TransferBuilder transferCallerId(String transferCallerId) {
+        public CallTransferBuilder transferCallerId(String transferCallerId) {
             params.put("transferCallerId", transferCallerId);
             return this;
         }
 
-        public TransferBuilder sentence(String sentence) {
+        public CallTransferBuilder sentence(String sentence) {
             whisperAudio.put("sentence", sentence);
             return this;
         }
 
-        public TransferBuilder gender(Gender gender) {
+        public CallTransferBuilder gender(Gender gender) {
             whisperAudio.put("gender", gender.name());
             return this;
         }
 
-        public TransferBuilder voice(String voice) {
+        public CallTransferBuilder voice(String voice) {
             whisperAudio.put("voice", voice);
             return this;
         }
 
-        public TransferBuilder locale(SentenceLocale locale) {
+        public CallTransferBuilder locale(SentenceLocale locale) {
             whisperAudio.put("locale", locale);
             return this;
         }
 
-        public void commit() throws IOException {
+        public void create() throws IOException {
             if (!whisperAudio.isEmpty()) {
                 params.put("whisperAudio", whisperAudio);
             }
@@ -306,107 +306,107 @@ public class Call {
         }
     }
 
-    public class AudioBuilder {
+    public class CallAudioBuilder {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public AudioBuilder fileUrl(String fileUrl) {
+        public CallAudioBuilder fileUrl(String fileUrl) {
             params.put("fileUrl", fileUrl);
             return this;
         }
 
-        public AudioBuilder sentence(String sentence) {
+        public CallAudioBuilder sentence(String sentence) {
             params.put("sentence", sentence);
             return this;
         }
 
-        public AudioBuilder gender(Gender gender) {
+        public CallAudioBuilder gender(Gender gender) {
             params.put("gender", gender.name());
             return this;
         }
 
-        public AudioBuilder locale(SentenceLocale locale) {
+        public CallAudioBuilder locale(SentenceLocale locale) {
             params.put("locale", locale.restValue);
             return this;
         }
 
-        public AudioBuilder voice(String voice) {
+        public CallAudioBuilder voice(String voice) {
             params.put("voice", voice);
             return this;
         }
 
-        public AudioBuilder loopEnabled(boolean loopEnabled) {
+        public CallAudioBuilder loopEnabled(boolean loopEnabled) {
             params.put("loopEnabled", String.valueOf(loopEnabled));
             return this;
         }
 
-        public void commit() throws IOException {
-            saveAudio(params);
+        public void create() throws IOException {
+            createCallAudio(params);
         }
     }
 
-    public class GatherBuilder {
+    public class CallGatherBuilder {
 
         private Map<String, Object> params = new HashMap<String, Object>();
         private Map<String, Object> prompt = new HashMap<String, Object>();
 
-        public void commit() throws IOException {
+        public void create() throws IOException {
             if (!prompt.isEmpty()) params.put("prompt", prompt);
 
             createGather(params);
         }
 
-        public GatherBuilder maxDigits(int maxDigits) {
+        public CallGatherBuilder maxDigits(int maxDigits) {
             params.put("maxDigits", String.valueOf(maxDigits));
             return this;
         }
 
-        public GatherBuilder interDigitTimeout(int maxDigits) {
+        public CallGatherBuilder interDigitTimeout(int maxDigits) {
             params.put("interDigitTimeout", String.valueOf(maxDigits));
             return this;
         }
 
-        public GatherBuilder terminatingDigits(String terminatingDigits) {
+        public CallGatherBuilder terminatingDigits(String terminatingDigits) {
             params.put("terminatingDigits", terminatingDigits);
             return this;
         }
 
-        public GatherBuilder suppressDtmf(boolean suppressDtmf) {
+        public CallGatherBuilder suppressDtmf(boolean suppressDtmf) {
             params.put("suppressDtmf", String.valueOf(suppressDtmf));
             return this;
         }
 
-        public GatherBuilder tag(String tag) {
+        public CallGatherBuilder tag(String tag) {
             params.put("tag", tag);
             return this;
         }
 
-        public GatherBuilder promptSentence(String promptSentence) {
+        public CallGatherBuilder promptSentence(String promptSentence) {
             prompt.put("sentence", promptSentence);
             return this;
         }
 
-        public GatherBuilder promptGender(Gender gender) {
+        public CallGatherBuilder promptGender(Gender gender) {
             prompt.put("gender", gender.name());
             return this;
         }
 
-        public GatherBuilder promptLocale(SentenceLocale locale) {
+        public CallGatherBuilder promptLocale(SentenceLocale locale) {
             prompt.put("locale", locale.restValue);
             return this;
         }
 
-        public GatherBuilder promptFileUrl(String promptFileUrl) {
+        public CallGatherBuilder promptFileUrl(String promptFileUrl) {
             prompt.put("fileUrl", promptFileUrl);
             return this;
         }
 
-        public GatherBuilder promptLoopEnabled(boolean promptLoopEnabled) {
+        public CallGatherBuilder promptLoopEnabled(boolean promptLoopEnabled) {
             prompt.put("loopEnabled", String.valueOf(promptLoopEnabled));
             return this;
         }
 
-        public GatherBuilder promptBargeable(boolean promptBargeable) {
+        public CallGatherBuilder promptBargeable(boolean promptBargeable) {
             prompt.put("bargeable", String.valueOf(promptBargeable));
             return this;
         }

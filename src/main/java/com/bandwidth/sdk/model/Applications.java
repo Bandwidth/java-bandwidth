@@ -21,8 +21,8 @@ public class Applications {
         this.client = client;
     }
 
-    public ApplicationsListBuilder getApplications() {
-        return new ApplicationsListBuilder();
+    public QueryApplicationsBuilder queryApplicationsBuilder() {
+        return new QueryApplicationsBuilder();
     }
 
     public Application getApplicationById(String id) throws IOException {
@@ -30,8 +30,8 @@ public class Applications {
         return Application.from(client, jsonObject);
     }
 
-    public ApplicationBuilder newApplication(String name) {
-        return new ApplicationBuilder(name);
+    public NewApplicationBuilder newApplicationBuilder(String name) {
+        return new NewApplicationBuilder(name);
     }
 
     private List<Application> getApplications(Map<String, Object> params) throws IOException {
@@ -49,22 +49,22 @@ public class Applications {
         return Application.from(client, jsonObject);
     }
 
-    public class ApplicationsListBuilder {
+    public class QueryApplicationsBuilder {
 
         private Integer page;
         private Integer size;
 
-        public ApplicationsListBuilder page(Integer page) {
+        public QueryApplicationsBuilder page(Integer page) {
             this.page = page;
             return this;
         }
 
-        public ApplicationsListBuilder size(Integer size) {
+        public QueryApplicationsBuilder size(Integer size) {
             this.size = size;
             return this;
         }
 
-        public List<Application> get() throws IOException {
+        public List<Application> list() throws IOException {
             Map<String, Object> params = new HashMap<String, Object>();
 
             if (page != null) params.put("page", String.valueOf(page));
@@ -74,7 +74,7 @@ public class Applications {
         }
     }
 
-    public class ApplicationBuilder {
+    public class NewApplicationBuilder {
 
         private String name;
         private String incomingCallUrl;
@@ -86,41 +86,41 @@ public class Applications {
         private Long incomingSmsUrlCallbackTimeout;
         private String callbackHttpMethod;
 
-        public ApplicationBuilder(String name) {
+        public NewApplicationBuilder(String name) {
             this.name = name;
         }
 
-        public ApplicationBuilder incomingCallUrl(String incomingCallUrl) {
+        public NewApplicationBuilder incomingCallUrl(String incomingCallUrl) {
             this.incomingCallUrl = incomingCallUrl;
             return this;
         }
 
-        public ApplicationBuilder incomingSmsUrl(String incomingSmsUrl) {
+        public NewApplicationBuilder incomingSmsUrl(String incomingSmsUrl) {
             this.incomingSmsUrl = incomingSmsUrl;
             return this;
         }
 
-        public ApplicationBuilder autoAnswer(Boolean autoAnswer) {
+        public NewApplicationBuilder autoAnswer(Boolean autoAnswer) {
             this.autoAnswer = autoAnswer;
             return this;
         }
 
-        public ApplicationBuilder incomingCallFallbackUrl(String incomingCallFallbackUrl) {
+        public NewApplicationBuilder incomingCallFallbackUrl(String incomingCallFallbackUrl) {
             this.incomingCallFallbackUrl = incomingCallFallbackUrl;
             return this;
         }
 
-        public ApplicationBuilder incomingCallUrlCallbackTimeout(Long incomingCallUrlCallbackTimeout) {
+        public NewApplicationBuilder incomingCallUrlCallbackTimeout(Long incomingCallUrlCallbackTimeout) {
             this.incomingCallUrlCallbackTimeout = incomingCallUrlCallbackTimeout;
             return this;
         }
 
-        public ApplicationBuilder incomingSmsUrlCallbackTimeout(Long incomingSmsUrlCallbackTimeout) {
+        public NewApplicationBuilder incomingSmsUrlCallbackTimeout(Long incomingSmsUrlCallbackTimeout) {
             this.incomingSmsUrlCallbackTimeout = incomingSmsUrlCallbackTimeout;
             return this;
         }
 
-        public ApplicationBuilder callbackHttpMethod(String callbackHttpMethod) {
+        public NewApplicationBuilder callbackHttpMethod(String callbackHttpMethod) {
             this.callbackHttpMethod = callbackHttpMethod;
             return this;
         }

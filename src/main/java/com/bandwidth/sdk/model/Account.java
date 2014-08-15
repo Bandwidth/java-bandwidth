@@ -25,8 +25,8 @@ public class Account {
         return AccountInfo.from(jsonObject);
     }
 
-    public TransactionsBuilder getTransactions() {
-        return new TransactionsBuilder();
+    public TransactionsQueryBuilder queryTransactionsBuilder() {
+        return new TransactionsQueryBuilder();
     }
 
     private List<AccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
@@ -39,7 +39,7 @@ public class Account {
         return transactions;
     }
 
-    public class TransactionsBuilder {
+    public class TransactionsQueryBuilder {
 
         private Integer maxItems;
         private Date fromDate;
@@ -48,37 +48,37 @@ public class Account {
         private Integer page;
         private Integer size;
 
-        public TransactionsBuilder maxItems(int maxItems) {
+        public TransactionsQueryBuilder maxItems(int maxItems) {
             this.maxItems = maxItems;
             return this;
         }
 
-        public TransactionsBuilder fromDate(Date fromDate) {
+        public TransactionsQueryBuilder fromDate(Date fromDate) {
             this.fromDate = fromDate;
             return this;
         }
 
-        public TransactionsBuilder toDate(Date toDate) {
+        public TransactionsQueryBuilder toDate(Date toDate) {
             this.toDate = toDate;
             return this;
         }
 
-        public TransactionsBuilder type(String type) {
+        public TransactionsQueryBuilder type(String type) {
             this.type = type;
             return this;
         }
 
-        public TransactionsBuilder page(int page) {
+        public TransactionsQueryBuilder page(int page) {
             this.page = page;
             return this;
         }
 
-        public TransactionsBuilder size(int size) {
+        public TransactionsQueryBuilder size(int size) {
             this.size = size;
             return this;
         }
 
-        public List<AccountTransaction> get() throws IOException {
+        public List<AccountTransaction> list() throws IOException {
             Map<String, Object> params = new HashMap<String, Object>();
 
             SimpleDateFormat simpleDateFormat = null;

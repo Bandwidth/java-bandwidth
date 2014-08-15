@@ -25,7 +25,7 @@ public class BandwidthRestClientExample {
     private static void printCalls(BandwidthRestClient client) throws IOException {
         System.out.println("\nCalls:");
         Calls calls = client.getCalls();
-        List<Call> callList = calls.getCalls().size(10).get();
+        List<Call> callList = calls.queryCallsBuilder().size(10).list();
         for (Call call : callList) {
             System.out.println(call);
         }
@@ -81,13 +81,13 @@ public class BandwidthRestClientExample {
         AvailableNumbers availableNumbers = client.getAvailableNumbers();
 
         System.out.println("Local:");
-        List<Number> numbers = availableNumbers.getLocalNumbers().state("CA").quantity(2).get();
+        List<Number> numbers = availableNumbers.queryLocalNumbersBuilder().state("CA").quantity(2).list();
         for (Number number : numbers) {
             System.out.println(number);
         }
 
         System.out.println("\nTollFree:");
-        numbers = availableNumbers.getTollFreeNumbers().quantity(2).get();
+        numbers = availableNumbers.queryTollFreeNumbersBuilder().quantity(2).list();
         for (Number number : numbers) {
             System.out.println(number);
         }
@@ -96,7 +96,7 @@ public class BandwidthRestClientExample {
     private static void printApplications(BandwidthRestClient client) throws IOException {
         System.out.println("\nApplications:");
         Applications applications = client.getApplications();
-        List<Application> applicationList = applications.getApplications().get();
+        List<Application> applicationList = applications.queryApplicationsBuilder().list();
         for (Application application : applicationList) {
             System.out.println(application);
         }
@@ -112,7 +112,7 @@ public class BandwidthRestClientExample {
         System.out.println(account.getAccountInfo());
 
         System.out.println("\nTransactions:");
-        List<AccountTransaction> accountTransactions = account.getTransactions().maxItems(10).get();
+        List<AccountTransaction> accountTransactions = account.queryTransactionsBuilder().maxItems(10).list();
         for (AccountTransaction transaction : accountTransactions) {
             System.out.println(transaction);
         }

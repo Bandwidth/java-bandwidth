@@ -33,7 +33,7 @@ public class AvailableNumbersTest {
     public void shouldGetLocalNumbers() throws ParseException, IOException {
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num1\",\"nationalNumber\":\"nationalNum1\",\"rateCenter\":\"STOCKTON\",\"city\":\"STOCKTON\"},{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num2\",\"nationalNumber\":\"nationalNum2\",\"rateCenter\":\"STOCKTON\",\"city\":\"STOCKTON\"}]");
 
-        List<Number> numbers = availableNumbers.getLocalNumbers().quantity(5).get();
+        List<Number> numbers = availableNumbers.queryLocalNumbersBuilder().quantity(5).list();
         assertThat(numbers.size(), equalTo(2));
         assertThat(numbers.get(0).getNumber(), equalTo("num1"));
         assertThat(numbers.get(0).getNationalNumber(), equalTo("nationalNum1"));
@@ -48,7 +48,7 @@ public class AvailableNumbersTest {
     public void shouldGetTollFreeNumbers() throws ParseException, IOException {
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"price\":\"0.00\",\"number\":\"n1\",\"nationalNumber\":\"nn1\"},{\"price\":\"0.00\",\"number\":\"n2\",\"nationalNumber\":\"nn2\"}]");
 
-        List<Number> numbers = availableNumbers.getTollFreeNumbers().quantity(5).get();
+        List<Number> numbers = availableNumbers.queryTollFreeNumbersBuilder().quantity(5).list();
         assertThat(numbers.size(), equalTo(2));
         assertThat(numbers.get(0).getNumber(), equalTo("n1"));
         assertThat(numbers.get(0).getNationalNumber(), equalTo("nn1"));

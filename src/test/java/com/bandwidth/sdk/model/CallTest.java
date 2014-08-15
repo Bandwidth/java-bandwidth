@@ -123,7 +123,7 @@ public class CallTest {
 
         Call call = Call.from(client, jsonObject);
 
-        call.transfer("8917727272").callbackUrl("url").commit();
+        call.callTransferBuilder("8917727272").callbackUrl("url").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
         assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
         assertThat(mockRestDriver.requests.get(0).params.get("transferTo").toString(), equalTo("8917727272"));
@@ -131,7 +131,7 @@ public class CallTest {
         assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
 
         mockRestDriver.requests.clear();
-        call.transfer("8917727272").commit();
+        call.callTransferBuilder("8917727272").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
         assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
         assertThat(mockRestDriver.requests.get(0).params.get("transferTo").toString(), equalTo("8917727272"));
@@ -139,7 +139,7 @@ public class CallTest {
         assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
 
         mockRestDriver.requests.clear();
-        call.transfer("8917727272").gender(Gender.male).locale(SentenceLocale.French).sentence("Hello").transferCallerId("callerId").commit();
+        call.callTransferBuilder("8917727272").gender(Gender.male).locale(SentenceLocale.French).sentence("Hello").transferCallerId("callerId").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
         assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
         assertThat(mockRestDriver.requests.get(0).params.get("transferTo").toString(), equalTo("8917727272"));
@@ -159,7 +159,7 @@ public class CallTest {
         client.setRestDriver(mockRestDriver);
 
         Call call = Call.from(client, jsonObject);
-        call.createAudio().fileUrl("url").commit();
+        call.callAudioBuilder().fileUrl("url").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallAudio"));
         assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("url"));
 
@@ -278,7 +278,7 @@ public class CallTest {
         client.setRestDriver(mockRestDriver);
 
         Call call = Call.from(client, jsonObject);
-        call.createGather().maxDigits(5).promptSentence("Hello").commit();
+        call.callGatherBuilder().maxDigits(5).promptSentence("Hello").create();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallGather"));
         assertThat(mockRestDriver.requests.get(0).params.get("maxDigits").toString(), equalTo("5"));

@@ -23,7 +23,7 @@ public class Conferences {
         return Conference.from(jsonObject);
     }
 
-    public NewConferenceBuilder newConference() {
+    public NewConferenceBuilder newConferenceBuilder() {
         return new NewConferenceBuilder();
     }
 
@@ -36,7 +36,7 @@ public class Conferences {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public Conference commit() throws IOException {
+        public Conference create() throws IOException {
             return createConference(params);
         }
 

@@ -36,7 +36,7 @@ public class Bridges {
         return Bridge.from(client, jsonObject);
     }
 
-    public NewBridgeBuilder newBridge() {
+    public NewBridgeBuilder newBridgeBuilder() {
         return new NewBridgeBuilder();
     }
 

@@ -54,7 +54,7 @@ public class AccountTest {
     public void shouldReturnAccountTransactions() throws IOException, ParseException {
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"id1\",\"time\":\"2014-08-05T22:32:44Z\",\"amount\":\"0.00\",\"type\":\"charge\",\"units\":1,\"productType\":\"call-in\",\"number\":\"+number1\"},{\"id\":\"id2\",\"time\":\"2014-08-05T02:32:59Z\",\"amount\":\"0.00\",\"type\":\"charge\",\"units\":1,\"productType\":\"sms-in\",\"number\":\"+number2\"}]");
 
-        List<AccountTransaction> transactions = account.getTransactions().get();
+        List<AccountTransaction> transactions = account.queryTransactionsBuilder().list();
         assertThat(transactions.size(), equalTo(2));
         assertThat(transactions.get(0).getId(), equalTo("id1"));
         assertThat(transactions.get(0).getNumber(), equalTo("+number1"));
@@ -69,7 +69,7 @@ public class AccountTest {
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"id1\",\"time\":\"2014-08-05T22:32:44Z\",\"amount\":\"0.00\",\"type\":\"charge\",\"units\":1,\"productType\":\"call-in\",\"number\":\"+number1\"},{\"id\":\"id2\",\"time\":\"2014-08-05T02:32:59Z\",\"amount\":\"0.00\",\"type\":\"charge\",\"units\":1,\"productType\":\"sms-in\",\"number\":\"+number2\"}]");
 
         Date fromDate = new Date();
-        account.getTransactions().maxItems(1000).type("call-in").fromDate(fromDate).get();
+        account.queryTransactionsBuilder().maxItems(1000).type("call-in").fromDate(fromDate).list();
 
         MockRestDriver.RestRequest restRequest = mockRestDriver.requests.get(0);
         assertThat(restRequest.name, equalTo("requestAccountTransactions"));

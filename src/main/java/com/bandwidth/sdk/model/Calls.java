@@ -21,11 +21,11 @@ public class Calls {
         this.client = client;
     }
 
-    public CallsListBuilder getCalls() {
-        return new CallsListBuilder();
+    public QueryCallsBuilder queryCallsBuilder() {
+        return new QueryCallsBuilder();
     }
 
-    public NewCallBuilder newCall() {
+    public NewCallBuilder newCallBuilder() {
         return new NewCallBuilder();
     }
 
@@ -49,41 +49,41 @@ public class Calls {
         return Call.from(client, jsonObject);
     }
 
-    public class CallsListBuilder {
+    public class QueryCallsBuilder {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public CallsListBuilder bridgeId(String bridgeId) {
+        public QueryCallsBuilder bridgeId(String bridgeId) {
             params.put("bridgeId", bridgeId);
             return this;
         }
 
-        public CallsListBuilder conferenceId(String conferenceId) {
+        public QueryCallsBuilder conferenceId(String conferenceId) {
             params.put("conferenceId", conferenceId);
             return this;
         }
 
-        public CallsListBuilder from(String from) {
+        public QueryCallsBuilder from(String from) {
             params.put("from", from);
             return this;
         }
 
-        public CallsListBuilder to(String to) {
+        public QueryCallsBuilder to(String to) {
             params.put("to", to);
             return this;
         }
 
-        public CallsListBuilder page(int page) {
+        public QueryCallsBuilder page(int page) {
             params.put("page", String.valueOf(page));
             return this;
         }
 
-        public CallsListBuilder size(int size) {
+        public QueryCallsBuilder size(int size) {
             params.put("size", String.valueOf(size));
             return this;
         }
 
-        public List<Call> get() throws IOException {
+        public List<Call> list() throws IOException {
             return getCalls(params);
         }
     }

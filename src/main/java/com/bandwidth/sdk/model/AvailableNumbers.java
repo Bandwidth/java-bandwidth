@@ -21,12 +21,12 @@ public class AvailableNumbers {
         this.client = client;
     }
 
-    public LocalRequestBuilder getLocalNumbers() {
-        return new LocalRequestBuilder();
+    public QueryLocalNumbersBuilder queryLocalNumbersBuilder() {
+        return new QueryLocalNumbersBuilder();
     }
 
-    public TollFreeRequestBuilder getTollFreeNumbers() {
-        return new TollFreeRequestBuilder();
+    public QueryTollFreeNumbersBuilder queryTollFreeNumbersBuilder() {
+        return new QueryTollFreeNumbersBuilder();
     }
 
     private List<Number> getLocalNumbers(Map<String, Object> params) throws IOException {
@@ -49,64 +49,64 @@ public class AvailableNumbers {
         return numbers;
     }
 
-    public class TollFreeRequestBuilder {
+    public class QueryTollFreeNumbersBuilder {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public List<Number> get() throws IOException {
+        public List<Number> list() throws IOException {
             return getTollFreeNumbers(params);
         }
 
-        public TollFreeRequestBuilder quantity(int quantity) {
+        public QueryTollFreeNumbersBuilder quantity(int quantity) {
             params.put("quantity", String.valueOf(quantity));
             return this;
         }
 
-        public TollFreeRequestBuilder pattern(String pattern) {
+        public QueryTollFreeNumbersBuilder pattern(String pattern) {
             params.put("pattern", pattern);
             return this;
         }
     }
 
-    public class LocalRequestBuilder {
+    public class QueryLocalNumbersBuilder {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public List<Number> get() throws IOException {
+        public List<Number> list() throws IOException {
             return getLocalNumbers(params);
         }
 
-        public LocalRequestBuilder city(String city) {
+        public QueryLocalNumbersBuilder city(String city) {
             params.put("city", city);
             return this;
         }
 
-        public LocalRequestBuilder state(String state) {
+        public QueryLocalNumbersBuilder state(String state) {
             params.put("state", state);
             return this;
         }
 
-        public LocalRequestBuilder zip(String zip) {
+        public QueryLocalNumbersBuilder zip(String zip) {
             params.put("zip", zip);
             return this;
         }
 
-        public LocalRequestBuilder areaCode(String areaCode) {
+        public QueryLocalNumbersBuilder areaCode(String areaCode) {
             params.put("areaCode", areaCode);
             return this;
         }
 
-        public LocalRequestBuilder localNumber(String localNumber) {
+        public QueryLocalNumbersBuilder localNumber(String localNumber) {
             params.put("localNumber", localNumber);
             return this;
         }
 
-        public LocalRequestBuilder inLocalCallingArea(boolean inLocalCallingArea) {
+        public QueryLocalNumbersBuilder inLocalCallingArea(boolean inLocalCallingArea) {
             params.put("inLocalCallingArea", String.valueOf(inLocalCallingArea));
             return this;
         }
 
-        public LocalRequestBuilder quantity(int quantity) {
+        public QueryLocalNumbersBuilder quantity(int quantity) {
             params.put("quantity", String.valueOf(quantity));
             return this;
         }

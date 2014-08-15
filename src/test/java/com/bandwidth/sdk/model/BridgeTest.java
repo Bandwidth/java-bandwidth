@@ -54,7 +54,7 @@ public class BridgeTest {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
         Bridge bridge = Bridge.from(client, jsonObject);
 
-        bridge.createAudio().fileUrl("some url").commit();
+        bridge.newBridgeAudioBuilder().fileUrl("some url").create();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
         assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("some url"));

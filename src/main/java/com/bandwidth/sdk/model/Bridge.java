@@ -121,19 +121,19 @@ public class Bridge {
         return activatedTime;
     }
 
-    public AudioBuilder createAudio() {
-        return new AudioBuilder();
+    public NewBridgeAudioBuilder newBridgeAudioBuilder() {
+        return new NewBridgeAudioBuilder();
     }
 
     public void stopAudioFilePlaying() throws IOException {
-        new AudioBuilder().fileUrl(StringUtils.EMPTY).commit();
+        new NewBridgeAudioBuilder().fileUrl(StringUtils.EMPTY).create();
     }
 
     public void stopSentence() throws IOException {
-        new AudioBuilder().sentence(StringUtils.EMPTY).commit();
+        new NewBridgeAudioBuilder().sentence(StringUtils.EMPTY).create();
     }
 
-    private void saveAudio(Map<String, Object> params) throws IOException {
+    private void createAudio(Map<String, Object> params) throws IOException {
         client.createBridgeAudio(getId(), params);
     }
 
@@ -151,42 +151,42 @@ public class Bridge {
                 '}';
     }
 
-    public class AudioBuilder {
+    public class NewBridgeAudioBuilder {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public AudioBuilder fileUrl(String fileUrl) {
+        public NewBridgeAudioBuilder fileUrl(String fileUrl) {
             params.put("fileUrl", fileUrl);
             return this;
         }
 
-        public AudioBuilder sentence(String sentence) {
+        public NewBridgeAudioBuilder sentence(String sentence) {
             params.put("sentence", sentence);
             return this;
         }
 
-        public AudioBuilder gender(Gender gender) {
+        public NewBridgeAudioBuilder gender(Gender gender) {
             params.put("gender", gender.name());
             return this;
         }
 
-        public AudioBuilder locale(SentenceLocale locale) {
+        public NewBridgeAudioBuilder locale(SentenceLocale locale) {
             params.put("locale", locale.restValue);
             return this;
         }
 
-        public AudioBuilder voice(String voice) {
+        public NewBridgeAudioBuilder voice(String voice) {
             params.put("voice", voice);
             return this;
         }
 
-        public AudioBuilder loopEnabled(boolean loopEnabled) {
+        public NewBridgeAudioBuilder loopEnabled(boolean loopEnabled) {
             params.put("loopEnabled", String.valueOf(loopEnabled));
             return this;
         }
 
-        public void commit() throws IOException {
-            saveAudio(params);
+        public void create() throws IOException {
+            createAudio(params);
         }
     }
 }
