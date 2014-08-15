@@ -55,7 +55,7 @@ public class HttpRestDriver implements IRestDriver {
     @Override
     public JSONObject requestAccountInfo() throws IOException {
         String path = getAccountPath();
-        BandwidthRestResponse response = request(path, HttpMethod.GET);
+        RestResponse response = request(path, HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -71,7 +71,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestAccountTransactions(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, params);
+        RestResponse response = request(getAccountTransactionPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -87,7 +87,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestApplications(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.GET, params);
+        RestResponse response = request(getApplicationsPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -103,7 +103,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject createApplication(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getApplicationsPath(), HttpMethod.POST, params);
+        RestResponse response = request(getApplicationsPath(), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         String location = response.getLocation();
@@ -127,7 +127,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject requestApplicationById(String id) throws IOException {
-        BandwidthRestResponse response = request(getApplicationPath(id), HttpMethod.GET);
+        RestResponse response = request(getApplicationPath(id), HttpMethod.GET);
         if (response.isError())
             throw new IOException(response.getResponseText());
 
@@ -144,19 +144,19 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public void deleteApplication(String id) throws IOException {
-        BandwidthRestResponse response = request(getApplicationPath(id), HttpMethod.DELETE);
+        RestResponse response = request(getApplicationPath(id), HttpMethod.DELETE);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public void updateApplication(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getApplicationPath(id), HttpMethod.POST, params);
+        RestResponse response = request(getApplicationPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public JSONArray requestLocalAvailableNumbers(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getLocalAvailableNumbersPath(), HttpMethod.GET, params);
+        RestResponse response = request(getLocalAvailableNumbersPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -172,7 +172,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestTollFreeAvailableNumbers(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getTollFreeAvailableNumbersPath(), HttpMethod.GET, params);
+        RestResponse response = request(getTollFreeAvailableNumbersPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -188,7 +188,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestBridges() throws IOException {
-        BandwidthRestResponse response = request(getBridgesPath(), HttpMethod.GET);
+        RestResponse response = request(getBridgesPath(), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -204,7 +204,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject createBridge(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getBridgesPath(), HttpMethod.POST, params);
+        RestResponse response = request(getBridgesPath(), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         String location = response.getLocation();
@@ -228,7 +228,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject requestBridgeById(String id) throws IOException {
-        BandwidthRestResponse response = request(getBridgePath(id), HttpMethod.GET);
+        RestResponse response = request(getBridgePath(id), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -244,19 +244,19 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public void updateBridge(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getBridgePath(id), HttpMethod.POST, params);
+        RestResponse response = request(getBridgePath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public void createBridgeAudio(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getBridgeAudioPath(id), HttpMethod.POST, params);
+        RestResponse response = request(getBridgeAudioPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public JSONArray requestCalls(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallsPath(), HttpMethod.GET, params);
+        RestResponse response = request(getCallsPath(), HttpMethod.GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -272,7 +272,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestBridgeCalls(String id) throws IOException {
-        BandwidthRestResponse response = request(getBridgeCallsPath(id), HttpMethod.GET);
+        RestResponse response = request(getBridgeCallsPath(id), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -288,7 +288,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject createCall(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallsPath(), HttpMethod.POST, params);
+        RestResponse response = request(getCallsPath(), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         String location = response.getLocation();
@@ -312,7 +312,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject requestCallById(String callId) throws IOException {
-        BandwidthRestResponse response = request(getCallPath(callId), HttpMethod.GET);
+        RestResponse response = request(getCallPath(callId), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -328,25 +328,25 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public void updateCall(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallPath(id), HttpMethod.POST, params);
+        RestResponse response = request(getCallPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public void createCallAudio(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallAudioPath(id), HttpMethod.POST, params);
+        RestResponse response = request(getCallAudioPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public void sendCallDtmf(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallDtmfPath(id), HttpMethod.POST, params);
+        RestResponse response = request(getCallDtmfPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public JSONArray requestCallEvents(String id) throws IOException {
-        BandwidthRestResponse response = request(getCallEventsPath(id), HttpMethod.GET);
+        RestResponse response = request(getCallEventsPath(id), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -362,7 +362,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject requestCallEventById(String callId, String eventId) throws IOException {
-        BandwidthRestResponse response = request(getCallEventPath(callId, eventId), HttpMethod.GET);
+        RestResponse response = request(getCallEventPath(callId, eventId), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -378,7 +378,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONArray requestCallRecordings(String id) throws IOException {
-        BandwidthRestResponse response = request(getCallRecordingsPath(id), HttpMethod.GET);
+        RestResponse response = request(getCallRecordingsPath(id), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -394,13 +394,13 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public void createCallGather(String id, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallGatherPath(id), HttpMethod.POST, params);
+        RestResponse response = request(getCallGatherPath(id), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public JSONObject requestCallGatherById(String callId, String gatherId) throws IOException {
-        BandwidthRestResponse response = request(getCallGatherPath(callId, gatherId), HttpMethod.GET);
+        RestResponse response = request(getCallGatherPath(callId, gatherId), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -416,13 +416,13 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public void updateCallGather(String callId, String gatherId, Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getCallGatherPath(callId, gatherId), HttpMethod.POST, params);
+        RestResponse response = request(getCallGatherPath(callId, gatherId), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
     @Override
     public JSONObject createConference(Map<String, Object> params) throws IOException {
-        BandwidthRestResponse response = request(getConferencesPath(), HttpMethod.POST, params);
+        RestResponse response = request(getConferencesPath(), HttpMethod.POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         String location = response.getLocation();
@@ -446,7 +446,7 @@ public class HttpRestDriver implements IRestDriver {
 
     @Override
     public JSONObject requestConferenceById(String id) throws IOException {
-        BandwidthRestResponse response = request(getConferencePath(id), HttpMethod.GET);
+        RestResponse response = request(getConferencePath(id), HttpMethod.GET);
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -655,11 +655,11 @@ public class HttpRestDriver implements IRestDriver {
         return StringUtils.join(parts, '/');
     }
 
-    private BandwidthRestResponse request(final String path, HttpMethod method) throws IOException {
+    private RestResponse request(final String path, HttpMethod method) throws IOException {
         return request(path, method, Collections.<String, Object>emptyMap());
     }
 
-    private BandwidthRestResponse request(final String path, HttpMethod method,
+    private RestResponse request(final String path, HttpMethod method,
                                           final Map<String, Object> paramList) throws IOException {
 
         HttpUriRequest request = setupRequest(path, method, paramList);
@@ -678,7 +678,7 @@ public class HttpRestDriver implements IRestDriver {
             StatusLine status = response.getStatusLine();
             int statusCode = status.getStatusCode();
 
-            BandwidthRestResponse restResponse = new BandwidthRestResponse(request.getURI().toString(), responseBody, statusCode);
+            RestResponse restResponse = new RestResponse(request.getURI().toString(), responseBody, statusCode);
 
             Header[] headers = response.getHeaders("Content-Type");
             if (headers.length > 0) {

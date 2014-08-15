@@ -15,28 +15,28 @@ public class BandwidthRestClient {
         restDriver = new HttpRestDriver(userId, token, secret);
     }
 
-    public BandwidthAccount getAccount() {
-        return new BandwidthAccount(this);
+    public Account getAccount() {
+        return new Account(this);
     }
 
-    public BandwidthApplications getApplications() {
-        return new BandwidthApplications(this);
+    public Applications getApplications() {
+        return new Applications(this);
     }
 
-    public BandwidthAvailableNumbers getAvailableNumbers() {
-        return new BandwidthAvailableNumbers(this);
+    public AvailableNumbers getAvailableNumbers() {
+        return new AvailableNumbers(this);
     }
 
-    public BandwidthBridges getBridges() {
-        return new BandwidthBridges(this);
+    public Bridges getBridges() {
+        return new Bridges(this);
     }
 
-    public BandwidthCalls getCalls() {
-        return new BandwidthCalls(this);
+    public Calls getCalls() {
+        return new Calls(this);
     }
 
-    public BandwidthConferences getConferences() {
-        return new BandwidthConferences(this);
+    public Conferences getConferences() {
+        return new Conferences(this);
     }
 
     public IRestDriver getRestDriver() {
