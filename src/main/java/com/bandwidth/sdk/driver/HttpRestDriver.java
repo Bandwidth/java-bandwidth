@@ -460,6 +460,12 @@ public class HttpRestDriver implements IRestDriver {
         }
     }
 
+    @Override
+    public void updateConference(String id, Map<String, Object> params) throws IOException {
+        RestResponse response = request(getConferencePath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
     private String getConferencePath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
@@ -660,7 +666,7 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     private RestResponse request(final String path, HttpMethod method,
-                                          final Map<String, Object> paramList) throws IOException {
+                                 final Map<String, Object> paramList) throws IOException {
 
         HttpUriRequest request = setupRequest(path, method, paramList);
 

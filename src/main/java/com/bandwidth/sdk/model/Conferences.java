@@ -20,7 +20,7 @@ public class Conferences {
 
     public Conference getConferenceById(String id) throws IOException {
         JSONObject jsonObject = client.requestConferenceById(id);
-        return Conference.from(jsonObject);
+        return Conference.from(client, jsonObject);
     }
 
     public NewConferenceBuilder newConferenceBuilder() {
@@ -29,7 +29,7 @@ public class Conferences {
 
     private Conference createConference(Map<String, Object> params) throws IOException {
         JSONObject jsonObject = client.createConference(params);
-        return Conference.from(jsonObject);
+        return Conference.from(client, jsonObject);
     }
 
     public class NewConferenceBuilder {

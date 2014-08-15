@@ -166,4 +166,8 @@ public class BandwidthRestClient {
     public void updateCallGather(String callId, String gatherId, Map<String, Object> params) throws IOException {
         restDriver.updateCallGather(callId, gatherId, params);
     }
+
+    public void updateConference(String id, Map<String, Object> params) throws IOException {
+        restDriver.updateConference(id, params);
+    }
 }
