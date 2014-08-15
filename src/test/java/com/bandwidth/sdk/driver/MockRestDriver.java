@@ -196,6 +196,12 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("createConferenceAudio", params));
     }
 
+    @Override
+    public JSONArray requestConferenceMembers(String id) {
+        requests.add(new RestRequest("requestConferenceMembers"));
+        return arrayResult;
+    }
+
     public static class RestRequest {
 
         public final String name;

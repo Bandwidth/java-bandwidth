@@ -174,4 +174,8 @@ public class BandwidthRestClient {
     public void createConferenceAudio(String id, Map<String, Object> params) throws IOException {
         restDriver.createConferenceAudio(id, params);
     }
+
+    public JSONArray requestConferenceMembers(String id) throws IOException {
+        return restDriver.requestConferenceMembers(id);
+    }
 }

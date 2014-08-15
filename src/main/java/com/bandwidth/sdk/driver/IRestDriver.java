@@ -72,4 +72,6 @@ public interface IRestDriver {
     void updateConference(String id, Map<String, Object> params) throws IOException;
 
     void createConferenceAudio(String id, Map<String, Object> params) throws IOException;
+
+    JSONArray requestConferenceMembers(String id) throws IOException;
 }

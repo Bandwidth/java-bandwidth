@@ -472,6 +472,31 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public JSONArray requestConferenceMembers(String id) throws IOException {
+        RestResponse response = request(getConferenceMembersPath(id), HttpMethod.GET);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getConferenceMembersPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CONFERENCE_MEMBERS_PATH, userId, id),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getConferenceAudioPath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

@@ -3,14 +3,13 @@ package com.bandwidth.sdk.model;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author vpotapenko
@@ -120,6 +119,16 @@ public class Conference {
 
         JSONObject jsonObject = client.requestConferenceById(id);
         updateProperties(jsonObject, this);
+    }
+
+    public List<ConferenceMember> getMembers() throws IOException {
+        JSONArray jsonArray = client.requestConferenceMembers(id);
+
+        List<ConferenceMember> members = new ArrayList<ConferenceMember>();
+        for (Object obj : jsonArray) {
+            members.add(ConferenceMember.from(client, id, (JSONObject) obj));
+        }
+        return members;
     }
 
     public ConferenceAudioBuilder conferenceAudioBuilder() {
