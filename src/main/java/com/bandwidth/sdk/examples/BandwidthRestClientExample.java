@@ -1,18 +1,7 @@
 package com.bandwidth.sdk.examples;
 
 import com.bandwidth.sdk.BandwidthRestClient;
-import com.bandwidth.sdk.account.BandwidthAccount;
-import com.bandwidth.sdk.account.BandwidthAccountTransaction;
-import com.bandwidth.sdk.applications.BandwidthApplication;
-import com.bandwidth.sdk.applications.BandwidthApplications;
-import com.bandwidth.sdk.availableNumbers.BandwidthAvailableNumbers;
-import com.bandwidth.sdk.availableNumbers.BandwidthNumber;
-import com.bandwidth.sdk.bridges.BandwidthBridge;
-import com.bandwidth.sdk.bridges.BandwidthBridges;
-import com.bandwidth.sdk.calls.BandwidthCall;
-import com.bandwidth.sdk.calls.BandwidthCalls;
-import com.bandwidth.sdk.calls.BandwidthEvent;
-import com.bandwidth.sdk.calls.BandwidthRecording;
+import com.bandwidth.sdk.model.*;
 
 import java.io.IOException;
 import java.util.List;
