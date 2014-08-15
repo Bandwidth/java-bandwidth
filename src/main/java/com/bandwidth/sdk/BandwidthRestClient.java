@@ -170,4 +170,8 @@ public class BandwidthRestClient {
     public void updateConference(String id, Map<String, Object> params) throws IOException {
         restDriver.updateConference(id, params);
     }
+
+    public void createConferenceAudio(String id, Map<String, Object> params) throws IOException {
+        restDriver.createConferenceAudio(id, params);
+    }
 }

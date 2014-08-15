@@ -69,4 +69,27 @@ public class ConferenceTest {
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
         assertThat(mockRestDriver.requests.get(0).params.get("mute").toString(), equalTo("true"));
     }
+
+    @Test
+    public void shouldCreateAudio() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
+                "    \"activeMembers\": 0,\n" +
+                "    \"createdTime\": \"2013-07-12T15:22:47Z\",\n" +
+                "    \"from\": \"+19703255647\",\n" +
+                "    \"id\": \"{conferenceId}\",\n" +
+                "    \"state\": \"created\"\n" +
+                "}");
+        MockRestDriver mockRestDriver = new MockRestDriver();
+        mockRestDriver.result = jsonObject;
+
+        BandwidthRestClient client = new BandwidthRestClient("", "", "");
+        client.setRestDriver(mockRestDriver);
+
+        Conference conference = Conference.from(client, jsonObject);
+
+        conference.conferenceAudioBuilder().sentence("Hello").locale(SentenceLocale.German).create();
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("createConferenceAudio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
+        assertThat(mockRestDriver.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
+    }
 }

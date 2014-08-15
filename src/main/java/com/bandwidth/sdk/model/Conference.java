@@ -122,6 +122,14 @@ public class Conference {
         updateProperties(jsonObject, this);
     }
 
+    public ConferenceAudioBuilder conferenceAudioBuilder() {
+        return new ConferenceAudioBuilder();
+    }
+
+    private void createConferenceAudio(Map<String, Object> params) throws IOException {
+        client.createConferenceAudio(id, params);
+    }
+
     @Override
     public String toString() {
         return "Conference{" +
@@ -135,5 +143,39 @@ public class Conference {
                 ", completedTime=" + completedTime +
                 ", createdTime=" + createdTime +
                 '}';
+    }
+
+    public class ConferenceAudioBuilder {
+
+        private final Map<String, Object> params = new HashMap<String, Object>();
+
+        public ConferenceAudioBuilder fileUrl(String fileUrl) {
+            params.put("fileUrl", fileUrl);
+            return this;
+        }
+
+        public ConferenceAudioBuilder sentence(String sentence) {
+            params.put("sentence", sentence);
+            return this;
+        }
+
+        public ConferenceAudioBuilder gender(Gender gender) {
+            params.put("gender", gender.name());
+            return this;
+        }
+
+        public ConferenceAudioBuilder locale(SentenceLocale locale) {
+            params.put("locale", locale.restValue);
+            return this;
+        }
+
+        public ConferenceAudioBuilder voice(String voice) {
+            params.put("voice", voice);
+            return this;
+        }
+
+        public void create() throws IOException {
+            createConferenceAudio(params);
+        }
     }
 }

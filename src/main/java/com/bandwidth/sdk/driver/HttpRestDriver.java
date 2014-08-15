@@ -466,6 +466,21 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public void createConferenceAudio(String id, Map<String, Object> params) throws IOException {
+        RestResponse response = request(getConferenceAudioPath(id), HttpMethod.POST, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+    }
+
+    private String getConferenceAudioPath(String id) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                String.format(BandwidthConstants.CONFERENCE_AUDIO_PATH, userId, id),
+        };
+        return StringUtils.join(parts, '/');
+    }
+
     private String getConferencePath(String id) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,

@@ -191,6 +191,11 @@ public class MockRestDriver implements IRestDriver {
         requests.add(new RestRequest("updateConference", params));
     }
 
+    @Override
+    public void createConferenceAudio(String id, Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("createConferenceAudio", params));
+    }
+
     public static class RestRequest {
 
         public final String name;
