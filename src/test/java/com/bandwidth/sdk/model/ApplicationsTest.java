@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,10 +23,7 @@ public class ApplicationsTest {
     public void setUp() {
         mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
-        applications = new Applications(client);
+        applications = new Applications(mockRestDriver, "parentUri");
     }
 
     @Test

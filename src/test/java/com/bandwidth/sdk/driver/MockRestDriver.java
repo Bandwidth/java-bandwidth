@@ -31,6 +31,22 @@ public class MockRestDriver implements IRestDriver {
         return result;
     }
 
+    @Override
+    public JSONObject create(String uri, Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("create", uri));
+        return result;
+    }
+
+    @Override
+    public void post(String uri, Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("post", uri));
+    }
+
+    @Override
+    public void delete(String uri) throws IOException {
+        requests.add(new RestRequest("delete", uri));
+    }
+
 
     @Override
     public JSONObject requestAccountInfo() throws IOException {

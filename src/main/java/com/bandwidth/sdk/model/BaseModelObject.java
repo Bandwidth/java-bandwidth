@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public abstract class BaseModelObject {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
+    protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
 
     protected final IRestDriver driver;
     protected final String parentUri;
@@ -50,6 +50,10 @@ public abstract class BaseModelObject {
         return (String) properties.get(key);
     }
 
+    protected Boolean getPropertyAsBoolean(String key) {
+        return (Boolean) properties.get(key);
+    }
+
     protected Long getPropertyAsLong(String key) {
         return (Long) properties.get(key);
     }
@@ -68,5 +72,19 @@ public abstract class BaseModelObject {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void putProperty(String key, Object value) {
+        properties.put(key, value);
+    }
+
+    protected Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for (String key : properties.keySet()) {
+            map.put(key, properties.get(key));
+        }
+
+        return map;
     }
 }

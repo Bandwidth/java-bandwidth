@@ -1,13 +1,11 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.driver.IRestDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -57,63 +55,39 @@ public class Account extends BaseModelObject {
 
     public class TransactionsQueryBuilder {
 
-        private Integer maxItems;
-        private Date fromDate;
-        private Date toDate;
-        private String type;
-        private Integer page;
-        private Integer size;
+        private Map<String, Object> params = new HashMap<String, Object>();
 
         public TransactionsQueryBuilder maxItems(int maxItems) {
-            this.maxItems = maxItems;
+            params.put("maxItems", maxItems);
             return this;
         }
 
         public TransactionsQueryBuilder fromDate(Date fromDate) {
-            this.fromDate = fromDate;
+            params.put("fromDate", dateFormat.format(fromDate));
             return this;
         }
 
         public TransactionsQueryBuilder toDate(Date toDate) {
-            this.toDate = toDate;
+            params.put("toDate", dateFormat.format(toDate));
             return this;
         }
 
         public TransactionsQueryBuilder type(String type) {
-            this.type = type;
+            params.put("type", type);
             return this;
         }
 
         public TransactionsQueryBuilder page(int page) {
-            this.page = page;
+            params.put("page", page);
             return this;
         }
 
         public TransactionsQueryBuilder size(int size) {
-            this.size = size;
+            params.put("size", size);
             return this;
         }
 
         public List<AccountTransaction> list() throws IOException {
-            Map<String, Object> params = new HashMap<String, Object>();
-
-            SimpleDateFormat simpleDateFormat = null;
-            if (fromDate != null) {
-                simpleDateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-                params.put("fromDate", simpleDateFormat.format(fromDate));
-            }
-
-            if (toDate != null) {
-                if (simpleDateFormat == null)
-                    simpleDateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-                params.put("toDate", simpleDateFormat.format(toDate));
-            }
-
-            if (maxItems != null) params.put("maxItems", String.valueOf(maxItems));
-            if (type != null) params.put("type", type);
-            if (page != null) params.put("page", String.valueOf(page));
-            if (size != null) params.put("size", String.valueOf(size));
-
             return getTransactions(params);
         }
     }

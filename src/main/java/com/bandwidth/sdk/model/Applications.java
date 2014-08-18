@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -13,12 +14,10 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class Applications {
+public class Applications extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    public Applications(BandwidthRestClient client) {
-        this.client = client;
+    public Applications(IRestDriver driver, String parentUri) {
+        super(driver, parentUri, null);
     }
 
     public QueryApplicationsBuilder queryApplicationsBuilder() {
@@ -26,8 +25,21 @@ public class Applications {
     }
 
     public Application getApplicationById(String id) throws IOException {
-        JSONObject jsonObject = client.requestApplicationById(id);
-        return Application.from(client, jsonObject);
+        String applicationsUri = getUri();
+        String uri = StringUtils.join(new String[]{
+                applicationsUri,
+                id
+        }, '/');
+        JSONObject jsonObject = driver.getObject(uri);
+        return new Application(driver, applicationsUri, jsonObject);
+    }
+
+    @Override
+    public String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "applications"
+        }, '/');
     }
 
     public NewApplicationBuilder newApplicationBuilder(String name) {
@@ -35,111 +47,85 @@ public class Applications {
     }
 
     private List<Application> getApplications(Map<String, Object> params) throws IOException {
-        JSONArray array = client.requestApplications(params);
+        String applicationsUri = getUri();
+        JSONArray array = driver.getArray(applicationsUri, params);
 
         List<Application> applications = new ArrayList<Application>();
         for (Object obj : array) {
-            applications.add(Application.from(client, (JSONObject) obj));
+            applications.add(new Application(driver, applicationsUri, (JSONObject) obj));
         }
         return applications;
     }
 
     private Application createApplication(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.createApplication(params);
-        return Application.from(client, jsonObject);
+        String applicationsUri = getUri();
+        JSONObject jsonObject = driver.create(applicationsUri, params);
+        return new Application(driver, applicationsUri, jsonObject);
     }
 
     public class QueryApplicationsBuilder {
 
-        private Integer page;
-        private Integer size;
+        private Map<String, Object> params = new HashMap<String, Object>();
 
         public QueryApplicationsBuilder page(Integer page) {
-            this.page = page;
+            params.put("page", page);
             return this;
         }
 
         public QueryApplicationsBuilder size(Integer size) {
-            this.size = size;
+            params.put("size", size);
             return this;
         }
 
         public List<Application> list() throws IOException {
-            Map<String, Object> params = new HashMap<String, Object>();
-
-            if (page != null) params.put("page", String.valueOf(page));
-            if (size != null) params.put("size", String.valueOf(size));
-
             return getApplications(params);
         }
     }
 
     public class NewApplicationBuilder {
 
-        private String name;
-        private String incomingCallUrl;
-        private String incomingSmsUrl;
-        private Boolean autoAnswer;
-
-        private String incomingCallFallbackUrl;
-        private Long incomingCallUrlCallbackTimeout;
-        private Long incomingSmsUrlCallbackTimeout;
-        private String callbackHttpMethod;
+        private final Map<String, Object> params = new HashMap<String, Object>();
 
         public NewApplicationBuilder(String name) {
-            this.name = name;
+            params.put("name", name);
         }
 
         public NewApplicationBuilder incomingCallUrl(String incomingCallUrl) {
-            this.incomingCallUrl = incomingCallUrl;
+            params.put("incomingCallUrl", incomingCallUrl);
             return this;
         }
 
         public NewApplicationBuilder incomingSmsUrl(String incomingSmsUrl) {
-            this.incomingSmsUrl = incomingSmsUrl;
+            params.put("incomingSmsUrl", incomingSmsUrl);
             return this;
         }
 
         public NewApplicationBuilder autoAnswer(Boolean autoAnswer) {
-            this.autoAnswer = autoAnswer;
+            params.put("autoAnswer", autoAnswer);
             return this;
         }
 
         public NewApplicationBuilder incomingCallFallbackUrl(String incomingCallFallbackUrl) {
-            this.incomingCallFallbackUrl = incomingCallFallbackUrl;
+            params.put("incomingCallFallbackUrl", incomingCallFallbackUrl);
             return this;
         }
 
         public NewApplicationBuilder incomingCallUrlCallbackTimeout(Long incomingCallUrlCallbackTimeout) {
-            this.incomingCallUrlCallbackTimeout = incomingCallUrlCallbackTimeout;
+            params.put("incomingCallUrlCallbackTimeout", incomingCallUrlCallbackTimeout);
             return this;
         }
 
         public NewApplicationBuilder incomingSmsUrlCallbackTimeout(Long incomingSmsUrlCallbackTimeout) {
-            this.incomingSmsUrlCallbackTimeout = incomingSmsUrlCallbackTimeout;
+            params.put("incomingSmsUrlCallbackTimeout", incomingSmsUrlCallbackTimeout);
             return this;
         }
 
         public NewApplicationBuilder callbackHttpMethod(String callbackHttpMethod) {
-            this.callbackHttpMethod = callbackHttpMethod;
+            params.put("callbackHttpMethod", callbackHttpMethod);
             return this;
         }
 
         public Application create() throws IOException {
-            Map<String, Object> params = new HashMap<String, Object>();
-
-            params.put("name", name);
-
-            if (incomingCallUrl != null) params.put("incomingCallUrl", incomingCallUrl);
-            if (incomingSmsUrl != null) params.put("incomingSmsUrl", incomingSmsUrl);
-            if (autoAnswer != null) params.put("autoAnswer", String.valueOf(autoAnswer));
-            if (incomingCallFallbackUrl != null) params.put("incomingCallFallbackUrl", incomingCallFallbackUrl);
-            if (incomingCallUrlCallbackTimeout != null)
-                params.put("incomingCallUrlCallbackTimeout", String.valueOf(incomingCallUrlCallbackTimeout));
-            if (incomingSmsUrlCallbackTimeout != null)
-                params.put("incomingSmsUrlCallbackTimeout", String.valueOf(incomingSmsUrlCallbackTimeout));
-            if (callbackHttpMethod != null) params.put("callbackHttpMethod", callbackHttpMethod);
-
             return createApplication(params);
         }
     }

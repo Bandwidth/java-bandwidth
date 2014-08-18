@@ -28,7 +28,7 @@ public class BandwidthRestClient {
     }
 
     public Applications getApplications() {
-        return new Applications(this);
+        return new Applications(restDriver, parentUri);
     }
 
     public AvailableNumbers getAvailableNumbers() {

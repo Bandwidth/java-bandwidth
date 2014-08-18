@@ -15,7 +15,11 @@ public interface IRestDriver {
 
     JSONObject getObject(String uri) throws IOException;
 
+    JSONObject create(String uri, Map<String, Object> params) throws IOException;
 
+    void post(String uri, Map<String, Object> params) throws IOException;
+
+    void delete(String uri) throws IOException;
 
 
 

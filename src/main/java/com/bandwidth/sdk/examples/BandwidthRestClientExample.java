@@ -13,10 +13,10 @@ import java.util.List;
 public class BandwidthRestClientExample {
 
     public static void main(String[] args) throws IOException {
-        BandwidthRestClient client = new BandwidthRestClient("u-xtimpcu6fv62smbq5cus4xa", "t-5xcuy5and7vecnfsw2vvbyq", "xfqrw5xwx5ita67nfvpg477c3zz2jlgpjlhfjji"); // todo
+        BandwidthRestClient client = new BandwidthRestClient("<userId>", "<token>", "<secret>"); // todo
 
         printAccount(client);
-//        printApplications(client);
+        printApplications(client);
 //        printAvailableNumbers(client);
 //        printBridges(client);
 //        printCalls(client);
