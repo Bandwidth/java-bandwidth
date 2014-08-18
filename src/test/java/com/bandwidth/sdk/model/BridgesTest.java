@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,10 +23,7 @@ public class BridgesTest {
     public void setUp() throws Exception {
         mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
-        bridges = new Bridges(client);
+        bridges = new Bridges(mockRestDriver, "parentUri");
     }
 
     @Test
@@ -56,7 +52,7 @@ public class BridgesTest {
         List<Bridge> bridgeList = bridges.getBridges();
         assertThat(bridgeList.size(), equalTo(2));
         assertThat(bridgeList.get(0).getId(), equalTo("id1"));
-        assertThat(bridgeList.get(0).getState(), equalTo(BridgeState.completed));
+        assertThat(bridgeList.get(0).getState(), equalTo("completed"));
         assertThat(bridgeList.get(0).isBridgeAudio(), equalTo(true));
         assertThat(bridgeList.get(0).getCalls(), equalTo("https://v1/users/userId/bridges/bridgeId/calls"));
 
@@ -70,7 +66,7 @@ public class BridgesTest {
         Bridge bridge = bridges.newBridgeBuilder().create();
         assertThat(bridge.getId(), equalTo("id1"));
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
-        assertThat(bridge.getState(), equalTo(BridgeState.created));
+        assertThat(bridge.getState(), equalTo("created"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridge"));
     }
@@ -81,7 +77,7 @@ public class BridgesTest {
         Bridge bridge = bridges.getBridgeById("id1");
         assertThat(bridge.getId(), equalTo("id1"));
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
-        assertThat(bridge.getState(), equalTo(BridgeState.created));
+        assertThat(bridge.getState(), equalTo("created"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestBridgeById"));
     }

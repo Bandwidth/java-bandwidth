@@ -1,13 +1,9 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
-import org.apache.commons.lang3.StringUtils;
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,99 +11,55 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class Gather {
+public class Gather extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-    private final String callId;
-
-    private String id;
-    private String state;
-    private String reason;
-    private String call;
-    private String digits;
-
-    private Date createdTime;
-    private Date completedTime;
-
-    public static Gather from(BandwidthRestClient client, String callId, JSONObject jsonObject) {
-        Gather gather = new Gather(client, callId);
-
-        updateProperties(jsonObject, gather);
-
-        return gather;
+    public Gather(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
-    private static void updateProperties(JSONObject jsonObject, Gather gather) {
-        gather.id = (String) jsonObject.get("id");
-        gather.state = (String) jsonObject.get("state");
-        gather.reason = (String) jsonObject.get("reason");
-        gather.call = (String) jsonObject.get("call");
-        gather.digits = (String) jsonObject.get("digits");
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-        try {
-            String time = (String) jsonObject.get("createdTime");
-            if (StringUtils.isNotEmpty(time)) gather.createdTime = dateFormat.parse(time);
-
-            time = (String) jsonObject.get("completedTime");
-            if (StringUtils.isNotEmpty(time)) gather.completedTime = dateFormat.parse(time);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Gather(BandwidthRestClient client, String callId) {
-        this.client = client;
-        this.callId = callId;
-    }
-
-    public void complete() throws IOException{
+    public void complete() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
-        client.updateCallGather(callId, id, params);
+        driver.post(getUri(), params);
 
-        JSONObject jsonObject = client.requestCallGatherById(callId, id);
-        updateProperties(jsonObject, this);
-    }
-
-    public String getId() {
-        return id;
+        JSONObject jsonObject = driver.getObject(getUri());
+        updateProperties(jsonObject);
     }
 
     public String getState() {
-        return state;
+        return getPropertyAsString("state");
     }
 
     public String getReason() {
-        return reason;
+        return getPropertyAsString("reason");
     }
 
     public String getCall() {
-        return call;
+        return getPropertyAsString("call");
     }
 
     public String getDigits() {
-        return digits;
+        return getPropertyAsString("digits");
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return getPropertyAsDate("createdTime");
     }
 
     public Date getCompletedTime() {
-        return completedTime;
+        return getPropertyAsDate("completedTime");
     }
 
     @Override
     public String toString() {
         return "Gather{" +
-                "completedTime=" + completedTime +
-                ", createdTime=" + createdTime +
-                ", digits='" + digits + '\'' +
-                ", call='" + call + '\'' +
-                ", reason='" + reason + '\'' +
-                ", state='" + state + '\'' +
-                ", id='" + id + '\'' +
+                "completedTime=" + getCompletedTime() +
+                ", createdTime=" + getCreatedTime() +
+                ", digits='" + getDigits() + '\'' +
+                ", call='" + getCall() + '\'' +
+                ", reason='" + getReason() + '\'' +
+                ", state='" + getState() + '\'' +
+                ", id='" + getId() + '\'' +
                 '}';
     }
 }

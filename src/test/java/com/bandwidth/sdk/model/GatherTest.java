@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
 import org.hamcrest.CoreMatchers;
 import org.json.simple.JSONObject;
@@ -24,7 +23,7 @@ public class GatherTest {
                 "  \"digits\": \"123\"\n" +
                 "}");
 
-        Gather gather = Gather.from(null, null, jsonObject);
+        Gather gather = new Gather(null, null, jsonObject);
         assertThat(gather.getId(), CoreMatchers.equalTo("gtr-kj4xloaq5vbpfxyeypndgxa"));
         assertThat(gather.getCall(), CoreMatchers.equalTo("https://api.catapult.inetwork.com/v1/users/u-xa2n3oxk6it4efbglisna6a/calls/c-isw3qup6gvr3ywcsentygnq"));
         assertThat(gather.getState(), CoreMatchers.equalTo("completed"));
@@ -45,10 +44,7 @@ public class GatherTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Gather gather = Gather.from(client, null, jsonObject);
+        Gather gather = new Gather(mockRestDriver, "parentUri", jsonObject);
         gather.complete();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCallGather"));

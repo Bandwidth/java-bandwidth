@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,10 +9,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class CallTest {
@@ -21,13 +18,13 @@ public class CallTest {
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
-        Call call = Call.from(null, jsonObject);
+        Call call = new Call(null, null, jsonObject);
 
         assertThat(call.getId(), equalTo("c-11111111111111111111111"));
-        assertThat(call.getState(), equalTo(CallState.completed));
+        assertThat(call.getState(), equalTo("completed"));
         assertThat(call.getEvents(), equalTo("https://api.catapult.inetwork.com/v1/users/calls/events"));
         assertThat(call.getChargeableDuration(), equalTo(300l));
-        assertThat(call.getDirection(), equalTo(CallDirection.in));
+        assertThat(call.getDirection(), equalTo("in"));
         assertThat(call.getFrom(), equalTo("+22222222222"));
         assertThat(call.getTo(), equalTo("+11111111111"));
         assertThat(call.isRecordingEnabled(), equalTo(true));
@@ -40,10 +37,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.hangUp();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
@@ -57,10 +51,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.answerOnIncoming();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
@@ -74,10 +65,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.rejectIncoming();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
@@ -91,10 +79,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.recordingOn();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
@@ -113,10 +98,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.callTransferBuilder("8917727272").callbackUrl("url").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
@@ -140,10 +122,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         call.callAudioBuilder().fileUrl("url").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallAudio"));
 
@@ -163,10 +142,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         call.sendDtmf("1234");
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("sendCallDtmf"));
@@ -179,10 +155,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}]");
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         List<Event> eventsList = call.getEventsList();
 
         assertThat(eventsList.size(), equalTo(1));
@@ -198,10 +171,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         Event event = call.getEventById("id1");
 
         assertThat(event.getId(), equalTo("ce-hsdbdbdhd"));
@@ -233,10 +203,7 @@ public class CallTest {
                 "  }\n" +
                 "]");
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         List<Recording> recordings = call.getRecordings();
 
         assertThat(recordings.size(), equalTo(2));
@@ -255,10 +222,7 @@ public class CallTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         call.callGatherBuilder().maxDigits(5).promptSentence("Hello").create();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallGather"));
@@ -279,10 +243,7 @@ public class CallTest {
                         "  \"digits\": \"123\"\n" +
                         "}");
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Call call = Call.from(client, jsonObject);
+        Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         Gather gather = call.getGatherById("gtr-kj4xloaq5vbpfxyeypndgxa");
 
         assertThat(gather.getId(), equalTo("gtr-kj4xloaq5vbpfxyeypndgxa"));

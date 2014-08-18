@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -13,12 +14,18 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class Calls {
+public class Calls extends BaseModelObject {
 
-    private final BandwidthRestClient client;
+    public Calls(IRestDriver driver, String parentUri) {
+        super(driver, parentUri, null);
+    }
 
-    public Calls(BandwidthRestClient client) {
-        this.client = client;
+    @Override
+    public String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "calls"
+        }, '/');
     }
 
     public QueryCallsBuilder queryCallsBuilder() {
@@ -30,23 +37,30 @@ public class Calls {
     }
 
     public Call getCallById(String callId) throws IOException {
-        JSONObject jsonObject = client.requestCallById(callId);
-        return Call.from(client, jsonObject);
+        String callsUri = getUri();
+        String eventPath = StringUtils.join(new String[]{
+                callsUri,
+                callId
+        }, '/');
+        JSONObject jsonObject = driver.getObject(eventPath);
+        return new Call(driver, callsUri, jsonObject);
     }
 
     private List<Call> getCalls(Map<String, Object> params) throws IOException {
-        JSONArray jsonArray = client.requestCalls(params);
+        String callsUri = getUri();
+        JSONArray jsonArray = driver.getArray(callsUri, params);
 
         List<Call> calls = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            calls.add(Call.from(client, (JSONObject) obj));
+            calls.add(new Call(driver, callsUri, (JSONObject) obj));
         }
         return calls;
     }
 
     private Call newCall(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.createCall(params);
-        return Call.from(client, jsonObject);
+        String callsUri = getUri();
+        JSONObject jsonObject = driver.create(callsUri, params);
+        return new Call(driver, callsUri, jsonObject);
     }
 
     public class QueryCallsBuilder {

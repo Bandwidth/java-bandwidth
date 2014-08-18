@@ -36,15 +36,15 @@ public class BandwidthRestClient {
     }
 
     public Bridges getBridges() {
-        return new Bridges(this);
+        return new Bridges(restDriver, parentUri);
     }
 
     public Calls getCalls() {
-        return new Calls(this);
+        return new Calls(restDriver, parentUri);
     }
 
     public Conferences getConferences() {
-        return new Conferences(this);
+        return new Conferences(restDriver, parentUri);
     }
 
     /**

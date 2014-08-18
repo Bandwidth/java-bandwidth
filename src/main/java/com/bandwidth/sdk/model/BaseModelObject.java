@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,10 @@ public abstract class BaseModelObject {
         this.driver = driver;
         this.parentUri = parentUri;
 
+        updateProperties(jsonObject);
+    }
+
+    protected void updateProperties(JSONObject jsonObject) {
         if (jsonObject != null) {
             for (Object key : jsonObject.keySet()) {
                 properties.put(key.toString(), jsonObject.get(key));
@@ -50,6 +55,25 @@ public abstract class BaseModelObject {
         return (String) properties.get(key);
     }
 
+    protected String[] getPropertyAsStringArray(String key) {
+        if (properties.containsKey(key)) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) properties.get(key);
+
+            String[] arr = new String[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                Object obj = list.get(i);
+                arr[i] = obj.toString();
+            }
+            return arr;
+        } else {
+            return null;
+        }
+    }
+
+    protected Object getProperty(String key) {
+        return properties.get(key);
+    }
     protected Boolean getPropertyAsBoolean(String key) {
         return (Boolean) properties.get(key);
     }

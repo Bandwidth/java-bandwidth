@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -7,44 +8,27 @@ import java.util.Date;
 /**
  * @author vpotapenko
  */
-public class Event {
+public class Event extends BaseModelObject {
 
-    private String id;
-    private Date time;
-    private Object data;
-
-    public static Event from(JSONObject jsonObject) {
-        Event event = new Event();
-        event.id = (String) jsonObject.get("id");
-        event.data = jsonObject.get("data");
-
-        Long time = (Long) jsonObject.get("time");
-        if (time != null) event.time = new Date(time);
-
-        return event;
-    }
-
-    private Event() {
-    }
-
-    public String getId() {
-        return id;
+    public Event(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
     public Date getTime() {
-        return time;
+        Long time = getPropertyAsLong("time");
+        return new Date(time);
     }
 
     public Object getData() {
-        return data;
+        return getProperty("data");
     }
 
     @Override
     public String toString() {
         return "Event{" +
-                "id='" + id + '\'' +
-                ", time=" + time +
-                ", data=" + data +
+                "id='" + getId() + '\'' +
+                ", time=" + getTime() +
+                ", data=" + getData() +
                 '}';
     }
 }

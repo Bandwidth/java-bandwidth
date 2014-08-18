@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,21 +19,18 @@ public class BridgeTest {
     public void shouldBeCreatedFromJson() throws ParseException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
 
-        Bridge bridge = Bridge.from(null, jsonObject);
+        Bridge bridge = new Bridge(null, null, jsonObject);
         assertThat(bridge.getId(), equalTo("id1"));
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
-        assertThat(bridge.getState(), equalTo(BridgeState.created));
+        assertThat(bridge.getState(), equalTo("created"));
     }
 
     @Test
     public void shouldUpdateAttributesOnServer() throws ParseException, IOException {
         MockRestDriver mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = Bridge.from(client, jsonObject);
+        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
 
         assertThat(bridge.getId(), equalTo("id1"));
         bridge.setBridgeAudio(true);
@@ -47,11 +43,8 @@ public class BridgeTest {
     public void shouldPostAudioOnServer() throws ParseException, IOException {
         MockRestDriver mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = Bridge.from(client, jsonObject);
+        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
 
         bridge.newBridgeAudioBuilder().fileUrl("some url").create();
 
@@ -62,11 +55,8 @@ public class BridgeTest {
     public void shouldStopAudioOnServer() throws ParseException, IOException {
         MockRestDriver mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = Bridge.from(client, jsonObject);
+        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
 
         bridge.stopAudioFilePlaying();
 
@@ -77,11 +67,8 @@ public class BridgeTest {
     public void shouldStopSentenceOnServer() throws ParseException, IOException {
         MockRestDriver mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = Bridge.from(client, jsonObject);
+        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
 
         bridge.stopSentence();
 
@@ -92,11 +79,8 @@ public class BridgeTest {
     public void shouldGetBridgeCalls() throws ParseException, IOException {
         MockRestDriver mockRestDriver = new MockRestDriver();
 
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = Bridge.from(client, jsonObject);
+        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
 
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"},{\"to\":\"+33333333333\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"out\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+44444444444\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id2\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}]");
         List<Call> bridgeCalls = bridge.getBridgeCalls();

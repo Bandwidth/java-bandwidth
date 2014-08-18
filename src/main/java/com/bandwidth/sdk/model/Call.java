@@ -1,205 +1,171 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @author vpotapenko
  */
-public class Call {
+public class Call extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    private String id;
-
-    private CallDirection direction;
-    private CallState state;
-
-    private String from;
-    private String to;
-    private String callbackUrl;
-    private String events;
-
-    private Date startTime;
-    private Date activeTime;
-    private Date endTime;
-
-    private Long chargeableDuration;
-    private boolean recordingEnabled;
-
-    public static Call from(BandwidthRestClient client, JSONObject jsonObject) {
-        Call call = new Call(client);
-        updateProperties(jsonObject, call);
-        return call;
+    public Call(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
-    private static void updateProperties(JSONObject jsonObject, Call call) {
-        call.id = (String) jsonObject.get("id");
-        call.direction = CallDirection.valueOf((String) jsonObject.get("direction"));
-        call.state = CallState.byName((String) jsonObject.get("state"));
-        call.from = (String) jsonObject.get("from");
-        call.to = (String) jsonObject.get("to");
-        call.callbackUrl = (String) jsonObject.get("callbackUrl");
-        call.events = (String) jsonObject.get("events");
-        call.chargeableDuration = (Long) jsonObject.get("chargeableDuration");
-        call.recordingEnabled = Objects.equals(jsonObject.get("recordingEnabled"), Boolean.TRUE);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-        try {
-            String time = (String) jsonObject.get("startTime");
-            if (StringUtils.isNotEmpty(time)) call.startTime = dateFormat.parse(time);
-
-            time = (String) jsonObject.get("activeTime");
-            if (StringUtils.isNotEmpty(time)) call.activeTime = dateFormat.parse(time);
-
-            time = (String) jsonObject.get("endTime");
-            if (StringUtils.isNotEmpty(time)) call.endTime = dateFormat.parse(time);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+    public String getDirection() {
+        return getPropertyAsString("direction");
     }
 
-    private Call(BandwidthRestClient client) {
-        this.client = client;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public CallDirection getDirection() {
-        return direction;
-    }
-
-    public CallState getState() {
-        return state;
+    public String getState() {
+        return getPropertyAsString("state");
     }
 
     public String getFrom() {
-        return from;
+        return getPropertyAsString("from");
     }
 
     public String getTo() {
-        return to;
+        return getPropertyAsString("to");
     }
 
     public String getCallbackUrl() {
-        return callbackUrl;
+        return getPropertyAsString("callbackUrl");
     }
 
     public String getEvents() {
-        return events;
+        return getPropertyAsString("events");
     }
 
     public Date getStartTime() {
-        return startTime;
+        return getPropertyAsDate("startTime");
     }
 
     public Date getActiveTime() {
-        return activeTime;
+        return getPropertyAsDate("activeTime");
     }
 
     public Date getEndTime() {
-        return endTime;
+        return getPropertyAsDate("endTime");
     }
 
     public Long getChargeableDuration() {
-        return chargeableDuration;
+        return getPropertyAsLong("chargeableDuration");
     }
 
     public boolean isRecordingEnabled() {
-        return recordingEnabled;
+        return getPropertyAsBoolean("recordingEnabled");
     }
 
     public List<Recording> getRecordings() throws IOException {
-        JSONArray array = client.requestCallRecordings(id);
+        String recordingsPath = StringUtils.join(new String[]{
+                getUri(),
+                "recordings"
+        }, '/');
+        JSONArray array = driver.getArray(recordingsPath, null);
 
         List<Recording> list = new ArrayList<Recording>();
         for (Object object : array) {
-            list.add(Recording.from((JSONObject) object));
+            list.add(new Recording(driver, recordingsPath, (JSONObject) object));
         }
         return list;
     }
 
     public List<Event> getEventsList() throws IOException {
-        JSONArray array = client.requestCallEvents(id);
+        String eventsPath = StringUtils.join(new String[]{
+                getUri(),
+                "events"
+        }, '/');
+        JSONArray array = driver.getArray(eventsPath, null);
 
         List<Event> list = new ArrayList<Event>();
         for (Object object : array) {
-            list.add(Event.from((JSONObject) object));
+            list.add(new Event(driver, eventsPath, (JSONObject) object));
         }
         return list;
     }
 
     public Event getEventById(String eventId) throws IOException {
-        JSONObject jsonObject = client.requestCallEventById(id, eventId);
-        return Event.from(jsonObject);
+        String eventPath = StringUtils.join(new String[]{
+                getUri(),
+                "events",
+                eventId
+        }, '/');
+        JSONObject jsonObject = driver.getObject(eventPath);
+        String eventsPath = StringUtils.join(new String[]{
+                getUri(),
+                "events"
+        }, '/');
+        return new Event(driver, eventsPath, jsonObject);
     }
 
     public void hangUp() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("state", CallState.completed.name());
+        params.put("state", "completed");
 
-        client.updateCall(id, params);
+        String uri = getUri();
+        driver.post(uri, params);
 
-        JSONObject jsonObject = client.requestCallById(id);
-        updateProperties(jsonObject, this);
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public void answerOnIncoming() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("state", CallState.active.name());
+        params.put("state", "active");
 
-        client.updateCall(id, params);
+        String uri = getUri();
+        driver.post(uri, params);
 
-        JSONObject jsonObject = client.requestCallById(id);
-        updateProperties(jsonObject, this);
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public void rejectIncoming() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("state", CallState.rejected.name());
+        params.put("state", "rejected");
 
-        client.updateCall(id, params);
+        String uri = getUri();
+        driver.post(uri, params);
 
-        JSONObject jsonObject = client.requestCallById(id);
-        updateProperties(jsonObject, this);
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public void recordingOn() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "true");
 
-        client.updateCall(id, params);
+        String uri = getUri();
+        driver.post(uri, params);
 
-        JSONObject jsonObject = client.requestCallById(id);
-        updateProperties(jsonObject, this);
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public void recordingOff() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "false");
 
-        client.updateCall(id, params);
+        String uri = getUri();
+        driver.post(uri, params);
 
-        JSONObject jsonObject = client.requestCallById(id);
-        updateProperties(jsonObject, this);
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     private void transfer(Map<String, Object> params) throws IOException {
-        params.put("state", CallState.transferring.name());
-        client.updateCall(id, params);
+        params.put("state", "transferring");
 
-        JSONObject jsonObject = client.requestCallById(id);
-        updateProperties(jsonObject, this);
+        String uri = getUri();
+        driver.post(uri, params);
+
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public CallTransferBuilder callTransferBuilder(String transferTo) {
@@ -219,13 +185,22 @@ public class Call {
     }
 
     private void createCallAudio(Map<String, Object> params) throws IOException {
-        client.createCallAudio(getId(), params);
+        String audioPath = StringUtils.join(new String[]{
+                getUri(),
+                "audio"
+        }, '/');
+        driver.post(audioPath, params);
     }
 
     public void sendDtmf(String dtmf) throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("dtmfOut", dtmf);
-        client.sendCallDtmf(id, params);
+
+        String uri = StringUtils.join(new String[]{
+                getUri(),
+                "dtmf"
+        }, '/');
+        driver.post(uri, params);
     }
 
     public CallGatherBuilder callGatherBuilder() {
@@ -233,29 +208,42 @@ public class Call {
     }
 
     private void createGather(Map<String, Object> params) throws IOException {
-        client.createCallGather(id, params);
+        String uri = StringUtils.join(new String[]{
+                getUri(),
+                "gather"
+        }, '/');
+        driver.post(uri, params);
     }
 
-    public Gather getGatherById(String gatherId) throws IOException{
-        JSONObject jsonObject = client.requestCallGatherById(id, gatherId);
-        return Gather.from(client, id, jsonObject);
+    public Gather getGatherById(String gatherId) throws IOException {
+        String gatherPath = StringUtils.join(new String[]{
+                getUri(),
+                "gather",
+                gatherId
+        }, '/');
+        JSONObject jsonObject = driver.getObject(gatherPath);
+        String gathersPath = StringUtils.join(new String[]{
+                        getUri(),
+                        "events"
+                }, '/');
+        return new Gather(driver, gathersPath, jsonObject);
     }
 
     @Override
     public String toString() {
         return "Call{" +
-                "id='" + id + '\'' +
-                ", direction=" + direction +
-                ", state=" + state +
-                ", from='" + from + '\'' +
-                ", to='" + to + '\'' +
-                ", callbackUrl='" + callbackUrl + '\'' +
-                ", events='" + events + '\'' +
-                ", startTime=" + startTime +
-                ", activeTime=" + activeTime +
-                ", endTime=" + endTime +
-                ", chargeableDuration=" + chargeableDuration +
-                ", recordingEnabled=" + recordingEnabled +
+                "id='" + getId() + '\'' +
+                ", direction=" + getDirection() +
+                ", state=" + getState() +
+                ", from='" + getFrom() + '\'' +
+                ", to='" + getTo() + '\'' +
+                ", callbackUrl='" + getCallbackUrl() + '\'' +
+                ", events='" + getEvents() + '\'' +
+                ", startTime=" + getStartTime() +
+                ", activeTime=" + getActiveTime() +
+                ", endTime=" + getEndTime() +
+                ", chargeableDuration=" + getChargeableDuration() +
+                ", recordingEnabled=" + isRecordingEnabled() +
                 '}';
     }
 

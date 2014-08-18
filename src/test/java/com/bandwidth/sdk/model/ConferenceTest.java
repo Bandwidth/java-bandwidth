@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.driver.MockRestDriver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -22,9 +21,9 @@ public class ConferenceTest {
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        Conference conference = Conference.from(null, jsonObject);
+        Conference conference = new Conference(null, null, jsonObject);
         assertThat(conference.getId(), equalTo("{conferenceId}"));
-        assertThat(conference.getState(), equalTo(ConferenceState.created));
+        assertThat(conference.getState(), equalTo("created"));
         assertThat(conference.getFrom(), equalTo("+19703255647"));
     }
 
@@ -40,10 +39,7 @@ public class ConferenceTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Conference conference = Conference.from(client, jsonObject);
+        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
         conference.complete();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
@@ -61,10 +57,7 @@ public class ConferenceTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Conference conference = Conference.from(client, jsonObject);
+        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
         conference.mute();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
@@ -82,10 +75,7 @@ public class ConferenceTest {
         MockRestDriver mockRestDriver = new MockRestDriver();
         mockRestDriver.result = jsonObject;
 
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Conference conference = Conference.from(client, jsonObject);
+        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
 
         conference.conferenceAudioBuilder().sentence("Hello").locale(SentenceLocale.German).create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createConferenceAudio"));
@@ -134,10 +124,7 @@ public class ConferenceTest {
                 "      \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId3}\"\n" +
                 "  }\n" +
                 "]");
-        BandwidthRestClient client = new BandwidthRestClient("", "", "");
-        client.setRestDriver(mockRestDriver);
-
-        Conference conference = Conference.from(client, jsonObject);
+        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
         List<ConferenceMember> members = conference.getMembers();
         assertThat(members.size(), equalTo(3));
         assertThat(members.get(1).getId(), equalTo("{memberId2}"));

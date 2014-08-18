@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -13,27 +14,39 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class Bridges {
+public class Bridges extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    public Bridges(BandwidthRestClient client) {
-        this.client = client;
+    public Bridges(IRestDriver driver, String parentUri) {
+        super(driver, parentUri, null);
     }
 
     public List<Bridge> getBridges() throws IOException {
-        JSONArray array = client.requestBridges();
+        JSONArray array = driver.getArray(getUri(), null);
 
+        String bridgesUri = getUri();
         List<Bridge> bridges = new ArrayList<Bridge>();
         for (Object obj : array) {
-            bridges.add(Bridge.from(client, (JSONObject) obj));
+            bridges.add(new Bridge(driver, bridgesUri, (JSONObject) obj));
         }
         return bridges;
     }
 
+    @Override
+    public String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "bridges"
+        }, '/');
+    }
+
     public Bridge getBridgeById(String id) throws IOException {
-        JSONObject jsonObject = client.requestBridgeById(id);
-        return Bridge.from(client, jsonObject);
+        String bridgesUri = getUri();
+        String eventPath = StringUtils.join(new String[]{
+                bridgesUri,
+                id
+        }, '/');
+        JSONObject jsonObject = driver.getObject(eventPath);
+        return new Bridge(driver, bridgesUri, jsonObject);
     }
 
     public NewBridgeBuilder newBridgeBuilder() {
@@ -41,8 +54,9 @@ public class Bridges {
     }
 
     private Bridge createBridge(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.createBridge(params);
-        return Bridge.from(client, jsonObject);
+        String bridgesUri = getUri();
+        JSONObject jsonObject = driver.create(bridgesUri, params);
+        return new Bridge(driver, bridgesUri, jsonObject);
     }
 
     public class NewBridgeBuilder {

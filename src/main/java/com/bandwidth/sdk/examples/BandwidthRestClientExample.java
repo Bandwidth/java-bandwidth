@@ -18,8 +18,8 @@ public class BandwidthRestClientExample {
         printAccount(client);
         printApplications(client);
         printAvailableNumbers(client);
-//        printBridges(client);
-//        printCalls(client);
+        printBridges(client);
+        printCalls(client);
     }
 
     private static void printCalls(BandwidthRestClient client) throws IOException {

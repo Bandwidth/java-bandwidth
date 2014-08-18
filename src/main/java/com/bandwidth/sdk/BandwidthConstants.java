@@ -20,12 +20,13 @@ public abstract class BandwidthConstants {
     public static final String ACCOUNT_PATH = "users/%s/account"; // userId as a parameter
     public static final String ACCOUNT_TRANSACTIONS_PATH = "users/%s/account/transactions"; // userId as a parameter
     public static final String APPLICATIONS_PATH = "users/%s/applications"; // userId as a parameter
-
     public static final String LOCAL_AVAILABLE_NUMBERS_PATH = "availableNumbers/local";
     public static final String TOLL_FREE_AVAILABLE_NUMBERS_PATH = "availableNumbers/tollFree";
+
     public static final String BRIDGES_PATH = "users/%s/bridges"; // userId as a parameter
     public static final String BRIDGE_AUDIO_PATH = "users/%s/bridges/%s/audio"; // userId and bridgeId as parameters
     public static final String BRIDGE_CALLS_PATH = "users/%s/bridges/%s/calls"; // userId and bridgeId as parameters
+
     public static final String CALLS_PATH = "users/%s/calls"; // userId as a parameter
     public static final String CALL_AUDIO_PATH = "users/%s/calls/%s/audio"; // userId and callId as parameters
     public static final String CALL_DTMF_PATH = "users/%s/calls/%s/dtmf"; // userId and callId as parameters

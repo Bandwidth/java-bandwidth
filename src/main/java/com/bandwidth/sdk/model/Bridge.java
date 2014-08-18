@@ -1,124 +1,80 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @author vpotapenko
  */
-public class Bridge {
+public class Bridge extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    private String id;
-    private BridgeState state;
-    private String[] callIds;
-    private String calls;
-    private boolean bridgeAudio;
-    private Date completedTime;
-    private Date createdTime;
-    private Date activatedTime;
-
-    private Bridge(BandwidthRestClient client) {
-        this.client = client;
-    }
-
-    public static Bridge from(BandwidthRestClient client, JSONObject jsonObject) {
-        Bridge bridge = new Bridge(client);
-        bridge.id = (String) jsonObject.get("id");
-        bridge.state = BridgeState.from((String) jsonObject.get("state"));
-        bridge.calls = (String) jsonObject.get("calls");
-        bridge.bridgeAudio = jsonObject.get("bridgeAudio").equals("true");
-
-        if (jsonObject.containsKey("callIds")) {
-            JSONArray jsonArray = (JSONArray) jsonObject.get("callIds");
-            bridge.callIds = new String[jsonArray.size()];
-            for (int i = 0; i < bridge.callIds.length; i++) {
-                bridge.callIds[i] = (String) jsonArray.get(i);
-            }
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-        try {
-            String time = (String) jsonObject.get("completedTime");
-            if (StringUtils.isNotEmpty(time)) bridge.completedTime = dateFormat.parse(time);
-
-            time = (String) jsonObject.get("createdTime");
-            if (StringUtils.isNotEmpty(time)) bridge.createdTime = dateFormat.parse(time);
-
-            time = (String) jsonObject.get("activatedTime");
-            if (StringUtils.isNotEmpty(time)) bridge.activatedTime = dateFormat.parse(time);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        return bridge;
+    public Bridge(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
     public List<Call> getBridgeCalls() throws IOException {
-        JSONArray jsonArray = client.requestBridgeCalls(id);
+        String callsPath = StringUtils.join(new String[]{
+                getUri(),
+                "calls"
+        }, '/');
+        JSONArray jsonArray = driver.getArray(callsPath, null);
 
         List<Call> callList = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            callList.add(Call.from(client, (JSONObject) obj));
+            callList.add(new Call(driver, callsPath, (JSONObject) obj));
         }
         return callList;
     }
 
     public void setCallIds(String[] callIds) {
-        this.callIds = callIds;
+        putProperty("callIds", Arrays.asList(callIds));
     }
 
     public void setBridgeAudio(boolean bridgeAudio) {
-        this.bridgeAudio = bridgeAudio;
+        putProperty("bridgeAudio", bridgeAudio);
     }
 
     public void commit() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("bridgeAudio", String.valueOf(bridgeAudio));
+
+        params.put("bridgeAudio", isBridgeAudio());
+        String[] callIds = getCallIds();
         params.put("callIds", callIds == null ? Collections.emptyList() : Arrays.asList(callIds));
 
-        client.updateBridge(id, params);
+        driver.post(getUri(), params);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public BridgeState getState() {
-        return state;
+    public String getState() {
+        return getPropertyAsString("state");
     }
 
     public String[] getCallIds() {
-        return callIds;
+        return getPropertyAsStringArray("callIds");
     }
 
     public String getCalls() {
-        return calls;
+        return getPropertyAsString("calls");
     }
 
     public boolean isBridgeAudio() {
-        return bridgeAudio;
+        return getPropertyAsBoolean("bridgeAudio");
     }
 
     public Date getCompletedTime() {
-        return completedTime;
+        return getPropertyAsDate("completedTime");
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return getPropertyAsDate("createdTime");
     }
 
     public Date getActivatedTime() {
-        return activatedTime;
+        return getPropertyAsDate("activatedTime");
     }
 
     public NewBridgeAudioBuilder newBridgeAudioBuilder() {
@@ -134,20 +90,24 @@ public class Bridge {
     }
 
     private void createAudio(Map<String, Object> params) throws IOException {
-        client.createBridgeAudio(getId(), params);
+        String audioPath = StringUtils.join(new String[]{
+                getUri(),
+                "audio"
+        }, '/');
+        driver.post(audioPath, params);
     }
 
     @Override
     public String toString() {
         return "Bridge{" +
-                "id='" + id + '\'' +
-                ", state=" + state +
-                ", callIds=" + Arrays.toString(callIds) +
-                ", calls='" + calls + '\'' +
-                ", bridgeAudio=" + bridgeAudio +
-                ", completedTime=" + completedTime +
-                ", createdTime=" + createdTime +
-                ", activatedTime=" + activatedTime +
+                "id='" + getId() + '\'' +
+                ", state=" + getState() +
+                ", callIds=" + Arrays.toString(getCallIds()) +
+                ", calls='" + getCalls() + '\'' +
+                ", bridgeAudio=" + isBridgeAudio() +
+                ", completedTime=" + getCompletedTime() +
+                ", createdTime=" + getCreatedTime() +
+                ", activatedTime=" + getActivatedTime() +
                 '}';
     }
 

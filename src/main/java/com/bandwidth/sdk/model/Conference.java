@@ -1,132 +1,86 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @author vpotapenko
  */
-public class Conference {
+public class Conference extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    private String id;
-    private String from;
-    private String callbackUrl;
-    private String fallbackUrl;
-
-    private ConferenceState state;
-
-    private Long activeMembers;
-    private Long callbackTimeout;
-
-    private Date completedTime;
-    private Date createdTime;
-
-    private Conference(BandwidthRestClient client) {
-        this.client = client;
-    }
-
-    public static Conference from(BandwidthRestClient client, JSONObject jsonObject) {
-        Conference conference = new Conference(client);
-        updateProperties(jsonObject, conference);
-
-        return conference;
-    }
-
-    private static void updateProperties(JSONObject jsonObject, Conference conference) {
-        conference.id = (String) jsonObject.get("id");
-        conference.from = (String) jsonObject.get("from");
-        conference.callbackUrl = (String) jsonObject.get("callbackUrl");
-        conference.fallbackUrl = (String) jsonObject.get("fallbackUrl");
-
-        conference.activeMembers = (Long) jsonObject.get("activeMembers");
-        conference.callbackTimeout = (Long) jsonObject.get("callbackTimeout");
-
-        conference.state = ConferenceState.valueOf((String) jsonObject.get("state"));
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-        try {
-            String time = (String) jsonObject.get("completedTime");
-            if (StringUtils.isNotEmpty(time)) conference.completedTime = dateFormat.parse(time);
-
-            time = (String) jsonObject.get("createdTime");
-            if (StringUtils.isNotEmpty(time)) conference.createdTime = dateFormat.parse(time);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String getId() {
-        return id;
+    public Conference(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
     public String getFrom() {
-        return from;
+        return getPropertyAsString("from");
     }
 
     public String getCallbackUrl() {
-        return callbackUrl;
+        return getPropertyAsString("callbackUrl");
     }
 
     public String getFallbackUrl() {
-        return fallbackUrl;
+        return getPropertyAsString("fallbackUrl");
     }
 
-    public ConferenceState getState() {
-        return state;
+    public String getState() {
+        return getPropertyAsString("state");
     }
 
     public Long getActiveMembers() {
-        return activeMembers;
+        return getPropertyAsLong("activeMembers");
     }
 
     public Long getCallbackTimeout() {
-        return callbackTimeout;
+        return getPropertyAsLong("callbackTimeout");
     }
 
     public Date getCompletedTime() {
-        return completedTime;
+        return getPropertyAsDate("completedTime");
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return getPropertyAsDate("createdTime");
     }
 
     public void complete() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("state", "completed");
 
-        params.put("state", ConferenceState.completed.name());
-        client.updateConference(id, params);
+        String uri = getUri();
+        driver.post(uri, params);
 
-        JSONObject jsonObject = client.requestConferenceById(id);
-        updateProperties(jsonObject, this);
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public void mute() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
-
         params.put("mute", String.valueOf(true));
-        client.updateConference(id, params);
 
-        JSONObject jsonObject = client.requestConferenceById(id);
-        updateProperties(jsonObject, this);
+        String uri = getUri();
+        driver.post(uri, params);
+
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     public List<ConferenceMember> getMembers() throws IOException {
-        JSONArray jsonArray = client.requestConferenceMembers(id);
+        String membersPath = StringUtils.join(new String[]{
+                getUri(),
+                "members"
+        }, '/');
+        JSONArray array = driver.getArray(membersPath, null);
 
         List<ConferenceMember> members = new ArrayList<ConferenceMember>();
-        for (Object obj : jsonArray) {
-            members.add(ConferenceMember.from(client, id, (JSONObject) obj));
+        for (Object obj : array) {
+            members.add(new ConferenceMember(driver, membersPath, (JSONObject) obj));
         }
         return members;
     }
@@ -136,21 +90,25 @@ public class Conference {
     }
 
     private void createConferenceAudio(Map<String, Object> params) throws IOException {
-        client.createConferenceAudio(id, params);
+        String audioPath = StringUtils.join(new String[]{
+                getUri(),
+                "audio"
+        }, '/');
+        driver.post(audioPath, params);
     }
 
     @Override
     public String toString() {
         return "Conference{" +
-                "id='" + id + '\'' +
-                ", from='" + from + '\'' +
-                ", callbackUrl='" + callbackUrl + '\'' +
-                ", fallbackUrl='" + fallbackUrl + '\'' +
-                ", state=" + state +
-                ", activeMembers=" + activeMembers +
-                ", callbackTimeout=" + callbackTimeout +
-                ", completedTime=" + completedTime +
-                ", createdTime=" + createdTime +
+                "id='" + getId() + '\'' +
+                ", from='" + getFrom() + '\'' +
+                ", callbackUrl='" + getCallbackUrl() + '\'' +
+                ", fallbackUrl='" + getFallbackUrl() + '\'' +
+                ", state=" + getState() +
+                ", activeMembers=" + getActiveMembers() +
+                ", callbackTimeout=" + getCallbackTimeout() +
+                ", completedTime=" + getCompletedTime() +
+                ", createdTime=" + getCreatedTime() +
                 '}';
     }
 

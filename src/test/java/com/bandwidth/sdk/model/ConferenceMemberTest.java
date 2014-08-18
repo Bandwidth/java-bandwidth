@@ -21,7 +21,7 @@ public class ConferenceMemberTest {
                 "      \"leavingTone\": false,\n" +
                 "      \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId1}\"\n" +
                 "  }");
-        ConferenceMember member = ConferenceMember.from(null, null, jsonObject);
+        ConferenceMember member = new ConferenceMember(null, null, jsonObject);
 
         assertThat(member.getId(), equalTo("{memberId1}"));
         assertThat(member.getCall(), equalTo("https://localhost:8444/v1/users/{userId}/calls/{callId1}"));

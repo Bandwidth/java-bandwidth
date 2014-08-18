@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -10,17 +11,28 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class Conferences {
+public class Conferences extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    public Conferences(BandwidthRestClient client) {
-        this.client = client;
+    public Conferences(IRestDriver driver, String parentUri) {
+        super(driver, parentUri, null);
     }
 
     public Conference getConferenceById(String id) throws IOException {
-        JSONObject jsonObject = client.requestConferenceById(id);
-        return Conference.from(client, jsonObject);
+        String conferencesUri = getUri();
+        String conferenceUri = StringUtils.join(new String[]{
+                conferencesUri,
+                id
+        }, '/');
+        JSONObject jsonObject = driver.getObject(conferenceUri);
+        return new Conference(driver, conferencesUri, jsonObject);
+    }
+
+    @Override
+    public String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "conferences"
+        }, '/');
     }
 
     public NewConferenceBuilder newConferenceBuilder() {
@@ -28,8 +40,9 @@ public class Conferences {
     }
 
     private Conference createConference(Map<String, Object> params) throws IOException {
-        JSONObject jsonObject = client.createConference(params);
-        return Conference.from(client, jsonObject);
+        String conferencesUri = getUri();
+        JSONObject jsonObject = driver.create(conferencesUri, params);
+        return new Conference(driver, conferencesUri, jsonObject);
     }
 
     public class NewConferenceBuilder {
