@@ -17,7 +17,7 @@ public class BandwidthRestClientExample {
 
         printAccount(client);
         printApplications(client);
-//        printAvailableNumbers(client);
+        printAvailableNumbers(client);
 //        printBridges(client);
 //        printCalls(client);
     }

@@ -32,7 +32,7 @@ public class BandwidthRestClient {
     }
 
     public AvailableNumbers getAvailableNumbers() {
-        return new AvailableNumbers(this);
+        return new AvailableNumbers(restDriver);
     }
 
     public Bridges getBridges() {

@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -13,12 +14,10 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class AvailableNumbers {
+public class AvailableNumbers extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    public AvailableNumbers(BandwidthRestClient client) {
-        this.client = client;
+    public AvailableNumbers(IRestDriver driver) {
+        super(driver, null, null);
     }
 
     public QueryLocalNumbersBuilder queryLocalNumbersBuilder() {
@@ -30,21 +29,44 @@ public class AvailableNumbers {
     }
 
     private List<Number> getLocalNumbers(Map<String, Object> params) throws IOException {
-        JSONArray array = client.requestLocalAvailableNumbers(params);
+        String localUri = getLocalUri();
+        JSONArray array = driver.getArray(localUri, params);
 
         List<Number> numbers = new ArrayList<Number>();
         for (Object obj : array) {
-            numbers.add(Number.from((JSONObject) obj));
+            numbers.add(new Number(driver, localUri, (JSONObject) obj));
         }
         return numbers;
     }
 
+    private String getLocalUri() {
+        return StringUtils.join(new String[]{
+                getUri(),
+                "local"
+        }, '/');
+    }
+
+    private String getTollFreeUri() {
+        return StringUtils.join(new String[]{
+                getUri(),
+                "tollFree"
+        }, '/');
+    }
+
+    @Override
+    public String getUri() {
+        return StringUtils.join(new String[]{
+                "availableNumbers"
+        }, '/');
+    }
+
     private List<Number> getTollFreeNumbers(Map<String, Object> params) throws IOException {
-        JSONArray array = client.requestTollFreeAvailableNumbers(params);
+        String tollFreeUri = getTollFreeUri();
+        JSONArray array = driver.getArray(tollFreeUri, params);
 
         List<Number> numbers = new ArrayList<Number>();
         for (Object obj : array) {
-            numbers.add(Number.from((JSONObject) obj));
+            numbers.add(new Number(driver, tollFreeUri, (JSONObject) obj));
         }
         return numbers;
     }

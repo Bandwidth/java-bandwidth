@@ -19,8 +19,8 @@ public abstract class BandwidthConstants {
 
     public static final String ACCOUNT_PATH = "users/%s/account"; // userId as a parameter
     public static final String ACCOUNT_TRANSACTIONS_PATH = "users/%s/account/transactions"; // userId as a parameter
-
     public static final String APPLICATIONS_PATH = "users/%s/applications"; // userId as a parameter
+
     public static final String LOCAL_AVAILABLE_NUMBERS_PATH = "availableNumbers/local";
     public static final String TOLL_FREE_AVAILABLE_NUMBERS_PATH = "availableNumbers/tollFree";
     public static final String BRIDGES_PATH = "users/%s/bridges"; // userId as a parameter

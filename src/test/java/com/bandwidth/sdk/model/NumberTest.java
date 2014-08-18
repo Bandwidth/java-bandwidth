@@ -13,7 +13,7 @@ public class NumberTest {
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num\",\"nationalNumber\":\"nationalNum\",\"rateCenter\":\"rCenter\",\"city\":\"ci\"}");
-        Number number = Number.from(jsonObject);
+        Number number = new Number(null, "parentUri", jsonObject);
 
         assertThat(number.getCity(), equalTo("ci"));
         assertThat(number.getState(), equalTo("CA"));

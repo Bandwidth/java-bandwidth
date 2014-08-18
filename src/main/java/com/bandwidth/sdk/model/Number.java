@@ -1,82 +1,60 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
 /**
  * @author vpotapenko
  */
-public class Number {
+public class Number extends BaseModelObject {
 
-    private String number;
-    private String nationalNumber;
-    private String patternMatch;
-    private String city;
-    private String lata;
-    private String rateCenter;
-    private String state;
-    private Double price;
-
-    private Number() {
-    }
-
-    public static Number from(JSONObject jsonObject) {
-        Number bandwidthNumber = new Number();
-
-        bandwidthNumber.number = (String) jsonObject.get("number");
-        bandwidthNumber.nationalNumber = (String) jsonObject.get("nationalNumber");
-        bandwidthNumber.patternMatch = (String) jsonObject.get("patternMatch");
-        bandwidthNumber.city = (String) jsonObject.get("city");
-        bandwidthNumber.lata = (String) jsonObject.get("lata");
-        bandwidthNumber.rateCenter = (String) jsonObject.get("rateCenter");
-        bandwidthNumber.state = (String) jsonObject.get("state");
-        bandwidthNumber.price = Double.parseDouble((String) jsonObject.get("price"));
-
-        return bandwidthNumber;
+    public Number(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
     public String getNumber() {
-        return number;
+        return getPropertyAsString("number");
     }
 
     public String getNationalNumber() {
-        return nationalNumber;
+        return getPropertyAsString("nationalNumber");
     }
 
     public String getPatternMatch() {
-        return patternMatch;
+        return getPropertyAsString("patternMatch");
     }
 
     public String getCity() {
-        return city;
+        return getPropertyAsString("city");
     }
 
     public String getLata() {
-        return lata;
+        return getPropertyAsString("lata");
     }
 
     public String getRateCenter() {
-        return rateCenter;
+        return getPropertyAsString("rateCenter");
     }
 
     public String getState() {
-        return state;
+        return getPropertyAsString("state");
     }
 
     public Double getPrice() {
-        return price;
+        return getPropertyAsDouble("price");
     }
 
     @Override
     public String toString() {
         return "Number{" +
-                "number='" + number + '\'' +
-                ", nationalNumber='" + nationalNumber + '\'' +
-                ", patternMatch='" + patternMatch + '\'' +
-                ", city='" + city + '\'' +
-                ", lata='" + lata + '\'' +
-                ", rateCenter='" + rateCenter + '\'' +
-                ", state='" + state + '\'' +
-                ", price=" + price +
+                "number='" + getNumber() + '\'' +
+                ", nationalNumber='" + getNationalNumber() + '\'' +
+                ", patternMatch='" + getPatternMatch() + '\'' +
+                ", city='" + getCity() + '\'' +
+                ", lata='" + getLata() + '\'' +
+                ", rateCenter='" + getRateCenter() + '\'' +
+                ", state='" + getState() + '\'' +
+                ", price=" + getPrice() +
                 '}';
     }
 }
