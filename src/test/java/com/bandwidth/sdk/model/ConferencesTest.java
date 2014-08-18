@@ -33,8 +33,6 @@ public class ConferencesTest {
         assertThat(conference.getFrom(), equalTo("+number"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createConference"));
-        assertThat(mockRestDriver.requests.get(0).params.get("from").toString(), equalTo("fromNumber"));
-        assertThat(mockRestDriver.requests.get(0).params.get("callbackUrl").toString(), equalTo("url"));
     }
 
     @Test

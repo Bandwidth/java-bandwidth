@@ -1,7 +1,8 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.driver.IRestDriver;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -12,17 +13,24 @@ import java.util.*;
 /**
  * @author vpotapenko
  */
-public class Account {
+public class Account extends BaseModelObject {
 
-    private final BandwidthRestClient client;
-
-    public Account(BandwidthRestClient client) {
-        this.client = client;
+    public Account(IRestDriver driver, String parentUri) {
+        super(driver, parentUri, null);
     }
 
     public AccountInfo getAccountInfo() throws IOException {
-        JSONObject jsonObject = client.requestAccountInfo();
-        return AccountInfo.from(jsonObject);
+        String uri = getUri();
+        JSONObject jsonObject = driver.getObject(uri);
+        return new AccountInfo(driver, uri, jsonObject);
+    }
+
+    @Override
+    public String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "account"
+        }, '/');
     }
 
     public TransactionsQueryBuilder queryTransactionsBuilder() {
@@ -30,13 +38,21 @@ public class Account {
     }
 
     private List<AccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
-        JSONArray array = client.requestAccountTransactions(params);
+        String transactionsUri = getAccountTransactionsUri();
+        JSONArray array = driver.getArray(transactionsUri, params);
 
         List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
         for (Object obj : array) {
-            transactions.add(AccountTransaction.from((JSONObject) obj));
+            transactions.add(new AccountTransaction(driver, transactionsUri, (JSONObject) obj));
         }
         return transactions;
+    }
+
+    public String getAccountTransactionsUri() {
+        return StringUtils.join(new String[]{
+                getUri(),
+                "transactions"
+        }, '/');
     }
 
     public class TransactionsQueryBuilder {

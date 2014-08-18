@@ -52,6 +52,5 @@ public class GatherTest {
         gather.complete();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCallGather"));
-        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 }

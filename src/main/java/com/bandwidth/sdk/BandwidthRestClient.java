@@ -14,14 +14,17 @@ import java.util.Map;
  */
 public class BandwidthRestClient {
 
+    private final String parentUri;
+
     private IRestDriver restDriver;
 
     public BandwidthRestClient(String userId, String token, String secret) {
+        parentUri = String.format(BandwidthConstants.MAIN_URI_PATH, userId);
         restDriver = new HttpRestDriver(userId, token, secret);
     }
 
     public Account getAccount() {
-        return new Account(this);
+        return new Account(restDriver, parentUri);
     }
 
     public Applications getApplications() {
@@ -50,6 +53,9 @@ public class BandwidthRestClient {
     public void setRestDriver(IRestDriver restDriver) {
         this.restDriver = restDriver;
     }
+
+
+
 
     public JSONArray requestBridges() throws IOException {
         return restDriver.requestBridges();

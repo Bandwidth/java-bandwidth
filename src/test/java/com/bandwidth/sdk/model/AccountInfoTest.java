@@ -15,19 +15,9 @@ public class AccountInfoTest {
         jsonObject.put("accountType", "accType");
         jsonObject.put("balance", "100");
 
-        AccountInfo bandwidthAccountInfo = AccountInfo.from(jsonObject);
+        AccountInfo bandwidthAccountInfo = new AccountInfo(null, "parentUri", jsonObject);
         assertThat(bandwidthAccountInfo.getAccountType(), equalTo("accType"));
         assertThat(bandwidthAccountInfo.getBalance(), equalTo(100d));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected = NumberFormatException.class)
-    public void shouldThrowExceptionOnInvalidBalanceValue() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("accountType", "accType");
-        jsonObject.put("balance", "not valid double value");
-
-        AccountInfo.from(jsonObject);
     }
 
 }

@@ -26,11 +26,7 @@ public class AccountTest {
     @Before
     public void setUp() {
         mockRestDriver = new MockRestDriver();
-
-        BandwidthRestClient client = new BandwidthRestClient(null, null, null);
-        client.setRestDriver(mockRestDriver);
-
-        account = new Account(client);
+        account = new Account(mockRestDriver, "parentUri");
     }
 
     @SuppressWarnings("unchecked")
@@ -73,9 +69,6 @@ public class AccountTest {
 
         MockRestDriver.RestRequest restRequest = mockRestDriver.requests.get(0);
         assertThat(restRequest.name, equalTo("requestAccountTransactions"));
-        assertThat(restRequest.params.get("maxItems").toString(), equalTo("1000"));
-        assertThat(restRequest.params.get("type").toString(), equalTo("call-in"));
-        assertThat(restRequest.params.get("fromDate").toString(), equalTo(new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN).format(fromDate)));
     }
 
 }

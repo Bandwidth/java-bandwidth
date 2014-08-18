@@ -40,7 +40,6 @@ public class CallsTest {
         assertThat(callList.get(1).getFrom(), equalTo("+44444444444"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCalls"));
-        assertThat(mockRestDriver.requests.get(0).params.get("size").toString(), equalTo("2"));
     }
 
     @Test
@@ -51,11 +50,6 @@ public class CallsTest {
         assertThat(bandwidthCall, notNullValue());
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createCall"));
-        assertThat(mockRestDriver.requests.get(0).params.get("from").toString(), equalTo("from"));
-        assertThat(mockRestDriver.requests.get(0).params.get("to").toString(), equalTo("to"));
-        assertThat(mockRestDriver.requests.get(0).params.get("bridgeId").toString(), equalTo("bridgeId"));
-        assertThat(mockRestDriver.requests.get(0).params.get("callbackUrl").toString(), equalTo("url"));
-        assertThat(mockRestDriver.requests.get(0).params.get("recordingEnabled").toString(), equalTo("true"));
     }
 
     @Test

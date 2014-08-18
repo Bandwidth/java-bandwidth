@@ -23,7 +23,7 @@ public class AccountTransactionTest {
                 "    \"productType\": \"sms-out\",\n" +
                 "    \"number\": \"1672617-17281\"\n" +
                 "  }");
-        AccountTransaction transaction = AccountTransaction.from(jsonObject);
+        AccountTransaction transaction = new AccountTransaction(null, "parentUri", jsonObject);
 
         assertThat(transaction.getId(), equalTo("81782"));
         assertThat(transaction.getAmount(), equalTo(0.0075));

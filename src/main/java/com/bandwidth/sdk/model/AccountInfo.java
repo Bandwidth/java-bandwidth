@@ -1,41 +1,30 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
 /**
  * @author vpotapenko
  */
-public class AccountInfo {
+public class AccountInfo extends BaseModelObject {
 
-    private String accountType;
-    private double balance;
-
-    private AccountInfo() {
-    }
-
-    public static AccountInfo from(JSONObject jsonObject) {
-        AccountInfo accountInfo = new AccountInfo();
-        accountInfo.accountType = (String) jsonObject.get("accountType");
-
-        String balance = (String) jsonObject.get("balance");
-        accountInfo.balance = Double.parseDouble(balance);
-
-        return accountInfo;
+    public AccountInfo(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
     public String getAccountType() {
-        return accountType;
+        return getPropertyAsString("accountType");
     }
 
     public double getBalance() {
-        return balance;
+        return getPropertyAsDouble("balance");
     }
 
     @Override
     public String toString() {
         return "AccountInfo{" +
-                "accountType='" + accountType + '\'' +
-                ", balance=" + balance +
+                "accountType='" + getAccountType() + '\'' +
+                ", balance=" + getBalance() +
                 '}';
     }
 }

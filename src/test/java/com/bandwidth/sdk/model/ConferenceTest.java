@@ -47,7 +47,6 @@ public class ConferenceTest {
         conference.complete();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
-        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 
     @Test
@@ -69,7 +68,6 @@ public class ConferenceTest {
         conference.mute();
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
-        assertThat(mockRestDriver.requests.get(0).params.get("mute").toString(), equalTo("true"));
     }
 
     @Test
@@ -91,8 +89,6 @@ public class ConferenceTest {
 
         conference.conferenceAudioBuilder().sentence("Hello").locale(SentenceLocale.German).create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("createConferenceAudio"));
-        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
-        assertThat(mockRestDriver.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
     }
 
     @Test

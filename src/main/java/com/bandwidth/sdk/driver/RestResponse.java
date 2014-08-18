@@ -149,9 +149,9 @@ public class RestResponse {
     }
 
     /**
-     * Determines if the response was a client side error (HTTP 4XX status)
+     * Determines if the response was a driver side error (HTTP 4XX status)
      *
-     * @return true if this was a client error
+     * @return true if this was a driver error
      */
     public boolean isClientError() {
         return (this.getHttpStatus() >= 400 && this.getHttpStatus() < 500);

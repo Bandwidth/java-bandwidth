@@ -14,6 +14,9 @@ public abstract class BandwidthConstants {
     public static final String API_ENDPOINT = "https://api.catapult.inetwork.com";
     public static final String API_VERSION = "v1";
 
+    public static final String MAIN_URI_PATH = "users/%s"; // userId as a parameter
+
+
     public static final String ACCOUNT_PATH = "users/%s/account"; // userId as a parameter
     public static final String ACCOUNT_TRANSACTIONS_PATH = "users/%s/account/transactions"; // userId as a parameter
     public static final String APPLICATIONS_PATH = "users/%s/applications"; // userId as a parameter

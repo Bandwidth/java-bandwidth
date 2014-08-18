@@ -1,89 +1,53 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * @author vpotapenko
  */
-public class AccountTransaction {
+public class AccountTransaction extends BaseModelObject {
 
-    private String id;
-    private String type;
-    private Date dateTime;
-    private double amount;
-    private long units;
-    private String productType;
-    private String number;
-
-    private AccountTransaction() {
-    }
-
-    public static AccountTransaction from(JSONObject jsonObject) {
-        AccountTransaction transaction = new AccountTransaction();
-
-        transaction.id = (String) jsonObject.get("id");
-        transaction.type = (String) jsonObject.get("type");
-        transaction.units = (Long) jsonObject.get("units");
-        transaction.productType = (String) jsonObject.get("productType");
-        transaction.number = (String) jsonObject.get("number");
-
-        String amount = (String) jsonObject.get("amount");
-        transaction.amount = Double.parseDouble(amount);
-
-        String time = (String) jsonObject.get("time");
-        SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
-        try {
-            transaction.dateTime = dateFormat.parse(time);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        return transaction;
-    }
-
-    public String getId() {
-        return id;
+    public AccountTransaction(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+        super(driver, parentUri, jsonObject);
     }
 
     public String getType() {
-        return type;
+        return getPropertyAsString("type");
     }
 
     public Date getDateTime() {
-        return dateTime;
+        return getPropertyAsDate("time");
     }
 
     public double getAmount() {
-        return amount;
+        return getPropertyAsDouble("amount");
     }
 
     public long getUnits() {
-        return units;
+        return getPropertyAsLong("units");
     }
 
     public String getProductType() {
-        return productType;
+        return getPropertyAsString("productType");
     }
 
     public String getNumber() {
-        return number;
+        return getPropertyAsString("number");
     }
 
     @Override
     public String toString() {
         return "AccountTransaction{" +
-                "id='" + id + '\'' +
-                ", type='" + type + '\'' +
-                ", dateTime=" + dateTime +
-                ", amount=" + amount +
-                ", units=" + units +
-                ", productType='" + productType + '\'' +
-                ", number='" + number + '\'' +
+                "id='" + getId() + '\'' +
+                ", type='" + getType() + '\'' +
+                ", dateTime=" + getDateTime() +
+                ", amount=" + getAmount() +
+                ", units=" + getUnits() +
+                ", productType='" + getProductType() + '\'' +
+                ", number='" + getNumber() + '\'' +
                 '}';
     }
 }

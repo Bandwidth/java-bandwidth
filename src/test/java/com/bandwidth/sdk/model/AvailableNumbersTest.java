@@ -41,7 +41,6 @@ public class AvailableNumbersTest {
         assertThat(numbers.get(1).getNationalNumber(), equalTo("nationalNum2"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestLocalAvailableNumbers"));
-        assertThat(mockRestDriver.requests.get(0).params.get("quantity").toString(), equalTo("5"));
     }
 
     @Test
@@ -56,6 +55,5 @@ public class AvailableNumbersTest {
         assertThat(numbers.get(1).getNationalNumber(), equalTo("nn2"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("requestTollFreeAvailableNumbers"));
-        assertThat(mockRestDriver.requests.get(0).params.get("quantity").toString(), equalTo("5"));
     }
 }

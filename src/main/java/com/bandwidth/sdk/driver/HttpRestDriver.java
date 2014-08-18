@@ -53,6 +53,49 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
+    public JSONArray getArray(String uri, Map<String, Object> params) throws IOException {
+        String path = getPath(uri);
+        RestResponse response = request(path, HttpMethod.GET, params);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONArray) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    @Override
+    public JSONObject getObject(String uri) throws IOException {
+        String path = getPath(uri);
+        RestResponse response = request(path, HttpMethod.GET);
+        if (response.isError()) throw new IOException(response.getResponseText());
+
+        if (response.isJson()) {
+            try {
+                return (JSONObject) new JSONParser().parse(response.getResponseText());
+            } catch (org.json.simple.parser.ParseException e) {
+                throw new IOException(e);
+            }
+        } else {
+            throw new IOException("Response is not a JSON format.");
+        }
+    }
+
+    private String getPath(String uri) {
+        String[] parts = new String[]{
+                BandwidthConstants.API_ENDPOINT,
+                BandwidthConstants.API_VERSION,
+                uri,
+        };
+        return StringUtils.join(parts, '/');
+    }
+
+    @Override
     public JSONObject requestAccountInfo() throws IOException {
         String path = getAccountPath();
         RestResponse response = request(path, HttpMethod.GET);
@@ -702,11 +745,12 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     private RestResponse request(final String path, HttpMethod method) throws IOException {
-        return request(path, method, Collections.<String, Object>emptyMap());
+        return request(path, method, null);
     }
 
     private RestResponse request(final String path, HttpMethod method,
-                                 final Map<String, Object> paramList) throws IOException {
+                                 Map<String, Object> paramList) throws IOException {
+        if (paramList == null) paramList = Collections.<String, Object>emptyMap();
 
         HttpUriRequest request = setupRequest(path, method, paramList);
 

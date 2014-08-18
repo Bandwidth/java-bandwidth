@@ -11,6 +11,15 @@ import java.util.Map;
  */
 public interface IRestDriver {
 
+    JSONArray getArray(String uri, Map<String, Object> params) throws IOException;
+
+    JSONObject getObject(String uri) throws IOException;
+
+
+
+
+
+
     JSONObject requestAccountInfo() throws IOException;
 
     JSONArray requestAccountTransactions(Map<String, Object> params) throws IOException;
