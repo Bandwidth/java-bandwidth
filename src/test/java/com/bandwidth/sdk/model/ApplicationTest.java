@@ -9,7 +9,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class ApplicationTest {
@@ -38,9 +37,8 @@ public class ApplicationTest {
 
         application.delete();
 
-        assertThat(application.getId(), nullValue());
-
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("deleteApplication"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("delete"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1"));
     }
 
     @Test
@@ -55,6 +53,8 @@ public class ApplicationTest {
         application.setIncomingCallUrl("anotherUrl");
         application.commit();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateApplication"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1"));
+        assertThat(mockRestDriver.requests.get(0).params.get("name").toString(), equalTo("App2"));
     }
 }

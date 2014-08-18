@@ -40,8 +40,11 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.hangUp();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(1).uri, equalTo("parentUri/c-11111111111111111111111"));
     }
 
     @Test
@@ -54,8 +57,11 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.answerOnIncoming();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("active"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(1).uri, equalTo("parentUri/c-11111111111111111111111"));
     }
 
     @Test
@@ -68,8 +74,11 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.rejectIncoming();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("rejected"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(1).uri, equalTo("parentUri/c-11111111111111111111111"));
     }
 
     @Test
@@ -82,13 +91,18 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.recordingOn();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("recordingEnabled").toString(), equalTo("true"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(1).uri, equalTo("parentUri/c-11111111111111111111111"));
 
         mockRestDriver.requests.clear();
         call.recordingOff();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).params.get("recordingEnabled").toString(), equalTo("false"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(1).uri, equalTo("parentUri/c-11111111111111111111111"));
     }
 
     @Test
@@ -101,18 +115,24 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
 
         call.callTransferBuilder("8917727272").callbackUrl("url").create();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
 
         mockRestDriver.requests.clear();
         call.callTransferBuilder("8917727272").create();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
 
         mockRestDriver.requests.clear();
         call.callTransferBuilder("8917727272").gender(Gender.male).locale(SentenceLocale.French).sentence("Hello").transferCallerId("callerId").create();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCall"));
-        assertThat(mockRestDriver.requests.get(1).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("transferring"));
+        assertThat(mockRestDriver.requests.get(1).name, equalTo("getObject"));
     }
 
     @Test
@@ -124,15 +144,21 @@ public class CallTest {
 
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         call.callAudioBuilder().fileUrl("url").create();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("url"));
 
         mockRestDriver.requests.clear();
         call.stopSentence();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo(""));
 
         mockRestDriver.requests.clear();
         call.stopAudioFilePlaying();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
     }
 
     @Test
@@ -145,7 +171,9 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         call.sendDtmf("1234");
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("sendCallDtmf"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/dtmf"));
+        assertThat(mockRestDriver.requests.get(0).params.get("dtmfOut").toString(), equalTo("1234"));
     }
 
     @Test
@@ -161,7 +189,8 @@ public class CallTest {
         assertThat(eventsList.size(), equalTo(1));
         assertThat(eventsList.get(0).getId(), equalTo("ce-hsdbdbdhd"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallEvents"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/events"));
     }
 
     @Test
@@ -176,7 +205,8 @@ public class CallTest {
 
         assertThat(event.getId(), equalTo("ce-hsdbdbdhd"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallEventById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/events/id1"));
     }
 
     @Test
@@ -212,7 +242,8 @@ public class CallTest {
         assertThat(recordings.get(0).getState(), equalTo("complete"));
         assertThat(recordings.get(0).getCall(), equalTo("https://.../v1/users/.../calls/{callId}"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallRecordings"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/recordings"));
     }
 
     @Test
@@ -225,7 +256,9 @@ public class CallTest {
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
         call.callGatherBuilder().maxDigits(5).promptSentence("Hello").create();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createCallGather"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/gather"));
+        assertThat(mockRestDriver.requests.get(0).params.get("maxDigits").toString(), equalTo("5"));
     }
 
     @Test
@@ -247,6 +280,7 @@ public class CallTest {
         Gather gather = call.getGatherById("gtr-kj4xloaq5vbpfxyeypndgxa");
 
         assertThat(gather.getId(), equalTo("gtr-kj4xloaq5vbpfxyeypndgxa"));
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallGatherById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/gather/gtr-kj4xloaq5vbpfxyeypndgxa"));
     }
 }

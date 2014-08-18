@@ -36,7 +36,9 @@ public class CallsTest {
         assertThat(callList.get(1).getId(), equalTo("id2"));
         assertThat(callList.get(1).getFrom(), equalTo("+44444444444"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCalls"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/calls"));
+        assertThat(mockRestDriver.requests.get(0).params.get("size").toString(), equalTo("2"));
     }
 
     @Test
@@ -46,7 +48,10 @@ public class CallsTest {
         Call bandwidthCall = calls.newCallBuilder().from("from").to("to").bridgeId("bridgeId").callbackUrl("url").recordingEnabled(true).create();
         assertThat(bandwidthCall, notNullValue());
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createCall"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/calls"));
+        assertThat(mockRestDriver.requests.get(0).params.get("from").toString(), equalTo("from"));
+        assertThat(mockRestDriver.requests.get(0).params.get("to").toString(), equalTo("to"));
     }
 
     @Test
@@ -56,6 +61,7 @@ public class CallsTest {
         Call bandwidthCall = calls.getCallById("id1");
         assertThat(bandwidthCall, notNullValue());
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestCallById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/calls/id1"));
     }
 }

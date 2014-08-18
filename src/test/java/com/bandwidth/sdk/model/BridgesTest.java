@@ -56,7 +56,8 @@ public class BridgesTest {
         assertThat(bridgeList.get(0).isBridgeAudio(), equalTo(true));
         assertThat(bridgeList.get(0).getCalls(), equalTo("https://v1/users/userId/bridges/bridgeId/calls"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestBridges"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/bridges"));
     }
 
     @Test
@@ -68,7 +69,8 @@ public class BridgesTest {
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
         assertThat(bridge.getState(), equalTo("created"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridge"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/bridges"));
     }
 
     @Test
@@ -79,6 +81,7 @@ public class BridgesTest {
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
         assertThat(bridge.getState(), equalTo("created"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestBridgeById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/bridges/id1"));
     }
 }

@@ -29,7 +29,10 @@ public class ConferencesTest {
         assertThat(conference.getId(), equalTo("conf-id1"));
         assertThat(conference.getFrom(), equalTo("+number"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createConference"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/conferences"));
+        assertThat(mockRestDriver.requests.get(0).params.get("from").toString(), equalTo("fromNumber"));
+        assertThat(mockRestDriver.requests.get(0).params.get("callbackUrl").toString(), equalTo("url"));
     }
 
     @Test
@@ -40,6 +43,7 @@ public class ConferencesTest {
         assertThat(conference.getId(), equalTo("conf-id1"));
         assertThat(conference.getFrom(), equalTo("+number"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestConferenceById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/conferences/conf-id1"));
     }
 }

@@ -7,10 +7,7 @@ import org.json.simple.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author vpotapenko
@@ -74,8 +71,12 @@ public abstract class BaseModelObject {
     protected Object getProperty(String key) {
         return properties.get(key);
     }
+
     protected Boolean getPropertyAsBoolean(String key) {
-        return (Boolean) properties.get(key);
+        Object o = properties.get(key);
+        if (o == null) return null;
+
+        return o instanceof Boolean ? (Boolean) o : Objects.equals(o.toString(), "true");
     }
 
     protected Long getPropertyAsLong(String key) {

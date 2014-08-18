@@ -30,7 +30,7 @@ public class ApplicationsTest {
     public void shouldGetApplicationsList() throws ParseException, IOException {
         mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false},{\"id\":\"id2\",\"incomingCallUrl\":\"http:///call/callback.json\",\"incomingSmsUrl\":\"http:///sms/callback.json\",\"name\":\"App2\",\"autoAnswer\":true}]");
 
-        List<Application> applicationList = applications.queryApplicationsBuilder().list();
+        List<Application> applicationList = applications.queryApplicationsBuilder().page(1).list();
         assertThat(applicationList.size(), equalTo(2));
         assertThat(applicationList.get(0).getId(), equalTo("id1"));
         assertThat(applicationList.get(0).isAutoAnswer(), equalTo(false));
@@ -39,7 +39,9 @@ public class ApplicationsTest {
         assertThat(applicationList.get(1).isAutoAnswer(), equalTo(true));
         assertThat(applicationList.get(1).getIncomingCallUrl(), equalTo("http:///call/callback.json"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestApplications"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/applications"));
+        assertThat((Integer) mockRestDriver.requests.get(0).params.get("page"), equalTo(1));
     }
 
     @Test
@@ -52,7 +54,8 @@ public class ApplicationsTest {
         assertThat(application.getIncomingCallUrl(), equalTo("https://postBack"));
         assertThat(application.getIncomingSmsUrl(), equalTo("https://message"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createApplication"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/applications"));
     }
 
     @Test
@@ -65,6 +68,7 @@ public class ApplicationsTest {
         assertThat(application.getIncomingCallUrl(), equalTo("https://postBack"));
         assertThat(application.getIncomingSmsUrl(), equalTo("https://message"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestApplicationById"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/applications/id1"));
     }
 }

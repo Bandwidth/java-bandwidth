@@ -36,7 +36,8 @@ public class BridgeTest {
         bridge.setBridgeAudio(true);
         bridge.commit();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateBridge"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1"));
     }
 
     @Test
@@ -48,7 +49,9 @@ public class BridgeTest {
 
         bridge.newBridgeAudioBuilder().fileUrl("some url").create();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("some url"));
     }
 
     @Test
@@ -60,7 +63,9 @@ public class BridgeTest {
 
         bridge.stopAudioFilePlaying();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
     }
 
     @Test
@@ -72,7 +77,9 @@ public class BridgeTest {
 
         bridge.stopSentence();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createBridgeAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo(""));
     }
 
     @Test
@@ -86,7 +93,8 @@ public class BridgeTest {
         List<Call> bridgeCalls = bridge.getBridgeCalls();
 
         assertThat(bridgeCalls.get(0).getFrom(), equalTo("+22222222222"));
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestBridgeCalls"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/calls"));
     }
 
 }

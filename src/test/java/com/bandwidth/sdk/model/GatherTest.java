@@ -47,6 +47,8 @@ public class GatherTest {
         Gather gather = new Gather(mockRestDriver, "parentUri", jsonObject);
         gather.complete();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateCallGather"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/gtr-kj4xloaq5vbpfxyeypndgxa"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 }

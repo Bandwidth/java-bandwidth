@@ -42,7 +42,9 @@ public class ConferenceTest {
         Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
         conference.complete();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}"));
+        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 
     @Test
@@ -60,7 +62,9 @@ public class ConferenceTest {
         Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
         conference.mute();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("updateConference"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}"));
+        assertThat(mockRestDriver.requests.get(0).params.get("mute").toString(), equalTo("true"));
     }
 
     @Test
@@ -78,7 +82,10 @@ public class ConferenceTest {
         Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
 
         conference.conferenceAudioBuilder().sentence("Hello").locale(SentenceLocale.German).create();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("createConferenceAudio"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}/audio"));
+        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
+        assertThat(mockRestDriver.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
     }
 
     @Test
@@ -128,6 +135,7 @@ public class ConferenceTest {
         List<ConferenceMember> members = conference.getMembers();
         assertThat(members.size(), equalTo(3));
         assertThat(members.get(1).getId(), equalTo("{memberId2}"));
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("requestConferenceMembers"));
+        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}/members"));
     }
 }

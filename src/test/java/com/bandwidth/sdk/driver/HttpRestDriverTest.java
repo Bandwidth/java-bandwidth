@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,7 +85,7 @@ public class HttpRestDriverTest {
     }
 
     @Test
-    public void shouldRequestAccountInfo() throws IOException {
+    public void shouldGetObject() throws Exception {
         MockHttpClient httpClient = new MockHttpClient();
         driver.setHttpClient(httpClient);
 
@@ -97,21 +96,20 @@ public class HttpRestDriverTest {
         response.setEntity(entity);
 
         httpClient.response = response;
-
-//        JSONObject jsonObject = driver.requestAccountInfo();
-//        assertThat(jsonObject, notNullValue());
-//        assertThat(jsonObject.get("balance").toString(), equalTo("538.37250"));
-//        assertThat(jsonObject.get("accountType").toString(), equalTo("pre-pay"));
+        JSONObject jsonObject = driver.getObject("objects/1");
+        assertThat(jsonObject, notNullValue());
+        assertThat(jsonObject.get("balance").toString(), equalTo("538.37250"));
+        assertThat(jsonObject.get("accountType").toString(), equalTo("pre-pay"));
 
         HttpUriRequest request = httpClient.lastRequest;
         assertThat(request, instanceOf(HttpGet.class));
 
         HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/account")));
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/objects/1")));
     }
 
     @Test
-    public void shouldRequestAccountTransactions() throws IOException {
+    public void shouldGetArray() throws Exception {
         MockHttpClient httpClient = new MockHttpClient();
         driver.setHttpClient(httpClient);
 
@@ -126,148 +124,34 @@ public class HttpRestDriverTest {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("maxItems", "1000");
         params.put("size", "10");
-//        JSONArray array = driver.requestAccountTransactions(params);
-//        assertThat(array, notNullValue());
-//        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
-//        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("+number1"));
+        JSONArray array = driver.getArray("objects", params);
+        assertThat(array, notNullValue());
+        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
+        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("+number1"));
 
         HttpUriRequest request = httpClient.lastRequest;
         assertThat(request, instanceOf(HttpGet.class));
 
         HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/account/transactions?maxItems=1000&size=10")));
-
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/objects?maxItems=1000&size=10")));
     }
 
     @Test
-    public void shouldRequestApplications() throws IOException {
+    public void shouldDelete() throws Exception {
         MockHttpClient httpClient = new MockHttpClient();
         driver.setHttpClient(httpClient);
 
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
         response.addHeader(new BasicHeader("Content-Type", "application/json"));
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream("[{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false},{\"id\":\"id2\",\"incomingCallUrl\":\"http:///call/callback.json\",\"incomingSmsUrl\":\"http:///sms/callback.json\",\"name\":\"App2\",\"autoAnswer\":true}]".getBytes()));
-        response.setEntity(entity);
 
         httpClient.response = response;
 
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("page", "2");
-        params.put("size", "10");
-//        JSONArray array = driver.requestApplications(params);
-//        assertThat(array, notNullValue());
-//        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
-//        assertThat(((JSONObject) array.get(0)).get("incomingCallUrl").toString(), equalTo("https://postBack"));
+        driver.delete("objects/1");
 
         HttpUriRequest request = httpClient.lastRequest;
-        assertThat(request, instanceOf(HttpGet.class));
+        assertThat(request, instanceOf(HttpDelete.class));
 
-        HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/applications?page=2&size=10")));
-    }
-
-    @Test
-    public void shouldRequestLocalAvailableNumbers() throws IOException {
-        MockHttpClient httpClient = new MockHttpClient();
-        driver.setHttpClient(httpClient);
-
-        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
-        response.addHeader(new BasicHeader("Content-Type", "application/json"));
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream("[{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num1\",\"nationalNumber\":\"nationalNum1\",\"rateCenter\":\"STOCKTON\",\"city\":\"STOCKTON\"},{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num2\",\"nationalNumber\":\"nationalNum2\",\"rateCenter\":\"STOCKTON\",\"city\":\"STOCKTON\"}]".getBytes()));
-        response.setEntity(entity);
-
-        httpClient.response = response;
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("quantity", "2");
-//        JSONArray array = driver.requestLocalAvailableNumbers(params);
-//        assertThat(array, notNullValue());
-//        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("num1"));
-//        assertThat(((JSONObject) array.get(0)).get("nationalNumber").toString(), equalTo("nationalNum1"));
-
-        HttpUriRequest request = httpClient.lastRequest;
-        assertThat(request, instanceOf(HttpGet.class));
-
-        HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/availableNumbers/local?quantity=2")));
-    }
-
-    @Test
-    public void shouldRequestTollFreeAvailableNumbers() throws IOException {
-        MockHttpClient httpClient = new MockHttpClient();
-        driver.setHttpClient(httpClient);
-
-        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
-        response.addHeader(new BasicHeader("Content-Type", "application/json"));
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream("[{\"price\":\"0.00\",\"number\":\"n1\",\"nationalNumber\":\"nn1\"},{\"price\":\"0.00\",\"number\":\"n2\",\"nationalNumber\":\"nn2\"}]".getBytes()));
-        response.setEntity(entity);
-
-        httpClient.response = response;
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("quantity", "2");
-//        JSONArray array = driver.requestTollFreeAvailableNumbers(params);
-//        assertThat(array, notNullValue());
-//        assertThat(((JSONObject) array.get(0)).get("number").toString(), equalTo("n1"));
-//        assertThat(((JSONObject) array.get(0)).get("nationalNumber").toString(), equalTo("nn1"));
-
-        HttpUriRequest request = httpClient.lastRequest;
-        assertThat(request, instanceOf(HttpGet.class));
-
-        HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/availableNumbers/tollFree?quantity=2")));
-    }
-
-    @Test
-    public void shouldRequestBridges() throws IOException {
-        MockHttpClient httpClient = new MockHttpClient();
-        driver.setHttpClient(httpClient);
-
-        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
-        response.addHeader(new BasicHeader("Content-Type", "application/json"));
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream("[ {    \"id\": \"id1\",    \"state\": \"completed\",    \"bridgeAudio\": \"true\",    \"calls\":\"https://v1/users/userId/bridges/bridgeId/calls\",    \"createdTime\": \"2013-04-22T13:55:30Z\",    \"activatedTime\": \"2013-04-22T13:55:30Z\",    \"completedTime\": \"2013-04-22T13:56:30Z\"  },  {    \"id\": \"id2\",    \"state\": \"completed\",    \"bridgeAudio\": \"true\",    \"calls\":\"https://v1/users/userId/bridges/bridgeId/calls\",    \"createdTime\": \"2013-04-22T13:58:30Z\",    \"activatedTime\": \"2013-04-22T13:58:30Z\",    \"completedTime\": \"2013-04-22T13:59:30Z\"  }]".getBytes()));
-        response.setEntity(entity);
-
-        httpClient.response = response;
-
-//        JSONArray array = driver.requestBridges();
-//        assertThat(array, notNullValue());
-//        assertThat(((JSONObject) array.get(0)).get("id").toString(), equalTo("id1"));
-//        assertThat(((JSONObject) array.get(0)).get("state").toString(), equalTo("completed"));
-
-        HttpUriRequest request = httpClient.lastRequest;
-        assertThat(request, instanceOf(HttpGet.class));
-
-        HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/bridges")));
-    }
-
-    @Test
-    public void shouldRequestBridgeById() throws IOException {
-        MockHttpClient httpClient = new MockHttpClient();
-        driver.setHttpClient(httpClient);
-
-        HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, "OK"));
-        response.addHeader(new BasicHeader("Content-Type", "application/json"));
-        BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(new ByteArrayInputStream("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}".getBytes()));
-        response.setEntity(entity);
-
-        httpClient.response = response;
-
-//        JSONObject jsonObject = driver.requestBridgeById("id1");
-//        assertThat(jsonObject, notNullValue());
-//        assertThat(jsonObject.get("id").toString(), equalTo("id1"));
-//        assertThat(jsonObject.get("state").toString(), equalTo("created"));
-
-        HttpUriRequest request = httpClient.lastRequest;
-        assertThat(request, instanceOf(HttpGet.class));
-
-        HttpGet httpGet = (HttpGet) request;
-        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/users/userId/bridges/id1")));
+        HttpDelete httpGet = (HttpDelete) request;
+        assertThat(httpGet.getURI(), equalTo(URI.create("https://api.catapult.inetwork.com/v1/objects/1")));
     }
 }
