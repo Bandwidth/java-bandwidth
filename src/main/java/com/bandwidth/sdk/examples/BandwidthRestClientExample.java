@@ -23,6 +23,23 @@ public class BandwidthRestClientExample {
         printErrors(client);
         printMessages(client);
         printPhoneNumbers(client);
+        printRecordings(client);
+    }
+
+    private static void printRecordings(BandwidthRestClient client) throws IOException {
+        System.out.println("\nRecordings:");
+        Recordings recordings = client.getRecordings();
+        List<Recording> list = recordings.queryRecordingsBuilder().size(5).list();
+        for (Recording recording : list) {
+            System.out.println(recording);
+        }
+
+        if (!list.isEmpty()) {
+            Recording recording = recordings.getRecordingById(list.get(0).getId());
+            System.out.println("\nRecording by Id");
+            System.out.println(recording);
+        }
+
     }
 
     private static void printPhoneNumbers(BandwidthRestClient client) throws IOException {

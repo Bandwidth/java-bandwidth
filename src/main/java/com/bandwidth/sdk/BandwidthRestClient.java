@@ -26,6 +26,7 @@ public class BandwidthRestClient {
     private Errors errors;
     private Messages messages;
     private PhoneNumbers phoneNumbers;
+    private Recordings recordings;
 
     public BandwidthRestClient(String userId, String token, String secret) {
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
@@ -100,8 +101,15 @@ public class BandwidthRestClient {
         return phoneNumbers;
     }
 
+    public Recordings getRecordings() {
+        if (recordings == null) {
+            recordings = new Recordings(restDriver, usersUri);
+        }
+        return recordings;
+    }
+
     public NumberInfo getNumberInfoByNumber(String number) throws IOException {
-        String uri = StringUtils.join(new String[] {
+        String uri = StringUtils.join(new String[]{
                 "phoneNumbers",
                 "numberInfo",
                 number
