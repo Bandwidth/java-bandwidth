@@ -9,6 +9,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -18,7 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -123,6 +124,47 @@ public class HttpRestDriver implements IRestDriver {
         if (response.isError()) throw new IOException(response.getResponseText());
     }
 
+    @Override
+    public void uploadFile(String uri, String filePath, String contentType) throws IOException {
+        String path = getPath(uri);
+
+        HttpPut request = (HttpPut) setupRequest(path, HttpMethod.PUT, null);
+        File file = new File(filePath);
+        request.setEntity(contentType == null ? new FileEntity(file) : new FileEntity(file, ContentType.parse(contentType)));
+
+        performRequest(request);
+    }
+
+    @Override
+    public void downloadFileTo(String uri, String filePath) throws IOException {
+        String path = getPath(uri);
+
+        HttpGet request = (HttpGet) setupRequest(path, HttpMethod.GET, Collections.<String, Object>emptyMap());
+        HttpResponse response;
+
+        OutputStream outputStream = null;
+        try {
+            response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            StatusLine status = response.getStatusLine();
+            int statusCode = status.getStatusCode();
+            if (statusCode >= 400) throw new IOException(EntityUtils.toString(entity));
+
+            outputStream = new BufferedOutputStream(new FileOutputStream(filePath));
+            entity.writeTo(outputStream);
+        } catch (final ClientProtocolException e1) {
+            throw new IOException(e1);
+        } catch (final IOException e1) {
+            throw new IOException(e1);
+        } finally {
+            try {
+                if (outputStream != null) outputStream.close();
+            } catch (IOException ignore) {
+            }
+        }
+    }
+
     private String getPath(String uri) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
@@ -142,7 +184,10 @@ public class HttpRestDriver implements IRestDriver {
         if (paramList == null) paramList = Collections.emptyMap();
 
         HttpUriRequest request = setupRequest(path, method, paramList);
+        return performRequest(request);
+    }
 
+    private RestResponse performRequest(HttpUriRequest request) throws IOException {
         HttpResponse response;
         try {
             response = httpClient.execute(request);
@@ -172,9 +217,9 @@ public class HttpRestDriver implements IRestDriver {
             return restResponse;
 
         } catch (final ClientProtocolException e1) {
-            throw new RuntimeException(e1);
+            throw new IOException(e1);
         } catch (final IOException e1) {
-            throw new RuntimeException(e1);
+            throw new IOException(e1);
         }
     }
 
@@ -228,10 +273,11 @@ public class HttpRestDriver implements IRestDriver {
     private HttpPut generatePutRequest(final String path, final Map<String, Object> paramMap) {
         URI uri = buildUri(path);
 
-        String s = JSONObject.toJSONString(paramMap);
-
         HttpPut put = new HttpPut(uri);
-        put.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
+        if (paramMap != null) {
+            String s = JSONObject.toJSONString(paramMap);
+            put.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
+        }
 
         return put;
     }

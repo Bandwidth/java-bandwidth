@@ -20,4 +20,8 @@ public interface IRestDriver {
     void post(String uri, Map<String, Object> params) throws IOException;
 
     void delete(String uri) throws IOException;
+
+    void uploadFile(String uri, String filePath, String contentType) throws IOException;
+
+    void downloadFileTo(String uri, String filePath) throws IOException;
 }

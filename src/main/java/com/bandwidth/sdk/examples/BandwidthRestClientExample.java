@@ -24,6 +24,16 @@ public class BandwidthRestClientExample {
         printMessages(client);
         printPhoneNumbers(client);
         printRecordings(client);
+        printMedia(client);
+    }
+
+    private static void printMedia(BandwidthRestClient client) throws IOException {
+        System.out.println("\nMedia:");
+        Media media = client.getMedia();
+        List<MediaFile> list = media.getMediaFiles();
+        for (MediaFile mediaFile : list) {
+            System.out.println(mediaFile);
+        }
     }
 
     private static void printRecordings(BandwidthRestClient client) throws IOException {

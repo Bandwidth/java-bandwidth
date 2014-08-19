@@ -27,6 +27,7 @@ public class BandwidthRestClient {
     private Messages messages;
     private PhoneNumbers phoneNumbers;
     private Recordings recordings;
+    private Media media;
 
     public BandwidthRestClient(String userId, String token, String secret) {
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
@@ -106,6 +107,13 @@ public class BandwidthRestClient {
             recordings = new Recordings(restDriver, usersUri);
         }
         return recordings;
+    }
+
+    public Media getMedia() {
+        if (media == null) {
+            media = new Media(restDriver, usersUri);
+        }
+        return media;
     }
 
     public NumberInfo getNumberInfoByNumber(String number) throws IOException {

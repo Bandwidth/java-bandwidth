@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,22 @@ public class MockRestDriver implements IRestDriver {
     @Override
     public void delete(String uri) throws IOException {
         requests.add(new RestRequest("delete", uri, null));
+    }
+
+    @Override
+    public void uploadFile(String uri, String filePath, String contentType) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filePath", filePath);
+        if (contentType != null) params.put("contentType", contentType);
+
+        requests.add(new RestRequest("uploadFile", uri, params));
+    }
+
+    @Override
+    public void downloadFileTo(String uri, String filePath) throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filePath", filePath);
+        requests.add(new RestRequest("downloadFileTo", uri, params));
     }
 
 
