@@ -19,7 +19,7 @@ public abstract class BaseModelObject {
     protected final IRestDriver driver;
     protected final String parentUri;
 
-    private final Map<String, Object> properties = new HashMap<String, Object>();
+    protected final Map<String, Object> properties = new HashMap<String, Object>();
 
     protected BaseModelObject(IRestDriver driver, String parentUri, JSONObject jsonObject) {
         this.driver = driver;

@@ -22,6 +22,22 @@ public class BandwidthRestClientExample {
         printBridges(client);
         printCalls(client);
         printErrors(client);
+        printMessages(client);
+    }
+
+    private static void printMessages(BandwidthRestClient client) throws IOException {
+        System.out.println("\nMessages:");
+        Messages messages = client.getMessages();
+        List<Message> list = messages.queryMessagesBuilder().size(5).list();
+        for (Message message: list) {
+            System.out.println(message);
+        }
+
+        if (!list.isEmpty()) {
+            Message message = messages.getMessageById(list.get(0).getId());
+            System.out.println("\nMessage by Id");
+            System.out.println(message);
+        }
     }
 
     private static void printErrors(BandwidthRestClient client) throws IOException {

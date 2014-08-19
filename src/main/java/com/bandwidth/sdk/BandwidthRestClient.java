@@ -20,6 +20,7 @@ public class BandwidthRestClient {
     private Calls calls;
     private Conferences conferences;
     private Errors errors;
+    private Messages messages;
 
     public BandwidthRestClient(String userId, String token, String secret) {
         parentUri = String.format(BandwidthConstants.MAIN_URI_PATH, userId);
@@ -73,5 +74,12 @@ public class BandwidthRestClient {
             errors = new Errors(restDriver, parentUri);
         }
         return errors;
+    }
+
+    public Messages getMessages() {
+        if (messages == null) {
+            messages = new Messages(restDriver, parentUri);
+        }
+        return messages;
     }
 }
