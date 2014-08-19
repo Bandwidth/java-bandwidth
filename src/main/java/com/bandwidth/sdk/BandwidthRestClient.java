@@ -3,6 +3,10 @@ package com.bandwidth.sdk;
 import com.bandwidth.sdk.driver.HttpRestDriver;
 import com.bandwidth.sdk.driver.IRestDriver;
 import com.bandwidth.sdk.model.*;
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
+
+import java.io.IOException;
 
 /**
  * @author vpotapenko
@@ -23,8 +27,13 @@ public class BandwidthRestClient {
     private Messages messages;
 
     public BandwidthRestClient(String userId, String token, String secret) {
-        parentUri = String.format(BandwidthConstants.MAIN_URI_PATH, userId);
+        parentUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
         restDriver = new HttpRestDriver(token, secret);
+    }
+
+    /** For testing */
+    public void setRestDriver(IRestDriver restDriver) {
+        this.restDriver = restDriver;
     }
 
     public Account getAccount() {
@@ -81,5 +90,15 @@ public class BandwidthRestClient {
             messages = new Messages(restDriver, parentUri);
         }
         return messages;
+    }
+
+    public NumberInfo getNumberInfoByNumber(String number) throws IOException {
+        String uri = StringUtils.join(new String[] {
+                "phoneNumbers",
+                "numberInfo",
+                number
+        }, '/');
+        JSONObject object = restDriver.getObject(uri);
+        return new NumberInfo(restDriver, uri, object);
     }
 }
