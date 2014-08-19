@@ -13,33 +13,65 @@ public class BandwidthRestClient {
 
     private IRestDriver restDriver;
 
+    private Account account;
+    private Applications applications;
+    private AvailableNumbers availableNumbers;
+    private Bridges bridges;
+    private Calls calls;
+    private Conferences conferences;
+    private Errors errors;
+
     public BandwidthRestClient(String userId, String token, String secret) {
         parentUri = String.format(BandwidthConstants.MAIN_URI_PATH, userId);
         restDriver = new HttpRestDriver(token, secret);
     }
 
     public Account getAccount() {
-        return new Account(restDriver, parentUri);
+        if (account == null) {
+            account = new Account(restDriver, parentUri);
+        }
+        return account;
     }
 
     public Applications getApplications() {
-        return new Applications(restDriver, parentUri);
+        if (applications == null) {
+            applications = new Applications(restDriver, parentUri);
+        }
+        return applications;
     }
 
     public AvailableNumbers getAvailableNumbers() {
-        return new AvailableNumbers(restDriver);
+        if (availableNumbers == null) {
+            availableNumbers = new AvailableNumbers(restDriver);
+        }
+        return availableNumbers;
     }
 
     public Bridges getBridges() {
-        return new Bridges(restDriver, parentUri);
+        if (bridges == null) {
+            bridges = new Bridges(restDriver, parentUri);
+        }
+        return bridges;
     }
 
     public Calls getCalls() {
-        return new Calls(restDriver, parentUri);
+        if (calls == null) {
+            calls = new Calls(restDriver, parentUri);
+        }
+        return calls;
     }
 
     public Conferences getConferences() {
-        return new Conferences(restDriver, parentUri);
+        if (conferences == null) {
+            conferences = new Conferences(restDriver, parentUri);
+        }
+        return conferences;
     }
 
+    public Errors getErrors() {
+        if (errors == null) {
+            errors = new Errors(restDriver, parentUri);
+        }
+        return errors;
+    }
 }

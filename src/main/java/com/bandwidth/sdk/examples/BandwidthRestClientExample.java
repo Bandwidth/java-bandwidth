@@ -2,6 +2,7 @@ package com.bandwidth.sdk.examples;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.model.*;
+import com.bandwidth.sdk.model.Error;
 import com.bandwidth.sdk.model.Number;
 
 import java.io.IOException;
@@ -20,6 +21,22 @@ public class BandwidthRestClientExample {
         printAvailableNumbers(client);
         printBridges(client);
         printCalls(client);
+        printErrors(client);
+    }
+
+    private static void printErrors(BandwidthRestClient client) throws IOException {
+        System.out.println("\nErrors:");
+        Errors errors = client.getErrors();
+        List<Error> errorList = errors.getErrors();
+        for (Error error : errorList) {
+            System.out.println(error);
+        }
+
+        if (!errorList.isEmpty()) {
+            Error error = errors.getErrorById(errorList.get(0).getId());
+            System.out.println("\nError by Id");
+            System.out.println(error);
+        }
     }
 
     private static void printCalls(BandwidthRestClient client) throws IOException {
