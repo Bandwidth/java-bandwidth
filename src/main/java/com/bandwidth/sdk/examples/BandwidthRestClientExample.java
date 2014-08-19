@@ -3,7 +3,6 @@ package com.bandwidth.sdk.examples;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.model.*;
 import com.bandwidth.sdk.model.Error;
-import com.bandwidth.sdk.model.Number;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,13 +22,33 @@ public class BandwidthRestClientExample {
         printCalls(client);
         printErrors(client);
         printMessages(client);
+        printPhoneNumbers(client);
+    }
+
+    private static void printPhoneNumbers(BandwidthRestClient client) throws IOException {
+        System.out.println("\nPhoneNumbers:");
+        PhoneNumbers phoneNumbers = client.getPhoneNumbers();
+        List<PhoneNumber> list = phoneNumbers.queryNumbersBuilder().size(5).list();
+        for (PhoneNumber number : list) {
+            System.out.println(number);
+        }
+
+        if (!list.isEmpty()) {
+            PhoneNumber phoneNumber = phoneNumbers.getNumberById(list.get(0).getId());
+            System.out.println("\nPhone Number by Id");
+            System.out.println(phoneNumber);
+
+            phoneNumber = phoneNumbers.getNumberByNumber(list.get(0).getNumber());
+            System.out.println("\nPhone Number by number");
+            System.out.println(phoneNumber);
+        }
     }
 
     private static void printMessages(BandwidthRestClient client) throws IOException {
         System.out.println("\nMessages:");
         Messages messages = client.getMessages();
         List<Message> list = messages.queryMessagesBuilder().size(5).list();
-        for (Message message: list) {
+        for (Message message : list) {
             System.out.println(message);
         }
 
@@ -114,14 +133,14 @@ public class BandwidthRestClientExample {
         AvailableNumbers availableNumbers = client.getAvailableNumbers();
 
         System.out.println("Local:");
-        List<Number> numbers = availableNumbers.queryLocalNumbersBuilder().state("CA").quantity(2).list();
-        for (Number number : numbers) {
+        List<AvailableNumber> numbers = availableNumbers.queryLocalNumbersBuilder().state("CA").quantity(2).list();
+        for (AvailableNumber number : numbers) {
             System.out.println(number);
         }
 
         System.out.println("\nTollFree:");
         numbers = availableNumbers.queryTollFreeNumbersBuilder().quantity(2).list();
-        for (Number number : numbers) {
+        for (AvailableNumber number : numbers) {
             System.out.println(number);
         }
     }

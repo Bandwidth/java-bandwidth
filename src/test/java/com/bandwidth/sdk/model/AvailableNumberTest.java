@@ -8,12 +8,12 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class NumberTest {
+public class AvailableNumberTest {
 
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"price\":\"0.00\",\"state\":\"CA\",\"number\":\"num\",\"nationalNumber\":\"nationalNum\",\"rateCenter\":\"rCenter\",\"city\":\"ci\"}");
-        Number number = new Number(null, "parentUri", jsonObject);
+        AvailableNumber number = new AvailableNumber(null, "parentUri", jsonObject);
 
         assertThat(number.getCity(), equalTo("ci"));
         assertThat(number.getState(), equalTo("CA"));

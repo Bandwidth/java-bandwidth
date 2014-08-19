@@ -28,13 +28,13 @@ public class AvailableNumbers extends BaseModelObject {
         return new QueryTollFreeNumbersBuilder();
     }
 
-    private List<Number> getLocalNumbers(Map<String, Object> params) throws IOException {
+    private List<AvailableNumber> getLocalNumbers(Map<String, Object> params) throws IOException {
         String localUri = getLocalUri();
         JSONArray array = driver.getArray(localUri, params);
 
-        List<Number> numbers = new ArrayList<Number>();
+        List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
-            numbers.add(new Number(driver, localUri, (JSONObject) obj));
+            numbers.add(new AvailableNumber(driver, localUri, (JSONObject) obj));
         }
         return numbers;
     }
@@ -60,13 +60,13 @@ public class AvailableNumbers extends BaseModelObject {
         }, '/');
     }
 
-    private List<Number> getTollFreeNumbers(Map<String, Object> params) throws IOException {
+    private List<AvailableNumber> getTollFreeNumbers(Map<String, Object> params) throws IOException {
         String tollFreeUri = getTollFreeUri();
         JSONArray array = driver.getArray(tollFreeUri, params);
 
-        List<Number> numbers = new ArrayList<Number>();
+        List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
-            numbers.add(new Number(driver, tollFreeUri, (JSONObject) obj));
+            numbers.add(new AvailableNumber(driver, tollFreeUri, (JSONObject) obj));
         }
         return numbers;
     }
@@ -75,7 +75,7 @@ public class AvailableNumbers extends BaseModelObject {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public List<Number> list() throws IOException {
+        public List<AvailableNumber> list() throws IOException {
             return getTollFreeNumbers(params);
         }
 
@@ -94,7 +94,7 @@ public class AvailableNumbers extends BaseModelObject {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public List<Number> list() throws IOException {
+        public List<AvailableNumber> list() throws IOException {
             return getLocalNumbers(params);
         }
 

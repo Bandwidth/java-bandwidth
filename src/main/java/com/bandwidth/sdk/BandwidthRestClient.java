@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class BandwidthRestClient {
 
-    private final String parentUri;
+    private final String usersUri;
 
     private IRestDriver restDriver;
 
@@ -25,9 +25,10 @@ public class BandwidthRestClient {
     private Conferences conferences;
     private Errors errors;
     private Messages messages;
+    private PhoneNumbers phoneNumbers;
 
     public BandwidthRestClient(String userId, String token, String secret) {
-        parentUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
+        usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
         restDriver = new HttpRestDriver(token, secret);
     }
 
@@ -38,14 +39,14 @@ public class BandwidthRestClient {
 
     public Account getAccount() {
         if (account == null) {
-            account = new Account(restDriver, parentUri);
+            account = new Account(restDriver, usersUri);
         }
         return account;
     }
 
     public Applications getApplications() {
         if (applications == null) {
-            applications = new Applications(restDriver, parentUri);
+            applications = new Applications(restDriver, usersUri);
         }
         return applications;
     }
@@ -59,37 +60,44 @@ public class BandwidthRestClient {
 
     public Bridges getBridges() {
         if (bridges == null) {
-            bridges = new Bridges(restDriver, parentUri);
+            bridges = new Bridges(restDriver, usersUri);
         }
         return bridges;
     }
 
     public Calls getCalls() {
         if (calls == null) {
-            calls = new Calls(restDriver, parentUri);
+            calls = new Calls(restDriver, usersUri);
         }
         return calls;
     }
 
     public Conferences getConferences() {
         if (conferences == null) {
-            conferences = new Conferences(restDriver, parentUri);
+            conferences = new Conferences(restDriver, usersUri);
         }
         return conferences;
     }
 
     public Errors getErrors() {
         if (errors == null) {
-            errors = new Errors(restDriver, parentUri);
+            errors = new Errors(restDriver, usersUri);
         }
         return errors;
     }
 
     public Messages getMessages() {
         if (messages == null) {
-            messages = new Messages(restDriver, parentUri);
+            messages = new Messages(restDriver, usersUri);
         }
         return messages;
+    }
+
+    public PhoneNumbers getPhoneNumbers() {
+        if (phoneNumbers == null) {
+            phoneNumbers = new PhoneNumbers(restDriver, usersUri);
+        }
+        return phoneNumbers;
     }
 
     public NumberInfo getNumberInfoByNumber(String number) throws IOException {

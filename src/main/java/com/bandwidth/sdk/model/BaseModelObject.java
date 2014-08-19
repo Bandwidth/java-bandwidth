@@ -89,11 +89,12 @@ public abstract class BaseModelObject {
     }
 
     protected Date getPropertyAsDate(String key) {
-        String time = (String) properties.get(key);
-        if (time == null) return null;
+        Object o = properties.get(key);
+        if (o == null) return null;
+        if (o instanceof Long) return new Date((Long) o);
 
         try {
-            return dateFormat.parse(time);
+            return dateFormat.parse(o.toString());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

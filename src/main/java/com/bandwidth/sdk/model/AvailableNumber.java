@@ -6,9 +6,9 @@ import org.json.simple.JSONObject;
 /**
  * @author vpotapenko
  */
-public class Number extends BaseModelObject {
+public class AvailableNumber extends BaseModelObject {
 
-    public Number(IRestDriver driver, String parentUri, JSONObject jsonObject) {
+    public AvailableNumber(IRestDriver driver, String parentUri, JSONObject jsonObject) {
         super(driver, parentUri, jsonObject);
     }
 
