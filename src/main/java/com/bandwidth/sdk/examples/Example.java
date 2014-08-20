@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author vpotapenko
  */
-public class BandwidthRestClientExample {
+public class Example {
 
     public static void main(String[] args) throws IOException {
         BandwidthRestClient client = new BandwidthRestClient("<userId>", "<token>", "<secret>"); // todo

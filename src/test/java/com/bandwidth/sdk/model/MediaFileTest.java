@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -33,11 +35,11 @@ public class MediaFileTest {
                 "    \"content\": \"https://api.com/v1/users/users/{userId}/media/{mediaName1}\"\n" +
                 "  }");
         MediaFile mediaFile = new MediaFile(restDriver, "parentUri", jsonObject);
-        mediaFile.downloadTo("path/to/file");
+        mediaFile.downloadTo(new File("path_to_file"));
 
         assertThat(restDriver.requests.get(0).name, equalTo("downloadFileTo"));
         assertThat(restDriver.requests.get(0).uri, equalTo("parentUri/{mediaName1}"));
-        assertThat(restDriver.requests.get(0).params.get("filePath").toString(), equalTo("path/to/file"));
+        assertThat(restDriver.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
     }
 
     @Test

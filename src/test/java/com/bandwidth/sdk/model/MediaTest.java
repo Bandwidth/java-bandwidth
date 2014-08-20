@@ -6,6 +6,7 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -71,11 +72,11 @@ public class MediaTest {
                 "  }\n" +
                 "]");
 
-        MediaFile mediaFile = media.upload("{mediaName3}", "some/path/to/file", null);
+        MediaFile mediaFile = media.upload("{mediaName3}", new File("path_to_file"), null);
         assertThat(mediaFile.getUri(), equalTo("parentUri/media/{mediaName3}"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("uploadFile"));
         assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/media/{mediaName3}"));
-        assertThat(mockRestDriver.requests.get(0).params.get("filePath").toString(), equalTo("some/path/to/file"));
+        assertThat(mockRestDriver.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
     }
 }

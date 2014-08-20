@@ -125,18 +125,17 @@ public class HttpRestDriver implements IRestDriver {
     }
 
     @Override
-    public void uploadFile(String uri, String filePath, String contentType) throws IOException {
+    public void uploadFile(String uri, File sourceFile, String contentType) throws IOException {
         String path = getPath(uri);
 
         HttpPut request = (HttpPut) setupRequest(path, HttpMethod.PUT, null);
-        File file = new File(filePath);
-        request.setEntity(contentType == null ? new FileEntity(file) : new FileEntity(file, ContentType.parse(contentType)));
+        request.setEntity(contentType == null ? new FileEntity(sourceFile) : new FileEntity(sourceFile, ContentType.parse(contentType)));
 
         performRequest(request);
     }
 
     @Override
-    public void downloadFileTo(String uri, String filePath) throws IOException {
+    public void downloadFileTo(String uri, File destFile) throws IOException {
         String path = getPath(uri);
 
         HttpGet request = (HttpGet) setupRequest(path, HttpMethod.GET, Collections.<String, Object>emptyMap());
@@ -151,7 +150,7 @@ public class HttpRestDriver implements IRestDriver {
             int statusCode = status.getStatusCode();
             if (statusCode >= 400) throw new IOException(EntityUtils.toString(entity));
 
-            outputStream = new BufferedOutputStream(new FileOutputStream(filePath));
+            outputStream = new BufferedOutputStream(new FileOutputStream(destFile));
             entity.writeTo(outputStream);
         } catch (final ClientProtocolException e1) {
             throw new IOException(e1);

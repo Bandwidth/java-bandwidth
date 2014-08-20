@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +38,25 @@ public class Media extends BaseModelObject {
         return mediaFiles;
     }
 
-    public MediaFile upload(String name, String filePath, String contentType) throws IOException {
-        String uri = StringUtils.join(new String[] {
+    public MediaFile upload(String mediaName, File file, String contentType) throws IOException {
+        String uri = StringUtils.join(new String[]{
                 getUri(),
-                name
+                mediaName
         }, '/');
-        driver.uploadFile(uri, filePath, contentType);
+        driver.uploadFile(uri, file, contentType);
 
         List<MediaFile> mediaFiles = getMediaFiles();
         for (MediaFile mediaFile : mediaFiles) {
-            if (StringUtils.equals(mediaFile.getMediaName(), name)) return mediaFile;
+            if (StringUtils.equals(mediaFile.getMediaName(), mediaName)) return mediaFile;
         }
         return null;
+    }
+
+    public void download(String mediaName, File file) throws IOException {
+        String uri = StringUtils.join(new String[]{
+                getUri(),
+                mediaName
+        }, '/');
+        driver.downloadFileTo(uri, file);
     }
 }

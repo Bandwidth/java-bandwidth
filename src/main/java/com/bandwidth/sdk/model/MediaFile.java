@@ -4,6 +4,7 @@ import com.bandwidth.sdk.driver.IRestDriver;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -35,8 +36,8 @@ public class MediaFile extends BaseModelObject {
         return getPropertyAsString("content");
     }
 
-    public void downloadTo(String filePath) throws IOException {
-        driver.downloadFileTo(getUri(), filePath);
+    public void downloadTo(File destFile) throws IOException {
+        driver.downloadFileTo(getUri(), destFile);
     }
 
     public void delete() throws IOException {

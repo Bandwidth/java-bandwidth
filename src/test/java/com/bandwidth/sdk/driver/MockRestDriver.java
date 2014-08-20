@@ -3,6 +3,7 @@ package com.bandwidth.sdk.driver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,18 +49,18 @@ public class MockRestDriver implements IRestDriver {
     }
 
     @Override
-    public void uploadFile(String uri, String filePath, String contentType) {
+    public void uploadFile(String uri, File sourceFile, String contentType) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("filePath", filePath);
+        params.put("filePath", sourceFile.getPath());
         if (contentType != null) params.put("contentType", contentType);
 
         requests.add(new RestRequest("uploadFile", uri, params));
     }
 
     @Override
-    public void downloadFileTo(String uri, String filePath) throws IOException {
+    public void downloadFileTo(String uri, File destFile) throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("filePath", filePath);
+        params.put("filePath", destFile.getPath());
         requests.add(new RestRequest("downloadFileTo", uri, params));
     }
 

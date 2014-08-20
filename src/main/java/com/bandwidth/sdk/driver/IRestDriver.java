@@ -3,6 +3,7 @@ package com.bandwidth.sdk.driver;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public interface IRestDriver {
 
     void delete(String uri) throws IOException;
 
-    void uploadFile(String uri, String filePath, String contentType) throws IOException;
+    void uploadFile(String uri, File sourceFile, String contentType) throws IOException;
 
-    void downloadFileTo(String uri, String filePath) throws IOException;
+    void downloadFileTo(String uri, File destFile) throws IOException;
 }
