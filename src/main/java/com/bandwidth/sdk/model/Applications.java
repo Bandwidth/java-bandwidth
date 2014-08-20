@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/users/{userId}/applications</code>
+ *
  * @author vpotapenko
  */
 public class Applications extends BaseModelObject {
@@ -20,10 +22,23 @@ public class Applications extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
+    /**
+     * Creates builder for getting applications.
+     * <br>Example:<br>
+     * <code>List<Application> list = applications.queryApplicationsBuilder().page(2).size(100).list();</code>
+     * @return
+     */
     public QueryApplicationsBuilder queryApplicationsBuilder() {
         return new QueryApplicationsBuilder();
     }
 
+    /**
+     * Gets information about one of your applications.
+     *
+     * @param id application id
+     * @return application
+     * @throws IOException
+     */
     public Application getApplicationById(String id) throws IOException {
         String applicationsUri = getUri();
         String uri = StringUtils.join(new String[]{
@@ -34,14 +49,14 @@ public class Applications extends BaseModelObject {
         return new Application(driver, applicationsUri, jsonObject);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "applications"
-        }, '/');
-    }
-
+    /**
+     * Creates builder for creating an application that can handle calls and messages for one of your phone number. Many phone numbers can share an application.
+     * <br>Example:<br>
+     *     <code>Application application = applications.newApplicationBuilder("appName").incomingCallUrl("http://some_url.com/method").create();</code>
+     *
+     * @param name application name
+     * @return builder for creating application
+     */
     public NewApplicationBuilder newApplicationBuilder(String name) {
         return new NewApplicationBuilder(name);
     }
@@ -57,6 +72,14 @@ public class Applications extends BaseModelObject {
         return applications;
     }
 
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "applications"
+        }, '/');
+    }
+
     private Application createApplication(Map<String, Object> params) throws IOException {
         String applicationsUri = getUri();
         JSONObject jsonObject = driver.create(applicationsUri, params);
@@ -67,12 +90,12 @@ public class Applications extends BaseModelObject {
 
         private Map<String, Object> params = new HashMap<String, Object>();
 
-        public QueryApplicationsBuilder page(Integer page) {
+        public QueryApplicationsBuilder page(int page) {
             params.put("page", page);
             return this;
         }
 
-        public QueryApplicationsBuilder size(Integer size) {
+        public QueryApplicationsBuilder size(int size) {
             params.put("size", size);
             return this;
         }

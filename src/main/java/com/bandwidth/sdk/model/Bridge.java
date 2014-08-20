@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Information about a specific bridge
+ *
  * @author vpotapenko
  */
 public class Bridge extends BaseModelObject {
@@ -17,6 +19,12 @@ public class Bridge extends BaseModelObject {
         super(driver, parentUri, jsonObject);
     }
 
+    /**
+     * Gets list of calls that are on the bridge
+     *
+     * @return list of calls
+     * @throws IOException
+     */
     public List<Call> getBridgeCalls() throws IOException {
         String callsPath = StringUtils.join(new String[]{
                 getUri(),
@@ -31,14 +39,28 @@ public class Bridge extends BaseModelObject {
         return callList;
     }
 
+    /**
+     * Sets call ids
+     *
+     * @param callIds new value
+     */
     public void setCallIds(String[] callIds) {
         putProperty("callIds", Arrays.asList(callIds));
     }
 
+    /**
+     * Sets bridge audio
+     * @param bridgeAudio new value
+     */
     public void setBridgeAudio(boolean bridgeAudio) {
         putProperty("bridgeAudio", bridgeAudio);
     }
 
+    /**
+     * Makes changes ob the bridge.
+     *
+     * @throws IOException
+     */
     public void commit() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -77,14 +99,31 @@ public class Bridge extends BaseModelObject {
         return getPropertyAsDate("activatedTime");
     }
 
+    /**
+     * Creates new builder for playing an audio file or speaking a sentence in a bridge.
+     * <br>Example:<br>
+     * <code>bridge.newBridgeAudioBuilder().sentence("Hello").create();</code>
+     *
+     * @return new builder
+     */
     public NewBridgeAudioBuilder newBridgeAudioBuilder() {
         return new NewBridgeAudioBuilder();
     }
 
+    /**
+     * Stop an audio file playing.
+     *
+     * @throws IOException
+     */
     public void stopAudioFilePlaying() throws IOException {
         new NewBridgeAudioBuilder().fileUrl(StringUtils.EMPTY).create();
     }
 
+    /**
+     * Stop an audio sentence.
+     *
+     * @throws IOException
+     */
     public void stopSentence() throws IOException {
         new NewBridgeAudioBuilder().sentence(StringUtils.EMPTY).create();
     }

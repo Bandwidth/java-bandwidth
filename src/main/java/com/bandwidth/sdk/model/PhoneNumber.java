@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Information about your phone number.
+ *
  * @author vpotapenko
  */
 public class PhoneNumber extends BaseModelObject {
@@ -15,6 +17,11 @@ public class PhoneNumber extends BaseModelObject {
         super(driver, parentUri, jsonObject);
     }
 
+    /**
+     * Makes changes to a number you have.
+     *
+     * @throws IOException
+     */
     public void commit() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -34,6 +41,13 @@ public class PhoneNumber extends BaseModelObject {
         updateProperties(object);
     }
 
+    /**
+     * Removes a number from your account so you can no longer make or receive calls,
+     * or send or receive messages with it. When you remove a number from your account,
+     * it will not immediately become available for re-use, so be careful.
+     *
+     * @throws IOException
+     */
     public void delete() throws IOException {
         driver.delete(getUri());
     }

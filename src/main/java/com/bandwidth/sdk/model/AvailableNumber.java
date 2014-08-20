@@ -4,6 +4,8 @@ import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
 /**
+ * Available number information.
+ *
  * @author vpotapenko
  */
 public class AvailableNumber extends BaseModelObject {

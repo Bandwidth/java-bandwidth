@@ -1,6 +1,8 @@
 package com.bandwidth.sdk.model;
 
 /**
+ * Available audio locales.
+ *
  * @author vpotapenko
  */
 public enum SentenceLocale {

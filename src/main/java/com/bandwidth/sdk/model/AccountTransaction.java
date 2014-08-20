@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 /**
+ * Account transaction
+ *
  * @author vpotapenko
  */
 public class AccountTransaction extends BaseModelObject {

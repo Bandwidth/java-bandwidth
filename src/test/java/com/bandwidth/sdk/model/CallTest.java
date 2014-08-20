@@ -143,7 +143,7 @@ public class CallTest {
         mockRestDriver.result = jsonObject;
 
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
-        call.callAudioBuilder().fileUrl("url").create();
+        call.newAudioBuilder().fileUrl("url").create();
         assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
         assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/c-11111111111111111111111/audio"));
         assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("url"));

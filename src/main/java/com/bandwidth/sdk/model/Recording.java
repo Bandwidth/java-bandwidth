@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 /**
+ * Information about recording
+ *
  * @author vpotapenko
  */
 public class Recording extends BaseModelObject {

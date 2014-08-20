@@ -20,14 +20,6 @@ public class Recordings extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "recordings"
-        }, '/');
-    }
-
     public QueryRecordingsBuilder queryRecordingsBuilder() {
         return new QueryRecordingsBuilder();
     }
@@ -51,6 +43,14 @@ public class Recordings extends BaseModelObject {
             recordings.add(new Recording(driver, uri, (JSONObject) obj));
         }
         return recordings;
+    }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "recordings"
+        }, '/');
     }
 
     public class QueryRecordingsBuilder {

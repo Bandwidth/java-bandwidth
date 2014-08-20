@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 /**
+ * Information about event.
+ *
  * @author vpotapenko
  */
 public class Event extends BaseModelObject {

@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 
 /**
+ * Main point of using Bandwidth API.
+ *
  * @author vpotapenko
  */
 public class BandwidthRestClient {
@@ -34,11 +36,11 @@ public class BandwidthRestClient {
         restDriver = new HttpRestDriver(token, secret);
     }
 
-    /** For testing */
-    public void setRestDriver(IRestDriver restDriver) {
-        this.restDriver = restDriver;
-    }
-
+    /**
+     * Gets point for <code>/v1/users/{userId}/account</code>
+     *
+     * @return point for account
+     */
     public Account getAccount() {
         if (account == null) {
             account = new Account(restDriver, usersUri);
@@ -46,6 +48,11 @@ public class BandwidthRestClient {
         return account;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/applications</code>
+     *
+     * @return point for applications
+     */
     public Applications getApplications() {
         if (applications == null) {
             applications = new Applications(restDriver, usersUri);
@@ -53,6 +60,11 @@ public class BandwidthRestClient {
         return applications;
     }
 
+    /**
+     * Gets point for <code>/v1/availableNumbers</code>
+     *
+     * @return point for available numbers
+     */
     public AvailableNumbers getAvailableNumbers() {
         if (availableNumbers == null) {
             availableNumbers = new AvailableNumbers(restDriver);
@@ -60,6 +72,11 @@ public class BandwidthRestClient {
         return availableNumbers;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/bridges</code>
+     *
+     * @return point for bridges
+     */
     public Bridges getBridges() {
         if (bridges == null) {
             bridges = new Bridges(restDriver, usersUri);
@@ -67,6 +84,11 @@ public class BandwidthRestClient {
         return bridges;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/calls</code>
+     *
+     * @return point for calls
+     */
     public Calls getCalls() {
         if (calls == null) {
             calls = new Calls(restDriver, usersUri);
@@ -74,6 +96,11 @@ public class BandwidthRestClient {
         return calls;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/conferences</code>
+     *
+     * @return point for conferences
+     */
     public Conferences getConferences() {
         if (conferences == null) {
             conferences = new Conferences(restDriver, usersUri);
@@ -81,6 +108,11 @@ public class BandwidthRestClient {
         return conferences;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/errors</code>
+     *
+     * @return point for errors
+     */
     public Errors getErrors() {
         if (errors == null) {
             errors = new Errors(restDriver, usersUri);
@@ -88,6 +120,11 @@ public class BandwidthRestClient {
         return errors;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/messages</code>
+     *
+     * @return point for messages
+     */
     public Messages getMessages() {
         if (messages == null) {
             messages = new Messages(restDriver, usersUri);
@@ -95,6 +132,11 @@ public class BandwidthRestClient {
         return messages;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/phoneNumbers</code>
+     *
+     * @return point for phone numbers
+     */
     public PhoneNumbers getPhoneNumbers() {
         if (phoneNumbers == null) {
             phoneNumbers = new PhoneNumbers(restDriver, usersUri);
@@ -102,6 +144,11 @@ public class BandwidthRestClient {
         return phoneNumbers;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/recordings</code>
+     *
+     * @return point for recordings
+     */
     public Recordings getRecordings() {
         if (recordings == null) {
             recordings = new Recordings(restDriver, usersUri);
@@ -109,6 +156,11 @@ public class BandwidthRestClient {
         return recordings;
     }
 
+    /**
+     * Gets point for <code>/v1/users/{userId}/media</code>
+     *
+     * @return point for media
+     */
     public Media getMedia() {
         if (media == null) {
             media = new Media(restDriver, usersUri);
@@ -116,6 +168,13 @@ public class BandwidthRestClient {
         return media;
     }
 
+    /**
+     * Returns information about this number.
+     *
+     * @param number searching number
+     * @return information about the number
+     * @throws IOException
+     */
     public NumberInfo getNumberInfoByNumber(String number) throws IOException {
         String uri = StringUtils.join(new String[]{
                 "phoneNumbers",
@@ -124,5 +183,12 @@ public class BandwidthRestClient {
         }, '/');
         JSONObject object = restDriver.getObject(uri);
         return new NumberInfo(restDriver, uri, object);
+    }
+
+    /**
+     * For testing
+     */
+    public void setRestDriver(IRestDriver restDriver) {
+        this.restDriver = restDriver;
     }
 }

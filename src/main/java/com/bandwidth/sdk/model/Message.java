@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 /**
+ * Information about message.
+ *
  * @author vpotapenko
  */
 public class Message extends BaseModelObject {

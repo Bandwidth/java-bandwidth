@@ -8,20 +8,14 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Information about media file.
+ *
  * @author vpotapenko
  */
 public class MediaFile extends BaseModelObject {
 
     public MediaFile(IRestDriver driver, String parentUri, JSONObject jsonObject) {
         super(driver, parentUri, jsonObject);
-    }
-
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                getMediaName()
-        }, '/');
     }
 
     public Long getContentLength() {
@@ -36,10 +30,21 @@ public class MediaFile extends BaseModelObject {
         return getPropertyAsString("content");
     }
 
+    /**
+     * Downloads existing media file from server.
+     *
+     * @param destFile file for putting content. Will be overridden.
+     * @throws IOException
+     */
     public void downloadTo(File destFile) throws IOException {
         driver.downloadFileTo(getUri(), destFile);
     }
 
+    /**
+     * Deletes media file permanently.
+     *
+     * @throws IOException
+     */
     public void delete() throws IOException {
         driver.delete(getUri());
     }
@@ -52,4 +57,13 @@ public class MediaFile extends BaseModelObject {
                 ", content='" + getContent() + '\'' +
                 '}';
     }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                getMediaName()
+        }, '/');
+    }
+
 }

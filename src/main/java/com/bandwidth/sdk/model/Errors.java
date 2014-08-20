@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Point for <code>/v1/users/{userId}/errors</code>
+ *
  * @author vpotapenko
  */
 public class Errors extends BaseModelObject {
@@ -18,14 +20,12 @@ public class Errors extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "errors"
-        }, '/');
-    }
-
+    /**
+     * Gets the most recent user errors for the user.
+     *
+     * @return errors
+     * @throws IOException
+     */
     public List<Error> getErrors() throws IOException {
         String errorsUri = getUri();
         JSONArray array = driver.getArray(errorsUri, null);
@@ -37,6 +37,12 @@ public class Errors extends BaseModelObject {
         return errors;
     }
 
+    /**
+     * Gets information about one user error.
+     * @param id error id
+     * @return information about one user error
+     * @throws IOException
+     */
     public Error getErrorById(String id) throws IOException {
         String errorsUri = getUri();
         String uri = StringUtils.join(new String[]{
@@ -45,5 +51,13 @@ public class Errors extends BaseModelObject {
         }, '/');
         JSONObject jsonObject = driver.getObject(uri);
         return new Error(driver, errorsUri, jsonObject);
+    }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "errors"
+        }, '/');
     }
 }

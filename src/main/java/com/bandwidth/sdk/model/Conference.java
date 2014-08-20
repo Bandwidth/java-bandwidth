@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Information about conference.
+ *
  * @author vpotapenko
  */
 public class Conference extends BaseModelObject {
@@ -49,6 +51,11 @@ public class Conference extends BaseModelObject {
         return getPropertyAsDate("createdTime");
     }
 
+    /**
+     * Terminates conference.
+     *
+     * @throws IOException
+     */
     public void complete() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
@@ -60,6 +67,11 @@ public class Conference extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
+    /**
+     * Prevent all members from speaking.
+     *
+     * @throws IOException
+     */
     public void mute() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("mute", String.valueOf(true));
@@ -71,6 +83,12 @@ public class Conference extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
+    /**
+     * Gets list all members from a conference. If a member had already hung up or removed from conference it will be displayed as completed.
+     *
+     * @return list of members
+     * @throws IOException
+     */
     public List<ConferenceMember> getMembers() throws IOException {
         String membersPath = StringUtils.join(new String[]{
                 getUri(),
@@ -85,6 +103,13 @@ public class Conference extends BaseModelObject {
         return members;
     }
 
+    /**
+     * Creates new builder for playing an audio file or speaking a sentence in a conference.
+     * <br>Example:<br>
+     * <code>conference.conferenceAudioBuilder().fileUrl("url_to_file").create();</code>
+     *
+     * @return new builder
+     */
     public ConferenceAudioBuilder conferenceAudioBuilder() {
         return new ConferenceAudioBuilder();
     }

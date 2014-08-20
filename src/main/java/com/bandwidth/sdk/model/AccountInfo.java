@@ -4,6 +4,8 @@ import com.bandwidth.sdk.driver.IRestDriver;
 import org.json.simple.JSONObject;
 
 /**
+ * Account information
+ *
  * @author vpotapenko
  */
 public class AccountInfo extends BaseModelObject {

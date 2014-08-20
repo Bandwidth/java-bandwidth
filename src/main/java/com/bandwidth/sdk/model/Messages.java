@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/users/{userId}/messages</code>
+ *
  * @author vpotapenko
  */
 public class Messages extends BaseModelObject {
@@ -20,14 +22,13 @@ public class Messages extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "messages"
-        }, '/');
-    }
-
+    /**
+     * Gets information about a previously sent or received message.
+     *
+     * @param id message id
+     * @return information about message
+     * @throws IOException
+     */
     public Message getMessageById(String id) throws IOException {
         String messagesUri = getUri();
         String uri = StringUtils.join(new String[]{
@@ -38,10 +39,24 @@ public class Messages extends BaseModelObject {
         return new Message(driver, messagesUri, jsonObject);
     }
 
+    /**
+     * Creates builder for sending new message.
+     * <br>Example:<br>
+     * <code>Message message = messages.newMessageBuilder().from("{number1}").to("{number2}").text("some text of message").create();</code>
+     *
+     * @return new builder
+     */
     public NewMessageBuilder newMessageBuilder() {
         return new NewMessageBuilder();
     }
 
+    /**
+     * Creates builder for getting a list messages you have sent or received.
+     * <br>Example:<br>
+     * <code>List<Message> list = messages.queryMessagesBuilder().size(10).list();</code>
+     *
+     * @return list of messages
+     */
     public QueryMessagesBuilder queryMessagesBuilder() {
         return new QueryMessagesBuilder();
     }
@@ -62,6 +77,15 @@ public class Messages extends BaseModelObject {
         JSONObject jsonObject = driver.create(uri, params);
         return new Message(driver, uri, jsonObject);
     }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "messages"
+        }, '/');
+    }
+
 
     public class QueryMessagesBuilder {
 

@@ -6,12 +6,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/users/{userId}/phoneNumbers</code>
+ *
  * @author vpotapenko
  */
 public class PhoneNumbers extends BaseModelObject {
@@ -20,22 +23,35 @@ public class PhoneNumbers extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "phoneNumbers"
-        }, '/');
-    }
-
+    /**
+     * Creates builder for getting a list of your numbers.
+     * <br>Example:<br>
+     * <code>List<PhoneNumber> list = numbers.queryNumbersBuilder().size(15).list();</code>
+     *
+     * @return new builder
+     */
     public QueryNumbersBuilder queryNumbersBuilder() {
         return new QueryNumbersBuilder();
     }
 
+    /**
+     * Creates builder for allocating a number so you can use it to make and receive calls and send and receive messages.
+     * <br>Example:<br>
+     * <code>PhoneNumber number = numbers.newNumberBuilder().name("Name").number("{number}").create();</code>
+     *
+     * @return new builder
+     */
     public NewNumberBuilder newNumberBuilder() {
         return new NewNumberBuilder();
     }
 
+    /**
+     * Gets information about one of your numbers using the number's ID.
+     *
+     * @param id numbers' id
+     * @return number
+     * @throws IOException
+     */
     public PhoneNumber getNumberById(String id) throws IOException {
         String numbersUri = getUri();
         String uri = StringUtils.join(new String[]{
@@ -46,8 +62,23 @@ public class PhoneNumbers extends BaseModelObject {
         return new PhoneNumber(driver, numbersUri, jsonObject);
     }
 
+    /**
+     * Gets information about one of your numbers using the E.164 number string, like "+19195551212".
+     *
+     * @param number your number
+     * @return number
+     * @throws IOException
+     */
     public PhoneNumber getNumberByNumber(String number) throws IOException {
-        return getNumberById(number);
+        return getNumberById(URLEncoder.encode(number, "UTF-8"));
+    }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "phoneNumbers"
+        }, '/');
     }
 
     private List<PhoneNumber> getNumbers(Map<String, Object> params) throws IOException {

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/availableNumbers</code>
+ *
  * @author vpotapenko
  */
 public class AvailableNumbers extends BaseModelObject {
@@ -20,10 +22,24 @@ public class AvailableNumbers extends BaseModelObject {
         super(driver, null, null);
     }
 
+    /**
+     * Creates builder for searching for available local numbers by location or pattern criteria.
+     * <br>Example:<br>
+     * <code>List<AvailableNumber> list = numbers.queryLocalNumbersBuilder().city("City").list();</code>
+     *
+     * @return new builder
+     */
     public QueryLocalNumbersBuilder queryLocalNumbersBuilder() {
         return new QueryLocalNumbersBuilder();
     }
 
+    /**
+     * Creates builder for searching for available Toll Free numbers.
+     * <br>Example:<br>
+     * <code>List<AvailableNumber> list = numbers.queryTollFreeNumbersBuilder().pattern("*2%3F9*").list();</code>
+     *
+     * @return new builder
+     */
     public QueryTollFreeNumbersBuilder queryTollFreeNumbersBuilder() {
         return new QueryTollFreeNumbersBuilder();
     }
@@ -54,7 +70,7 @@ public class AvailableNumbers extends BaseModelObject {
     }
 
     @Override
-    public String getUri() {
+    protected String getUri() {
         return StringUtils.join(new String[]{
                 "availableNumbers"
         }, '/');

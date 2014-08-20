@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 /**
+ * Information about number.
+ *
  * @author vpotapenko
  */
 public class NumberInfo extends BaseModelObject {

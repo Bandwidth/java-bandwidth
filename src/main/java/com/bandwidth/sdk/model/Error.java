@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Information about one user error
+ *
  * @author vpotapenko
  */
 public class Error extends BaseModelObject {

@@ -36,16 +36,16 @@ public abstract class BaseModelObject {
         }
     }
 
-    public String getUri() {
+    public String getId() {
+        return getPropertyAsString("id");
+    }
+
+    protected String getUri() {
         // default implementation of uri
         return StringUtils.join(new String[]{
                 parentUri,
                 getId()
         }, '/');
-    }
-
-    public String getId() {
-        return getPropertyAsString("id");
     }
 
     protected String getPropertyAsString(String key) {

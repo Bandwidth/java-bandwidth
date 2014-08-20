@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Example using Bandwidth Java SDK API.
+ *
  * @author vpotapenko
  */
 public class Example {
 
     public static void main(String[] args) throws IOException {
-        BandwidthRestClient client = new BandwidthRestClient("<userId>", "<token>", "<secret>"); // todo
+         // todo should be replaced on real userId, token and secret
+        BandwidthRestClient client = new BandwidthRestClient("<userId>", "<token>", "<secret>");
 
         printAccount(client);
         printApplications(client);

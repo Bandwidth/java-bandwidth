@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/users/{userId}/bridges</code>
+ *
  * @author vpotapenko
  */
 public class Bridges extends BaseModelObject {
@@ -20,6 +22,12 @@ public class Bridges extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
+    /**
+     * Gets list of bridges for a given user.
+     *
+     * @return list of bridges
+     * @throws IOException
+     */
     public List<Bridge> getBridges() throws IOException {
         JSONArray array = driver.getArray(getUri(), null);
 
@@ -31,14 +39,13 @@ public class Bridges extends BaseModelObject {
         return bridges;
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "bridges"
-        }, '/');
-    }
-
+    /**
+     * Gets information about a specific bridge.
+     *
+     * @param id bridge id
+     * @return information about a specific bridge
+     * @throws IOException
+     */
     public Bridge getBridgeById(String id) throws IOException {
         String bridgesUri = getUri();
         String eventPath = StringUtils.join(new String[]{
@@ -49,8 +56,22 @@ public class Bridges extends BaseModelObject {
         return new Bridge(driver, bridgesUri, jsonObject);
     }
 
+    /**
+     * Creates builder for creating new bridge.
+     * <br>Example:<br>
+     *     <code>Bridge bridge = bridges.newBridgeBuilder().addCallId("{call1}").addCallId("{call2}").create();</code>
+     * @return
+     */
     public NewBridgeBuilder newBridgeBuilder() {
         return new NewBridgeBuilder();
+    }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "bridges"
+        }, '/');
     }
 
     private Bridge createBridge(Map<String, Object> params) throws IOException {
@@ -64,7 +85,7 @@ public class Bridges extends BaseModelObject {
         private Boolean bridgeAudio;
         private List<String> callIds = new ArrayList<String>();
 
-        public NewBridgeBuilder bridgeAudio(Boolean bridgeAudio) {
+        public NewBridgeBuilder bridgeAudio(boolean bridgeAudio) {
             this.bridgeAudio = bridgeAudio;
             return this;
         }

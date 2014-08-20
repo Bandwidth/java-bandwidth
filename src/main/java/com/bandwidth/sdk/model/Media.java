@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Point for <code>/v1/users/{userId}/media</code>
+ *
  * @author vpotapenko
  */
 public class Media extends BaseModelObject {
@@ -19,14 +21,12 @@ public class Media extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "media"
-        }, '/');
-    }
-
+    /**
+     * Gets a list of your media files.
+     *
+     * @return list of media files.
+     * @throws IOException
+     */
     public List<MediaFile> getMediaFiles() throws IOException {
         String uri = getUri();
         JSONArray array = driver.getArray(uri, null);
@@ -38,6 +38,15 @@ public class Media extends BaseModelObject {
         return mediaFiles;
     }
 
+    /**
+     * Uploads media file.
+     *
+     * @param mediaName new name of media file
+     * @param file source file for uploading
+     * @param contentType MIME type of file or <code>null</code>
+     * @return new media file object
+     * @throws IOException
+     */
     public MediaFile upload(String mediaName, File file, String contentType) throws IOException {
         String uri = StringUtils.join(new String[]{
                 getUri(),
@@ -52,6 +61,13 @@ public class Media extends BaseModelObject {
         return null;
     }
 
+    /**
+     * Downloads existing media file from server.
+     *
+     * @param mediaName name of media
+     * @param file file for putting content. Will be overridden.
+     * @throws IOException
+     */
     public void download(String mediaName, File file) throws IOException {
         String uri = StringUtils.join(new String[]{
                 getUri(),
@@ -59,4 +75,14 @@ public class Media extends BaseModelObject {
         }, '/');
         driver.downloadFileTo(uri, file);
     }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "media"
+        }, '/');
+    }
+
+
 }

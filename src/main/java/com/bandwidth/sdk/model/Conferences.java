@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/users/{userId}/conferences</code>
+ *
  * @author vpotapenko
  */
 public class Conferences extends BaseModelObject {
@@ -17,6 +19,13 @@ public class Conferences extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
+    /**
+     * Retrieves the conference information.
+     *
+     * @param id conference id
+     * @return conference information.
+     * @throws IOException
+     */
     public Conference getConferenceById(String id) throws IOException {
         String conferencesUri = getUri();
         String conferenceUri = StringUtils.join(new String[]{
@@ -27,16 +36,23 @@ public class Conferences extends BaseModelObject {
         return new Conference(driver, conferencesUri, jsonObject);
     }
 
+    /**
+     * Creates builder for creating a conference with no members.
+     * <br>Example:<br>
+     * <code>Conference conference = conferences.newConferenceBuilder().from("{number}").create();</code>
+     *
+     * @return new builder
+     */
+    public NewConferenceBuilder newConferenceBuilder() {
+        return new NewConferenceBuilder();
+    }
+
     @Override
-    public String getUri() {
+    protected String getUri() {
         return StringUtils.join(new String[]{
                 parentUri,
                 "conferences"
         }, '/');
-    }
-
-    public NewConferenceBuilder newConferenceBuilder() {
-        return new NewConferenceBuilder();
     }
 
     private Conference createConference(Map<String, Object> params) throws IOException {

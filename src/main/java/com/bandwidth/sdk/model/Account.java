@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Point for <code>/v1/users/{userId}/account</code>
+ *
  * @author vpotapenko
  */
 public class Account extends BaseModelObject {
@@ -17,20 +19,25 @@ public class Account extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
+    /**
+     * Gets your current account information.
+     *
+     * @return information account information
+     * @throws IOException
+     */
     public AccountInfo getAccountInfo() throws IOException {
         String uri = getUri();
         JSONObject jsonObject = driver.getObject(uri);
         return new AccountInfo(driver, uri, jsonObject);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "account"
-        }, '/');
-    }
-
+    /**
+     * Creates builder for getting transactions of the account.
+     * <br>Example:<br>
+     * <code>List<AccountTransaction> list = account.queryTransactionsBuilder().maxItems(5).type("charge").list();</code>
+     *
+     * @return builder for getting transactions
+     */
     public TransactionsQueryBuilder queryTransactionsBuilder() {
         return new TransactionsQueryBuilder();
     }
@@ -46,10 +53,18 @@ public class Account extends BaseModelObject {
         return transactions;
     }
 
-    public String getAccountTransactionsUri() {
+    private String getAccountTransactionsUri() {
         return StringUtils.join(new String[]{
                 getUri(),
                 "transactions"
+        }, '/');
+    }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "account"
         }, '/');
     }
 

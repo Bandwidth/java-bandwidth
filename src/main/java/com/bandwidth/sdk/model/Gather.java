@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Gather DTMF parameters and results.
+ *
  * @author vpotapenko
  */
 public class Gather extends BaseModelObject {
@@ -17,6 +19,11 @@ public class Gather extends BaseModelObject {
         super(driver, parentUri, jsonObject);
     }
 
+    /**
+     * Changes state to completed.
+     *
+     * @throws IOException
+     */
     public void complete() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");

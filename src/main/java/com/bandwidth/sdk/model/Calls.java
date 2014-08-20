@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Point for <code>/v1/users/{userId}/calls</code>
+ *
  * @author vpotapenko
  */
 public class Calls extends BaseModelObject {
@@ -20,22 +22,35 @@ public class Calls extends BaseModelObject {
         super(driver, parentUri, null);
     }
 
-    @Override
-    public String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "calls"
-        }, '/');
-    }
-
+    /**
+     * Creates builder for getting a list of active and historic calls you made or received.
+     * <br>Example:<br>
+     * <code>List<Call> list = calls.queryCallsBuilder().bridgeId("{bridgeId}").list();</code>
+     *
+     * @return list of calls
+     */
     public QueryCallsBuilder queryCallsBuilder() {
         return new QueryCallsBuilder();
     }
 
+    /**
+     * Creates builder for making a phone call.
+     * <br>Example:<br>
+     * <code>Call call = calls.newCallBuilder().from("{number1}").to("{number2}").create();</code>
+     *
+     * @return new call
+     */
     public NewCallBuilder newCallBuilder() {
         return new NewCallBuilder();
     }
 
+    /**
+     * Gets information about an active or completed call.
+     *
+     * @param callId call id
+     * @return information about a call
+     * @throws IOException
+     */
     public Call getCallById(String callId) throws IOException {
         String callsUri = getUri();
         String eventPath = StringUtils.join(new String[]{
@@ -44,6 +59,14 @@ public class Calls extends BaseModelObject {
         }, '/');
         JSONObject jsonObject = driver.getObject(eventPath);
         return new Call(driver, callsUri, jsonObject);
+    }
+
+    @Override
+    protected String getUri() {
+        return StringUtils.join(new String[]{
+                parentUri,
+                "calls"
+        }, '/');
     }
 
     private List<Call> getCalls(Map<String, Object> params) throws IOException {

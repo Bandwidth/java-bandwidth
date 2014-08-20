@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.util.Date;
 
 /**
+ * Information about conference member.
+ *
  * @author vpotapenko
  */
 public class ConferenceMember extends BaseModelObject {

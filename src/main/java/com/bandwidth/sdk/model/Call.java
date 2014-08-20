@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Information about call.
+ *
  * @author vpotapenko
  */
 public class Call extends BaseModelObject {
@@ -61,6 +63,12 @@ public class Call extends BaseModelObject {
         return getPropertyAsBoolean("recordingEnabled");
     }
 
+    /**
+     * Retrieve all recordings related to the call.
+     *
+     * @return recordings
+     * @throws IOException
+     */
     public List<Recording> getRecordings() throws IOException {
         String recordingsPath = StringUtils.join(new String[]{
                 getUri(),
@@ -75,6 +83,12 @@ public class Call extends BaseModelObject {
         return list;
     }
 
+    /**
+     * Gets the events that occurred during the call.
+     *
+     * @return events
+     * @throws IOException
+     */
     public List<Event> getEventsList() throws IOException {
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
@@ -89,6 +103,13 @@ public class Call extends BaseModelObject {
         return list;
     }
 
+    /**
+     * Gets information about one call event.
+     *
+     * @param eventId event id
+     * @return information about event
+     * @throws IOException
+     */
     public Event getEventById(String eventId) throws IOException {
         String eventPath = StringUtils.join(new String[]{
                 getUri(),
@@ -103,6 +124,11 @@ public class Call extends BaseModelObject {
         return new Event(driver, eventsPath, jsonObject);
     }
 
+    /**
+     * Hang up a phone call.
+     *
+     * @throws IOException
+     */
     public void hangUp() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
@@ -114,6 +140,11 @@ public class Call extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
+    /**
+     * Answer an incoming phone call.
+     *
+     * @throws IOException
+     */
     public void answerOnIncoming() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "active");
@@ -125,6 +156,11 @@ public class Call extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
+    /**
+     * Reject an incoming phone call
+     *
+     * @throws IOException
+     */
     public void rejectIncoming() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "rejected");
@@ -136,6 +172,11 @@ public class Call extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
+    /**
+     * Turn call recording ON.
+     *
+     * @throws IOException
+     */
     public void recordingOn() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "true");
@@ -147,6 +188,11 @@ public class Call extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
+    /**
+     * Turn call recording OFF.
+     *
+     * @throws IOException
+     */
     public void recordingOff() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "false");
@@ -158,40 +204,53 @@ public class Call extends BaseModelObject {
         updateProperties(jsonObject);
     }
 
-    private void transfer(Map<String, Object> params) throws IOException {
-        params.put("state", "transferring");
-
-        String uri = getUri();
-        driver.post(uri, params);
-
-        JSONObject jsonObject = driver.getObject(uri);
-        updateProperties(jsonObject);
-    }
-
+    /**
+     * Creates builder for transferring call.
+     * <br>Example:<br>
+     * <code>call.callTransferBuilder("{number}").sentence("hello").create();</code>
+     *
+     * @param transferTo number for transferring
+     * @return new builder
+     */
     public CallTransferBuilder callTransferBuilder(String transferTo) {
         return new CallTransferBuilder(transferTo);
     }
 
-    public CallAudioBuilder callAudioBuilder() {
+    /**
+     * Creates new builder for playing an audio file or speaking a sentence in a call.
+     * <br>Example:<br>
+     * <code>call.newAudioBuilder().sentence("Hello").create();</code>
+     *
+     * @return new builder
+     */
+    public CallAudioBuilder newAudioBuilder() {
         return new CallAudioBuilder();
     }
 
+    /**
+     * Stop an audio file playing.
+     *
+     * @throws IOException
+     */
     public void stopAudioFilePlaying() throws IOException {
         new CallAudioBuilder().fileUrl(StringUtils.EMPTY).create();
     }
 
+    /**
+     * Stop an audio sentence.
+     *
+     * @throws IOException
+     */
     public void stopSentence() throws IOException {
         new CallAudioBuilder().sentence(StringUtils.EMPTY).create();
     }
 
-    private void createCallAudio(Map<String, Object> params) throws IOException {
-        String audioPath = StringUtils.join(new String[]{
-                getUri(),
-                "audio"
-        }, '/');
-        driver.post(audioPath, params);
-    }
-
+    /**
+     * Sends DTMF.
+     *
+     * @param dtmf DTMF value
+     * @throws IOException
+     */
     public void sendDtmf(String dtmf) throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("dtmfOut", dtmf);
@@ -203,8 +262,36 @@ public class Call extends BaseModelObject {
         driver.post(uri, params);
     }
 
+    /**
+     * Creates a new builder for collecting a series of DTMF digits from a phone call with an optional prompt. This request returns immediately. When gather finishes, an event with the results will be posted to the callback URL.
+     * <br>Example:<br>
+     * <code>call.callGatherBuilder().maxDigits(5).promptFileUrl("url_to_file").create();</code>
+     *
+     * @return new builder
+     */
     public CallGatherBuilder callGatherBuilder() {
         return new CallGatherBuilder();
+    }
+
+    /**
+     * Gets the gather DTMF parameters and results.
+     *
+     * @param gatherId gather id
+     * @return gather DTMF parameters and results
+     * @throws IOException
+     */
+    public Gather getGatherById(String gatherId) throws IOException {
+        String gatherPath = StringUtils.join(new String[]{
+                getUri(),
+                "gather",
+                gatherId
+        }, '/');
+        JSONObject jsonObject = driver.getObject(gatherPath);
+        String gathersPath = StringUtils.join(new String[]{
+                getUri(),
+                "events"
+        }, '/');
+        return new Gather(driver, gathersPath, jsonObject);
     }
 
     private void createGather(Map<String, Object> params) throws IOException {
@@ -215,18 +302,22 @@ public class Call extends BaseModelObject {
         driver.post(uri, params);
     }
 
-    public Gather getGatherById(String gatherId) throws IOException {
-        String gatherPath = StringUtils.join(new String[]{
+    private void createCallAudio(Map<String, Object> params) throws IOException {
+        String audioPath = StringUtils.join(new String[]{
                 getUri(),
-                "gather",
-                gatherId
+                "audio"
         }, '/');
-        JSONObject jsonObject = driver.getObject(gatherPath);
-        String gathersPath = StringUtils.join(new String[]{
-                        getUri(),
-                        "events"
-                }, '/');
-        return new Gather(driver, gathersPath, jsonObject);
+        driver.post(audioPath, params);
+    }
+
+    private void transfer(Map<String, Object> params) throws IOException {
+        params.put("state", "transferring");
+
+        String uri = getUri();
+        driver.post(uri, params);
+
+        JSONObject jsonObject = driver.getObject(uri);
+        updateProperties(jsonObject);
     }
 
     @Override

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Information about one of your applications.
+ *
  * @author vpotapenko
  */
 public class Application extends BaseModelObject {
@@ -82,7 +84,7 @@ public class Application extends BaseModelObject {
     }
 
     /**
-     * Commit changes to server.
+     * Makes changes of the application.
      *
      * @throws IOException
      */
@@ -94,7 +96,7 @@ public class Application extends BaseModelObject {
     }
 
     /**
-     * Delete application from server.
+     * Permanently deletes application.
      *
      * @throws IOException
      */
