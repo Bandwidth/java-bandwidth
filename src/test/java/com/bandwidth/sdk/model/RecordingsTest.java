@@ -75,7 +75,7 @@ public class RecordingsTest {
                 "  \"state\": \"complete\"\n" +
                 "}");
 
-        Recording recording = recordings.getRecordingById("{recordingId2}");
+        Recording recording = recordings.getRecording("{recordingId2}");
         assertThat(recording.getId(), equalTo("{recordingId2}"));
         assertThat(recording.getState(), equalTo("complete"));
 

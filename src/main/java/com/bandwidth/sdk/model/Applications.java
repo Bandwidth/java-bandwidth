@@ -39,7 +39,7 @@ public class Applications extends BaseModelObject {
      * @return application
      * @throws IOException
      */
-    public Application getApplicationById(String id) throws IOException {
+    public Application getApplication(String id) throws IOException {
         String applicationsUri = getUri();
         String uri = StringUtils.join(new String[]{
                 applicationsUri,

@@ -43,7 +43,7 @@ public class Errors extends BaseModelObject {
      * @return information about one user error
      * @throws IOException
      */
-    public Error getErrorById(String id) throws IOException {
+    public Error getError(String id) throws IOException {
         String errorsUri = getUri();
         String uri = StringUtils.join(new String[]{
                 errorsUri,

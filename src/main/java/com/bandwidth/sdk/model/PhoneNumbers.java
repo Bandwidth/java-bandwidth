@@ -52,7 +52,7 @@ public class PhoneNumbers extends BaseModelObject {
      * @return number
      * @throws IOException
      */
-    public PhoneNumber getNumberById(String id) throws IOException {
+    public PhoneNumber getNumber(String id) throws IOException {
         String numbersUri = getUri();
         String uri = StringUtils.join(new String[]{
                 numbersUri,
@@ -70,7 +70,7 @@ public class PhoneNumbers extends BaseModelObject {
      * @throws IOException
      */
     public PhoneNumber getNumberByNumber(String number) throws IOException {
-        return getNumberById(URLEncoder.encode(number, "UTF-8"));
+        return getNumber(URLEncoder.encode(number, "UTF-8"));
     }
 
     @Override

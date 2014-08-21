@@ -110,7 +110,7 @@ public class Call extends BaseModelObject {
      * @return information about event
      * @throws IOException
      */
-    public Event getEventById(String eventId) throws IOException {
+    public Event getEvent(String eventId) throws IOException {
         String eventPath = StringUtils.join(new String[]{
                 getUri(),
                 "events",
@@ -280,7 +280,7 @@ public class Call extends BaseModelObject {
      * @return gather DTMF parameters and results
      * @throws IOException
      */
-    public Gather getGatherById(String gatherId) throws IOException {
+    public Gather getGather(String gatherId) throws IOException {
         String gatherPath = StringUtils.join(new String[]{
                 getUri(),
                 "gather",

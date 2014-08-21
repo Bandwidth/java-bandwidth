@@ -58,7 +58,7 @@ public class CallsTest {
     public void shouldGetCallById() throws Exception {
         mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
 
-        Call bandwidthCall = calls.getCallById("id1");
+        Call bandwidthCall = calls.getCall("id1");
         assertThat(bandwidthCall, notNullValue());
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));

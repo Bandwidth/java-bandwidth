@@ -201,7 +201,7 @@ public class CallTest {
         mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
 
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
-        Event event = call.getEventById("id1");
+        Event event = call.getEvent("id1");
 
         assertThat(event.getId(), equalTo("ce-hsdbdbdhd"));
 
@@ -277,7 +277,7 @@ public class CallTest {
                         "}");
 
         Call call = new Call(mockRestDriver, "parentUri", jsonObject);
-        Gather gather = call.getGatherById("gtr-kj4xloaq5vbpfxyeypndgxa");
+        Gather gather = call.getGather("gtr-kj4xloaq5vbpfxyeypndgxa");
 
         assertThat(gather.getId(), equalTo("gtr-kj4xloaq5vbpfxyeypndgxa"));
         assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));

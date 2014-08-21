@@ -73,7 +73,7 @@ public class MessagesTest {
                 "  \"media\": []\n" +
                 "}");
 
-        Message message = messages.getMessageById("m-ckobmmd4fgqumyhssgd6lqy");
+        Message message = messages.getMessage("m-ckobmmd4fgqumyhssgd6lqy");
         assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
         assertThat(message.getFrom(), equalTo("+number2"));
         assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));

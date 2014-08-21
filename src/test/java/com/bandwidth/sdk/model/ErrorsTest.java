@@ -132,7 +132,7 @@ public class ErrorsTest {
                 "  ],\n" +
                 "  \"code\": \"callback-server-timeout\"\n" +
                 "}");
-        Error error = errors.getErrorById("ue-asvdtalmmhka2i63uzt66ma");
+        Error error = errors.getError("ue-asvdtalmmhka2i63uzt66ma");
         assertThat(error.getId(), equalTo("ue-asvdtalmmhka2i63uzt66ma"));
         assertThat(error.getCategory(), equalTo("unavailable"));
         assertThat(error.getMessage(), equalTo("The callback server took too long to respond"));

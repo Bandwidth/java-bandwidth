@@ -26,7 +26,7 @@ public class Conferences extends BaseModelObject {
      * @return conference information.
      * @throws IOException
      */
-    public Conference getConferenceById(String id) throws IOException {
+    public Conference getConference(String id) throws IOException {
         String conferencesUri = getUri();
         String conferenceUri = StringUtils.join(new String[]{
                 conferencesUri,

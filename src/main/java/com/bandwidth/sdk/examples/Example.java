@@ -48,7 +48,7 @@ public class Example {
         }
 
         if (!list.isEmpty()) {
-            Recording recording = recordings.getRecordingById(list.get(0).getId());
+            Recording recording = recordings.getRecording(list.get(0).getId());
             System.out.println("\nRecording by Id");
             System.out.println(recording);
         }
@@ -64,7 +64,7 @@ public class Example {
         }
 
         if (!list.isEmpty()) {
-            PhoneNumber phoneNumber = phoneNumbers.getNumberById(list.get(0).getId());
+            PhoneNumber phoneNumber = phoneNumbers.getNumber(list.get(0).getId());
             System.out.println("\nPhone Number by Id");
             System.out.println(phoneNumber);
 
@@ -83,7 +83,7 @@ public class Example {
         }
 
         if (!list.isEmpty()) {
-            Message message = messages.getMessageById(list.get(0).getId());
+            Message message = messages.getMessage(list.get(0).getId());
             System.out.println("\nMessage by Id");
             System.out.println(message);
         }
@@ -98,7 +98,7 @@ public class Example {
         }
 
         if (!errorList.isEmpty()) {
-            Error error = errors.getErrorById(errorList.get(0).getId());
+            Error error = errors.getError(errorList.get(0).getId());
             System.out.println("\nError by Id");
             System.out.println(error);
         }
@@ -113,7 +113,7 @@ public class Example {
         }
 
         if (!callList.isEmpty()) {
-            Call call = calls.getCallById(callList.get(0).getId());
+            Call call = calls.getCall(callList.get(0).getId());
             System.out.println("\nCall by Id");
             System.out.println(call);
 
@@ -124,7 +124,7 @@ public class Example {
             }
 
             if (!eventsList.isEmpty()) {
-                Event event = call.getEventById(eventsList.get(0).getId());
+                Event event = call.getEvent(eventsList.get(0).getId());
                 System.out.println("\nCall event by Id");
                 System.out.println(event);
             }
@@ -146,7 +146,7 @@ public class Example {
         }
 
         if (bridgeList.size() > 0) {
-            Bridge bridge = bridges.getBridgeById(bridgeList.get(0).getId());
+            Bridge bridge = bridges.getBridge(bridgeList.get(0).getId());
             System.out.println("\nBridge by Id");
             System.out.println(bridge);
 
@@ -185,7 +185,7 @@ public class Example {
 
         System.out.println("\nApplication by id:");
         String id = applicationList.get(0).getId();
-        Application application = applications.getApplicationById(id);
+        Application application = applications.getApplication(id);
         System.out.println(application);
     }
 

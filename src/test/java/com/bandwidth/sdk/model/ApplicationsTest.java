@@ -62,7 +62,7 @@ public class ApplicationsTest {
     public void shouldGetApplicationById() throws ParseException, IOException {
         mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false}");
 
-        Application application = applications.getApplicationById("id1");
+        Application application = applications.getApplication("id1");
         assertThat(application.getId(), equalTo("id1"));
         assertThat(application.getName(), equalTo("App1"));
         assertThat(application.getIncomingCallUrl(), equalTo("https://postBack"));

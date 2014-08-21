@@ -29,7 +29,7 @@ public class Messages extends BaseModelObject {
      * @return information about message
      * @throws IOException
      */
-    public Message getMessageById(String id) throws IOException {
+    public Message getMessage(String id) throws IOException {
         String messagesUri = getUri();
         String uri = StringUtils.join(new String[]{
                 messagesUri,

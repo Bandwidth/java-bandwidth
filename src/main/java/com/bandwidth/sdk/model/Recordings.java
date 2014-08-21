@@ -24,7 +24,7 @@ public class Recordings extends BaseModelObject {
         return new QueryRecordingsBuilder();
     }
 
-    public Recording getRecordingById(String id) throws IOException {
+    public Recording getRecording(String id) throws IOException {
         String recordingsUri = getUri();
         String uri = StringUtils.join(new String[]{
                 recordingsUri,

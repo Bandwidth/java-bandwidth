@@ -51,7 +51,7 @@ public class Calls extends BaseModelObject {
      * @return information about a call
      * @throws IOException
      */
-    public Call getCallById(String callId) throws IOException {
+    public Call getCall(String callId) throws IOException {
         String callsUri = getUri();
         String eventPath = StringUtils.join(new String[]{
                 callsUri,

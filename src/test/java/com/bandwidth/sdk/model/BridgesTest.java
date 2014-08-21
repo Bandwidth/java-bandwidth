@@ -76,7 +76,7 @@ public class BridgesTest {
     @Test
     public void shouldGetBridgeById() throws ParseException, IOException {
         mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = bridges.getBridgeById("id1");
+        Bridge bridge = bridges.getBridge("id1");
         assertThat(bridge.getId(), equalTo("id1"));
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
         assertThat(bridge.getState(), equalTo("created"));

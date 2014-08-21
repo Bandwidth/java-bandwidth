@@ -88,7 +88,7 @@ public class PhoneNumbersTest {
                 "    \"nationalNumber\": \"(111) 111-8026\",\n" +
                 "    \"city\": \"GREENSBORO\"\n" +
                 "  }");
-        PhoneNumber number = phoneNumbers.getNumberById("n-bdllkjjddr5vuvglfluxdwi");
+        PhoneNumber number = phoneNumbers.getNumber("n-bdllkjjddr5vuvglfluxdwi");
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
@@ -108,7 +108,7 @@ public class PhoneNumbersTest {
                 "    \"nationalNumber\": \"(111) 111-8026\",\n" +
                 "    \"city\": \"GREENSBORO\"\n" +
                 "  }");
-        PhoneNumber number = phoneNumbers.getNumberById("+number");
+        PhoneNumber number = phoneNumbers.getNumber("+number");
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
         assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));

@@ -46,7 +46,7 @@ public class Bridges extends BaseModelObject {
      * @return information about a specific bridge
      * @throws IOException
      */
-    public Bridge getBridgeById(String id) throws IOException {
+    public Bridge getBridge(String id) throws IOException {
         String bridgesUri = getUri();
         String eventPath = StringUtils.join(new String[]{
                 bridgesUri,
