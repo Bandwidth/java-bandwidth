@@ -118,7 +118,7 @@
                     <author>true</author>
                     <version>true</version>
                     <use>true</use>
-                    <windowtitle>Twilio Java</windowtitle>
+                    <windowtitle>Bandwidth Java</windowtitle>
                     <doctitle><![CDATA[<h1>Bandwidth Java</h1>]]></doctitle>
                     <bottom><![CDATA[<i>Copyright &#169; 2014 Bandwidth, Inc. All Rights Reserved.</i>]]></bottom>
                 </configuration>
