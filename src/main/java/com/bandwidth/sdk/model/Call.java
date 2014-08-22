@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,8 +15,8 @@ import java.util.*;
  */
 public class Call extends BaseModelObject {
 
-    public Call(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public String getDirection() {
@@ -74,11 +74,11 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "recordings"
         }, '/');
-        JSONArray array = driver.getArray(recordingsPath, null);
+        JSONArray array = client.getArray(recordingsPath, null);
 
         List<Recording> list = new ArrayList<Recording>();
         for (Object object : array) {
-            list.add(new Recording(driver, recordingsPath, (JSONObject) object));
+            list.add(new Recording(client, recordingsPath, (JSONObject) object));
         }
         return list;
     }
@@ -94,11 +94,11 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        JSONArray array = driver.getArray(eventsPath, null);
+        JSONArray array = client.getArray(eventsPath, null);
 
         List<Event> list = new ArrayList<Event>();
         for (Object object : array) {
-            list.add(new Event(driver, eventsPath, (JSONObject) object));
+            list.add(new Event(client, eventsPath, (JSONObject) object));
         }
         return list;
     }
@@ -116,12 +116,12 @@ public class Call extends BaseModelObject {
                 "events",
                 eventId
         }, '/');
-        JSONObject jsonObject = driver.getObject(eventPath);
+        JSONObject jsonObject = client.getObject(eventPath);
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
-        return new Event(driver, eventsPath, jsonObject);
+        return new Event(client, eventsPath, jsonObject);
     }
 
     /**
@@ -134,9 +134,9 @@ public class Call extends BaseModelObject {
         params.put("state", "completed");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -150,9 +150,9 @@ public class Call extends BaseModelObject {
         params.put("state", "active");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -166,9 +166,9 @@ public class Call extends BaseModelObject {
         params.put("state", "rejected");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -182,9 +182,9 @@ public class Call extends BaseModelObject {
         params.put("recordingEnabled", "true");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -198,9 +198,9 @@ public class Call extends BaseModelObject {
         params.put("recordingEnabled", "false");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -259,7 +259,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "dtmf"
         }, '/');
-        driver.post(uri, params);
+        client.post(uri, params);
     }
 
     /**
@@ -286,12 +286,12 @@ public class Call extends BaseModelObject {
                 "gather",
                 gatherId
         }, '/');
-        JSONObject jsonObject = driver.getObject(gatherPath);
+        JSONObject jsonObject = client.getObject(gatherPath);
         String gathersPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
-        return new Gather(driver, gathersPath, jsonObject);
+        return new Gather(client, gathersPath, jsonObject);
     }
 
     private void createGather(Map<String, Object> params) throws IOException {
@@ -299,7 +299,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "gather"
         }, '/');
-        driver.post(uri, params);
+        client.post(uri, params);
     }
 
     private void createCallAudio(Map<String, Object> params) throws IOException {
@@ -307,16 +307,16 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "audio"
         }, '/');
-        driver.post(audioPath, params);
+        client.post(audioPath, params);
     }
 
     private void transfer(Map<String, Object> params) throws IOException {
         params.put("state", "transferring");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 

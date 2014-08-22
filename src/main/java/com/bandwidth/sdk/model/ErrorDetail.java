@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 /**
@@ -8,8 +8,8 @@ import org.json.simple.JSONObject;
  */
 public class ErrorDetail extends BaseModelObject {
 
-    public ErrorDetail(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public ErrorDetail(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public String getName() {

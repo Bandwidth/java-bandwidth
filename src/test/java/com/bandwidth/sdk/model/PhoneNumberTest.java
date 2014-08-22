@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
@@ -43,18 +43,18 @@ public class PhoneNumberTest {
                 "    \"city\": \"GREENSBORO\"\n" +
                 "  }");
 
-        MockRestDriver driver = new MockRestDriver();
-        driver.result = jsonObject;
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.result = jsonObject;
 
-        PhoneNumber number = new PhoneNumber(driver, "parentUri", jsonObject);
+        PhoneNumber number = new PhoneNumber(mockRestClient, "parentUri", jsonObject);
         number.setApplicationId("appId");
         number.setName("NewName");
         number.commit();
 
-        assertThat(driver.requests.get(0).name, equalTo("post"));
-        assertThat(driver.requests.get(0).uri, equalTo("parentUri/n-bdllkjjddr5vuvglfluxdwi"));
-        assertThat(driver.requests.get(0).params.get("applicationId").toString(), equalTo("appId"));
-        assertThat(driver.requests.get(0).params.get("name").toString(), equalTo("NewName"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/n-bdllkjjddr5vuvglfluxdwi"));
+        assertThat(mockRestClient.requests.get(0).params.get("applicationId").toString(), equalTo("appId"));
+        assertThat(mockRestClient.requests.get(0).params.get("name").toString(), equalTo("NewName"));
     }
 
     @Test
@@ -71,13 +71,13 @@ public class PhoneNumberTest {
                 "    \"city\": \"GREENSBORO\"\n" +
                 "  }");
 
-        MockRestDriver driver = new MockRestDriver();
-        driver.result = jsonObject;
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.result = jsonObject;
 
-        PhoneNumber number = new PhoneNumber(driver, "parentUri", jsonObject);
+        PhoneNumber number = new PhoneNumber(mockRestClient, "parentUri", jsonObject);
         number.delete();
 
-        assertThat(driver.requests.get(0).name, equalTo("delete"));
-        assertThat(driver.requests.get(0).uri, equalTo("parentUri/n-bdllkjjddr5vuvglfluxdwi"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("delete"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/n-bdllkjjddr5vuvglfluxdwi"));
     }
 }

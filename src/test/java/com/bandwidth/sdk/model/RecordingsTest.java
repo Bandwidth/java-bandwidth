@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,18 +14,18 @@ import static org.junit.Assert.assertThat;
 
 public class RecordingsTest {
 
-    private MockRestDriver mockRestDriver;
+    private MockRestClient mockRestClient;
     private Recordings recordings;
 
     @Before
     public void setUp() throws Exception {
-        mockRestDriver = new MockRestDriver();
-        recordings = new Recordings(mockRestDriver, "parentUri");
+        mockRestClient = new MockRestClient();
+        recordings = new Recordings(mockRestClient, "parentUri");
     }
 
     @Test
     public void shouldGetRecordingList() throws Exception {
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "{\n" +
                 "    \"endTime\": \"2013-02-08T13:17:12Z\",\n" +
                 "    \"id\": \"{recordingId1}\",\n" +
@@ -58,15 +58,15 @@ public class RecordingsTest {
         assertThat(list.get(1).getCall(), equalTo("https://.../v1/users/.../calls/{callId1}"));
         assertThat(list.get(2).getState(), equalTo("complete"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/recordings"));
-        assertThat(mockRestDriver.requests.get(0).params.get("page").toString(), equalTo("5"));
-        assertThat(mockRestDriver.requests.get(0).params.get("size").toString(), equalTo("10"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/recordings"));
+        assertThat(mockRestClient.requests.get(0).params.get("page").toString(), equalTo("5"));
+        assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("10"));
     }
 
     @Test
     public void shouldGetRecordingById() throws Exception {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\n" +
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
                 "  \"endTime\": \"2013-02-08T14:05:15Z\",\n" +
                 "  \"id\": \"{recordingId2}\",\n" +
                 "  \"media\": \"https://.../v1/users/.../media/{callId1}-2.wav\",\n" +
@@ -79,7 +79,7 @@ public class RecordingsTest {
         assertThat(recording.getId(), equalTo("{recordingId2}"));
         assertThat(recording.getState(), equalTo("complete"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/recordings/{recordingId2}"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/recordings/{recordingId2}"));
     }
 }

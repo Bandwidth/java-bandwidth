@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -14,8 +14,8 @@ import java.io.IOException;
  */
 public class MediaFile extends BaseModelObject {
 
-    public MediaFile(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public MediaFile(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public Long getContentLength() {
@@ -37,7 +37,7 @@ public class MediaFile extends BaseModelObject {
      * @throws IOException
      */
     public void downloadTo(File destFile) throws IOException {
-        driver.downloadFileTo(getUri(), destFile);
+        client.downloadFileTo(getUri(), destFile);
     }
 
     /**
@@ -46,7 +46,7 @@ public class MediaFile extends BaseModelObject {
      * @throws IOException
      */
     public void delete() throws IOException {
-        driver.delete(getUri());
+        client.delete(getUri());
     }
 
     @Override

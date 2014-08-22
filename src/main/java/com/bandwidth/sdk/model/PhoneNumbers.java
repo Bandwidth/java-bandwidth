@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,8 +19,8 @@ import java.util.Map;
  */
 public class PhoneNumbers extends BaseModelObject {
 
-    public PhoneNumbers(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public PhoneNumbers(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -58,8 +58,8 @@ public class PhoneNumbers extends BaseModelObject {
                 numbersUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(uri);
-        return new PhoneNumber(driver, numbersUri, jsonObject);
+        JSONObject jsonObject = client.getObject(uri);
+        return new PhoneNumber(client, numbersUri, jsonObject);
     }
 
     /**
@@ -83,19 +83,19 @@ public class PhoneNumbers extends BaseModelObject {
 
     private List<PhoneNumber> getNumbers(Map<String, Object> params) throws IOException {
         String uri = getUri();
-        JSONArray jsonArray = driver.getArray(uri, params);
+        JSONArray jsonArray = client.getArray(uri, params);
 
         List<PhoneNumber> numbers = new ArrayList<PhoneNumber>();
         for (Object obj : jsonArray) {
-            numbers.add(new PhoneNumber(driver, uri, (JSONObject) obj));
+            numbers.add(new PhoneNumber(client, uri, (JSONObject) obj));
         }
         return numbers;
     }
 
     private PhoneNumber newNumber(Map<String, Object> params) throws IOException {
         String uri = getUri();
-        JSONObject jsonObject = driver.create(uri, params);
-        return new PhoneNumber(driver, uri, jsonObject);
+        JSONObject jsonObject = client.create(uri, params);
+        return new PhoneNumber(client, uri, jsonObject);
     }
 
     public class QueryNumbersBuilder {

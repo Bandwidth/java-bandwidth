@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class Recordings extends BaseModelObject {
 
-    public Recordings(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Recordings(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     public QueryRecordingsBuilder queryRecordingsBuilder() {
@@ -30,17 +30,17 @@ public class Recordings extends BaseModelObject {
                 recordingsUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(uri);
-        return new Recording(driver, recordingsUri, jsonObject);
+        JSONObject jsonObject = client.getObject(uri);
+        return new Recording(client, recordingsUri, jsonObject);
     }
 
     private List<Recording> getRecordings(Map<String, Object> params) throws IOException {
         String uri = getUri();
-        JSONArray array = driver.getArray(uri, params);
+        JSONArray array = client.getArray(uri, params);
 
         List<Recording> recordings = new ArrayList<Recording>();
         for (Object obj : array) {
-            recordings.add(new Recording(driver, uri, (JSONObject) obj));
+            recordings.add(new Recording(client, uri, (JSONObject) obj));
         }
         return recordings;
     }

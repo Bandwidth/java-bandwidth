@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class Error extends BaseModelObject {
 
-    public Error(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public Error(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public String getMessage() {
@@ -34,7 +34,7 @@ public class Error extends BaseModelObject {
         String uri = getUri();
         List<ErrorDetail> details = new ArrayList<ErrorDetail>();
         for (Object obj : (List) getProperty("details")) {
-            details.add(new ErrorDetail(driver, uri, (JSONObject) obj));
+            details.add(new ErrorDetail(client, uri, (JSONObject) obj));
         }
         return details;
     }

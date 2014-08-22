@@ -1,10 +1,12 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Information about your phone number.
@@ -13,8 +15,8 @@ import java.util.*;
  */
 public class PhoneNumber extends BaseModelObject {
 
-    public PhoneNumber(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public PhoneNumber(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     /**
@@ -35,9 +37,9 @@ public class PhoneNumber extends BaseModelObject {
         if (fallbackNumber != null) params.put("fallbackNumber", fallbackNumber);
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject object = driver.getObject(uri);
+        JSONObject object = client.getObject(uri);
         updateProperties(object);
     }
 
@@ -49,7 +51,7 @@ public class PhoneNumber extends BaseModelObject {
      * @throws IOException
      */
     public void delete() throws IOException {
-        driver.delete(getUri());
+        client.delete(getUri());
     }
 
     public String getApplication() {

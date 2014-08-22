@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,8 +15,8 @@ import java.util.*;
  */
 public class Conference extends BaseModelObject {
 
-    public Conference(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public Conference(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public String getFrom() {
@@ -61,9 +61,9 @@ public class Conference extends BaseModelObject {
         params.put("state", "completed");
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -77,9 +77,9 @@ public class Conference extends BaseModelObject {
         params.put("mute", String.valueOf(true));
 
         String uri = getUri();
-        driver.post(uri, params);
+        client.post(uri, params);
 
-        JSONObject jsonObject = driver.getObject(uri);
+        JSONObject jsonObject = client.getObject(uri);
         updateProperties(jsonObject);
     }
 
@@ -94,11 +94,11 @@ public class Conference extends BaseModelObject {
                 getUri(),
                 "members"
         }, '/');
-        JSONArray array = driver.getArray(membersPath, null);
+        JSONArray array = client.getArray(membersPath, null);
 
         List<ConferenceMember> members = new ArrayList<ConferenceMember>();
         for (Object obj : array) {
-            members.add(new ConferenceMember(driver, membersPath, (JSONObject) obj));
+            members.add(new ConferenceMember(client, membersPath, (JSONObject) obj));
         }
         return members;
     }
@@ -119,7 +119,7 @@ public class Conference extends BaseModelObject {
                 getUri(),
                 "audio"
         }, '/');
-        driver.post(audioPath, params);
+        client.post(audioPath, params);
     }
 
     @Override

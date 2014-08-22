@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -16,13 +16,13 @@ public abstract class BaseModelObject {
 
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
 
-    protected final IRestDriver driver;
+    protected final BandwidthRestClient client;
     protected final String parentUri;
 
     protected final Map<String, Object> properties = new HashMap<String, Object>();
 
-    protected BaseModelObject(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        this.driver = driver;
+    protected BaseModelObject(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        this.client = client;
         this.parentUri = parentUri;
 
         updateProperties(jsonObject);

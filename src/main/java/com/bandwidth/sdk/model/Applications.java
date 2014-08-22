@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class Applications extends BaseModelObject {
 
-    public Applications(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Applications(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -45,8 +45,8 @@ public class Applications extends BaseModelObject {
                 applicationsUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(uri);
-        return new Application(driver, applicationsUri, jsonObject);
+        JSONObject jsonObject = client.getObject(uri);
+        return new Application(client, applicationsUri, jsonObject);
     }
 
     /**
@@ -63,11 +63,11 @@ public class Applications extends BaseModelObject {
 
     private List<Application> getApplications(Map<String, Object> params) throws IOException {
         String applicationsUri = getUri();
-        JSONArray array = driver.getArray(applicationsUri, params);
+        JSONArray array = client.getArray(applicationsUri, params);
 
         List<Application> applications = new ArrayList<Application>();
         for (Object obj : array) {
-            applications.add(new Application(driver, applicationsUri, (JSONObject) obj));
+            applications.add(new Application(client, applicationsUri, (JSONObject) obj));
         }
         return applications;
     }
@@ -82,8 +82,8 @@ public class Applications extends BaseModelObject {
 
     private Application createApplication(Map<String, Object> params) throws IOException {
         String applicationsUri = getUri();
-        JSONObject jsonObject = driver.create(applicationsUri, params);
-        return new Application(driver, applicationsUri, jsonObject);
+        JSONObject jsonObject = client.create(applicationsUri, params);
+        return new Application(client, applicationsUri, jsonObject);
     }
 
     public class QueryApplicationsBuilder {

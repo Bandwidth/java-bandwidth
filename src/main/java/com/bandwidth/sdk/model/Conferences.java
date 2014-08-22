@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class Conferences extends BaseModelObject {
 
-    public Conferences(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Conferences(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -32,8 +32,8 @@ public class Conferences extends BaseModelObject {
                 conferencesUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(conferenceUri);
-        return new Conference(driver, conferencesUri, jsonObject);
+        JSONObject jsonObject = client.getObject(conferenceUri);
+        return new Conference(client, conferencesUri, jsonObject);
     }
 
     /**
@@ -57,8 +57,8 @@ public class Conferences extends BaseModelObject {
 
     private Conference createConference(Map<String, Object> params) throws IOException {
         String conferencesUri = getUri();
-        JSONObject jsonObject = driver.create(conferencesUri, params);
-        return new Conference(driver, conferencesUri, jsonObject);
+        JSONObject jsonObject = client.create(conferencesUri, params);
+        return new Conference(client, conferencesUri, jsonObject);
     }
 
     public class NewConferenceBuilder {

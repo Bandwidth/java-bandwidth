@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class Messages extends BaseModelObject {
 
-    public Messages(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Messages(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -35,8 +35,8 @@ public class Messages extends BaseModelObject {
                 messagesUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(uri);
-        return new Message(driver, messagesUri, jsonObject);
+        JSONObject jsonObject = client.getObject(uri);
+        return new Message(client, messagesUri, jsonObject);
     }
 
     /**
@@ -63,19 +63,19 @@ public class Messages extends BaseModelObject {
 
     private List<Message> getMessages(Map<String, Object> params) throws IOException {
         String messagesUri = getUri();
-        JSONArray jsonArray = driver.getArray(messagesUri, params);
+        JSONArray jsonArray = client.getArray(messagesUri, params);
 
         List<Message> messages = new ArrayList<Message>();
         for (Object obj : jsonArray) {
-            messages.add(new Message(driver, messagesUri, (JSONObject) obj));
+            messages.add(new Message(client, messagesUri, (JSONObject) obj));
         }
         return messages;
     }
 
     private Message newMessage(Map<String, Object> params) throws IOException {
         String uri = getUri();
-        JSONObject jsonObject = driver.create(uri, params);
-        return new Message(driver, uri, jsonObject);
+        JSONObject jsonObject = client.create(uri, params);
+        return new Message(client, uri, jsonObject);
     }
 
     @Override

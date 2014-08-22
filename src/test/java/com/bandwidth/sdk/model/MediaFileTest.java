@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
@@ -28,32 +28,32 @@ public class MediaFileTest {
 
     @Test
     public void shouldDownloadContent() throws Exception {
-        MockRestDriver restDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
                 "    \"contentLength\": 561276,\n" +
                 "    \"mediaName\": \"{mediaName1}\",\n" +
                 "    \"content\": \"https://api.com/v1/users/users/{userId}/media/{mediaName1}\"\n" +
                 "  }");
-        MediaFile mediaFile = new MediaFile(restDriver, "parentUri", jsonObject);
+        MediaFile mediaFile = new MediaFile(mockRestClient, "parentUri", jsonObject);
         mediaFile.downloadTo(new File("path_to_file"));
 
-        assertThat(restDriver.requests.get(0).name, equalTo("downloadFileTo"));
-        assertThat(restDriver.requests.get(0).uri, equalTo("parentUri/{mediaName1}"));
-        assertThat(restDriver.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("downloadFileTo"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/{mediaName1}"));
+        assertThat(mockRestClient.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
     }
 
     @Test
     public void shouldBeDeletable() throws Exception {
-        MockRestDriver restDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
                 "    \"contentLength\": 561276,\n" +
                 "    \"mediaName\": \"{mediaName1}\",\n" +
                 "    \"content\": \"https://api.com/v1/users/users/{userId}/media/{mediaName1}\"\n" +
                 "  }");
-        MediaFile mediaFile = new MediaFile(restDriver, "parentUri", jsonObject);
+        MediaFile mediaFile = new MediaFile(mockRestClient, "parentUri", jsonObject);
         mediaFile.delete();
 
-        assertThat(restDriver.requests.get(0).name, equalTo("delete"));
-        assertThat(restDriver.requests.get(0).uri, equalTo("parentUri/{mediaName1}"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("delete"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/{mediaName1}"));
     }
 }

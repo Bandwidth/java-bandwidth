@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 /**
@@ -10,8 +10,8 @@ import org.json.simple.JSONObject;
  */
 public class AccountInfo extends BaseModelObject {
 
-    public AccountInfo(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public AccountInfo(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public String getAccountType() {

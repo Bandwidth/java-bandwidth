@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,19 +16,19 @@ import static org.junit.Assert.assertThat;
 
 public class ApplicationsTest {
 
-    private MockRestDriver mockRestDriver;
+    private MockRestClient mockRestClient;
     private Applications applications;
 
     @Before
     public void setUp() {
-        mockRestDriver = new MockRestDriver();
+        mockRestClient = new MockRestClient();
 
-        applications = new Applications(mockRestDriver, "parentUri");
+        applications = new Applications(mockRestClient, "parentUri");
     }
 
     @Test
     public void shouldGetApplicationsList() throws ParseException, IOException {
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false},{\"id\":\"id2\",\"incomingCallUrl\":\"http:///call/callback.json\",\"incomingSmsUrl\":\"http:///sms/callback.json\",\"name\":\"App2\",\"autoAnswer\":true}]");
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false},{\"id\":\"id2\",\"incomingCallUrl\":\"http:///call/callback.json\",\"incomingSmsUrl\":\"http:///sms/callback.json\",\"name\":\"App2\",\"autoAnswer\":true}]");
 
         List<Application> applicationList = applications.queryApplicationsBuilder().page(1).list();
         assertThat(applicationList.size(), equalTo(2));
@@ -39,14 +39,14 @@ public class ApplicationsTest {
         assertThat(applicationList.get(1).isAutoAnswer(), equalTo(true));
         assertThat(applicationList.get(1).getIncomingCallUrl(), equalTo("http:///call/callback.json"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/applications"));
-        assertThat((Integer) mockRestDriver.requests.get(0).params.get("page"), equalTo(1));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/applications"));
+        assertThat((Integer) mockRestClient.requests.get(0).params.get("page"), equalTo(1));
     }
 
     @Test
     public void shouldCreateApplication() throws ParseException, IOException {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false}");
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false}");
 
         Application application = applications.newApplicationBuilder("App").create();
         assertThat(application.getId(), equalTo("id1"));
@@ -54,13 +54,13 @@ public class ApplicationsTest {
         assertThat(application.getIncomingCallUrl(), equalTo("https://postBack"));
         assertThat(application.getIncomingSmsUrl(), equalTo("https://message"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/applications"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/applications"));
     }
 
     @Test
     public void shouldGetApplicationById() throws ParseException, IOException {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false}");
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"incomingCallUrl\":\"https://postBack\",\"incomingSmsUrl\":\"https://message\",\"name\":\"App1\",\"autoAnswer\":false}");
 
         Application application = applications.getApplication("id1");
         assertThat(application.getId(), equalTo("id1"));
@@ -68,7 +68,7 @@ public class ApplicationsTest {
         assertThat(application.getIncomingCallUrl(), equalTo("https://postBack"));
         assertThat(application.getIncomingSmsUrl(), equalTo("https://message"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/applications/id1"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/applications/id1"));
     }
 }

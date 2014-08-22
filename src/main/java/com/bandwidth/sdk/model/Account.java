@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,8 +15,8 @@ import java.util.*;
  */
 public class Account extends BaseModelObject {
 
-    public Account(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Account(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -27,8 +27,8 @@ public class Account extends BaseModelObject {
      */
     public AccountInfo getAccountInfo() throws IOException {
         String uri = getUri();
-        JSONObject jsonObject = driver.getObject(uri);
-        return new AccountInfo(driver, uri, jsonObject);
+        JSONObject jsonObject = client.getObject(uri);
+        return new AccountInfo(client, uri, jsonObject);
     }
 
     /**
@@ -44,11 +44,11 @@ public class Account extends BaseModelObject {
 
     private List<AccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
         String transactionsUri = getAccountTransactionsUri();
-        JSONArray array = driver.getArray(transactionsUri, params);
+        JSONArray array = client.getArray(transactionsUri, params);
 
         List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
         for (Object obj : array) {
-            transactions.add(new AccountTransaction(driver, transactionsUri, (JSONObject) obj));
+            transactions.add(new AccountTransaction(client, transactionsUri, (JSONObject) obj));
         }
         return transactions;
     }

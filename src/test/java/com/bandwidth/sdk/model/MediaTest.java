@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -14,18 +14,18 @@ import static org.junit.Assert.assertThat;
 
 public class MediaTest {
 
-    private MockRestDriver mockRestDriver;
+    private MockRestClient mockRestClient;
     private Media media;
 
     @Before
     public void setUp() throws Exception {
-        mockRestDriver = new MockRestDriver();
-        media = new Media(mockRestDriver, "parentUri");
+        mockRestClient = new MockRestClient();
+        media = new Media(mockRestClient, "parentUri");
     }
 
     @Test
     public void shouldGetMediaFiles() throws Exception {
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"contentLength\": 561276,\n" +
                 "    \"mediaName\": \"{mediaName1}\",\n" +
@@ -48,13 +48,13 @@ public class MediaTest {
         assertThat(mediaFiles.get(0).getMediaName(), equalTo("{mediaName1}"));
         assertThat(mediaFiles.get(0).getUri(), equalTo("parentUri/media/{mediaName1}"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/media"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/media"));
     }
 
     @Test
     public void shouldUploadMediaFile() throws Exception {
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"contentLength\": 561276,\n" +
                 "    \"mediaName\": \"{mediaName1}\",\n" +
@@ -75,8 +75,8 @@ public class MediaTest {
         MediaFile mediaFile = media.upload("{mediaName3}", new File("path_to_file"), null);
         assertThat(mediaFile.getUri(), equalTo("parentUri/media/{mediaName3}"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("uploadFile"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/media/{mediaName3}"));
-        assertThat(mockRestDriver.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("uploadFile"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/media/{mediaName3}"));
+        assertThat(mockRestClient.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
     }
 }

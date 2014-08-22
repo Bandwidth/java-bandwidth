@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class Calls extends BaseModelObject {
 
-    public Calls(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Calls(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -57,8 +57,8 @@ public class Calls extends BaseModelObject {
                 callsUri,
                 callId
         }, '/');
-        JSONObject jsonObject = driver.getObject(eventPath);
-        return new Call(driver, callsUri, jsonObject);
+        JSONObject jsonObject = client.getObject(eventPath);
+        return new Call(client, callsUri, jsonObject);
     }
 
     @Override
@@ -71,19 +71,19 @@ public class Calls extends BaseModelObject {
 
     private List<Call> getCalls(Map<String, Object> params) throws IOException {
         String callsUri = getUri();
-        JSONArray jsonArray = driver.getArray(callsUri, params);
+        JSONArray jsonArray = client.getArray(callsUri, params);
 
         List<Call> calls = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            calls.add(new Call(driver, callsUri, (JSONObject) obj));
+            calls.add(new Call(client, callsUri, (JSONObject) obj));
         }
         return calls;
     }
 
     private Call newCall(Map<String, Object> params) throws IOException {
         String callsUri = getUri();
-        JSONObject jsonObject = driver.create(callsUri, params);
-        return new Call(driver, callsUri, jsonObject);
+        JSONObject jsonObject = client.create(callsUri, params);
+        return new Call(client, callsUri, jsonObject);
     }
 
     public class QueryCallsBuilder {

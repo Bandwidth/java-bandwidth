@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.hamcrest.CoreMatchers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -41,14 +41,14 @@ public class GatherTest {
                 "  \"call\": \"https://api.catapult.inetwork.com/v1/users/u-xa2n3oxk6it4efbglisna6a/calls/c-isw3qup6gvr3ywcsentygnq\",\n" +
                 "  \"digits\": \"123\"\n" +
                 "}");
-        MockRestDriver mockRestDriver = new MockRestDriver();
-        mockRestDriver.result = jsonObject;
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.result = jsonObject;
 
-        Gather gather = new Gather(mockRestDriver, "parentUri", jsonObject);
+        Gather gather = new Gather(mockRestClient, "parentUri", jsonObject);
         gather.complete();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/gtr-kj4xloaq5vbpfxyeypndgxa"));
-        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/gtr-kj4xloaq5vbpfxyeypndgxa"));
+        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 }

@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class Gather extends BaseModelObject {
 
-    public Gather(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public Gather(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     /**
@@ -27,9 +27,9 @@ public class Gather extends BaseModelObject {
     public void complete() throws IOException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
-        driver.post(getUri(), params);
+        client.post(getUri(), params);
 
-        JSONObject jsonObject = driver.getObject(getUri());
+        JSONObject jsonObject = client.getObject(getUri());
         updateProperties(jsonObject);
     }
 

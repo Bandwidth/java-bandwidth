@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class Errors extends BaseModelObject {
 
-    public Errors(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Errors(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -28,11 +28,11 @@ public class Errors extends BaseModelObject {
      */
     public List<Error> getErrors() throws IOException {
         String errorsUri = getUri();
-        JSONArray array = driver.getArray(errorsUri, null);
+        JSONArray array = client.getArray(errorsUri, null);
 
         List<Error> errors = new ArrayList<Error>();
         for (Object obj : array) {
-            errors.add(new Error(driver, errorsUri, (JSONObject) obj));
+            errors.add(new Error(client, errorsUri, (JSONObject) obj));
         }
         return errors;
     }
@@ -49,8 +49,8 @@ public class Errors extends BaseModelObject {
                 errorsUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(uri);
-        return new Error(driver, errorsUri, jsonObject);
+        JSONObject jsonObject = client.getObject(uri);
+        return new Error(client, errorsUri, jsonObject);
     }
 
     @Override

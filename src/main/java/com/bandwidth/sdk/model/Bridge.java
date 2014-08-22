@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,8 +15,8 @@ import java.util.*;
  */
 public class Bridge extends BaseModelObject {
 
-    public Bridge(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public Bridge(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     /**
@@ -30,11 +30,11 @@ public class Bridge extends BaseModelObject {
                 getUri(),
                 "calls"
         }, '/');
-        JSONArray jsonArray = driver.getArray(callsPath, null);
+        JSONArray jsonArray = client.getArray(callsPath, null);
 
         List<Call> callList = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            callList.add(new Call(driver, callsPath, (JSONObject) obj));
+            callList.add(new Call(client, callsPath, (JSONObject) obj));
         }
         return callList;
     }
@@ -68,7 +68,7 @@ public class Bridge extends BaseModelObject {
         String[] callIds = getCallIds();
         params.put("callIds", callIds == null ? Collections.emptyList() : Arrays.asList(callIds));
 
-        driver.post(getUri(), params);
+        client.post(getUri(), params);
     }
 
     public String getState() {
@@ -133,7 +133,7 @@ public class Bridge extends BaseModelObject {
                 getUri(),
                 "audio"
         }, '/');
-        driver.post(audioPath, params);
+        client.post(audioPath, params);
     }
 
     @Override

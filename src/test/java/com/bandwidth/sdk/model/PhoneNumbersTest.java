@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,18 +14,18 @@ import static org.junit.Assert.assertThat;
 
 public class PhoneNumbersTest {
 
-    private MockRestDriver mockRestDriver;
+    private MockRestClient mockRestClient;
     private PhoneNumbers phoneNumbers;
 
     @Before
     public void setUp() throws Exception {
-        mockRestDriver = new MockRestDriver();
-        phoneNumbers = new PhoneNumbers(mockRestDriver, "parentUri");
+        mockRestClient = new MockRestClient();
+        phoneNumbers = new PhoneNumbers(mockRestClient, "parentUri");
     }
 
     @Test
     public void shouldGetNumberList() throws Exception {
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"numberState\": \"enabled\",\n" +
                 "    \"id\": \"n-bdllkjjddr5vuvglfluxdwi\",\n" +
@@ -51,13 +51,13 @@ public class PhoneNumbersTest {
         assertThat(list.size(), equalTo(2));
         assertThat(list.get(0).getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/phoneNumbers"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers"));
     }
 
     @Test
     public void shouldCreateNewNumber() throws Exception {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\n" +
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
                 "    \"numberState\": \"enabled\",\n" +
                 "    \"id\": \"n-bdllkjjddr5vuvglfluxdwi\",\n" +
                 "    \"application\": \"https://api.com/v1/users/userId/applications/a-id1\",\n" +
@@ -71,13 +71,13 @@ public class PhoneNumbersTest {
         PhoneNumber number = phoneNumbers.newNumberBuilder().applicationId("appId").number("number").name("name").create();
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/phoneNumbers"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers"));
     }
 
     @Test
     public void shouldGetNumberById() throws Exception {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\n" +
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
                 "    \"numberState\": \"enabled\",\n" +
                 "    \"id\": \"n-bdllkjjddr5vuvglfluxdwi\",\n" +
                 "    \"application\": \"https://api.com/v1/users/userId/applications/a-id1\",\n" +
@@ -91,13 +91,13 @@ public class PhoneNumbersTest {
         PhoneNumber number = phoneNumbers.getNumber("n-bdllkjjddr5vuvglfluxdwi");
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/phoneNumbers/n-bdllkjjddr5vuvglfluxdwi"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers/n-bdllkjjddr5vuvglfluxdwi"));
     }
 
     @Test
     public void shouldGetNumberByNumber() throws Exception {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\n" +
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
                 "    \"numberState\": \"enabled\",\n" +
                 "    \"id\": \"n-bdllkjjddr5vuvglfluxdwi\",\n" +
                 "    \"application\": \"https://api.com/v1/users/userId/applications/a-id1\",\n" +
@@ -111,7 +111,7 @@ public class PhoneNumbersTest {
         PhoneNumber number = phoneNumbers.getNumber("+number");
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/phoneNumbers/+number"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers/+number"));
     }
 }

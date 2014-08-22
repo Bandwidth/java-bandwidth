@@ -16,7 +16,7 @@ public class Example {
 
     public static void main(String[] args) throws IOException {
          // todo should be replaced on real userId, token and secret
-        BandwidthRestClient client = new BandwidthRestClient("<userId>", "<token>", "<secret>");
+        BandwidthRestClient client = new BandwidthRestClient("u-xtimpcu6fv62smbq5cus4xa", "t-5xcuy5and7vecnfsw2vvbyq", "xfqrw5xwx5ita67nfvpg477c3zz2jlgpjlhfjji");
 
         printAccount(client);
         printApplications(client);

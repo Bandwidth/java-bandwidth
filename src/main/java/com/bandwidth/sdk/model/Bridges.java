@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class Bridges extends BaseModelObject {
 
-    public Bridges(IRestDriver driver, String parentUri) {
-        super(driver, parentUri, null);
+    public Bridges(BandwidthRestClient client, String parentUri) {
+        super(client, parentUri, null);
     }
 
     /**
@@ -29,12 +29,12 @@ public class Bridges extends BaseModelObject {
      * @throws IOException
      */
     public List<Bridge> getBridges() throws IOException {
-        JSONArray array = driver.getArray(getUri(), null);
+        JSONArray array = client.getArray(getUri(), null);
 
         String bridgesUri = getUri();
         List<Bridge> bridges = new ArrayList<Bridge>();
         for (Object obj : array) {
-            bridges.add(new Bridge(driver, bridgesUri, (JSONObject) obj));
+            bridges.add(new Bridge(client, bridgesUri, (JSONObject) obj));
         }
         return bridges;
     }
@@ -52,8 +52,8 @@ public class Bridges extends BaseModelObject {
                 bridgesUri,
                 id
         }, '/');
-        JSONObject jsonObject = driver.getObject(eventPath);
-        return new Bridge(driver, bridgesUri, jsonObject);
+        JSONObject jsonObject = client.getObject(eventPath);
+        return new Bridge(client, bridgesUri, jsonObject);
     }
 
     /**
@@ -76,8 +76,8 @@ public class Bridges extends BaseModelObject {
 
     private Bridge createBridge(Map<String, Object> params) throws IOException {
         String bridgesUri = getUri();
-        JSONObject jsonObject = driver.create(bridgesUri, params);
-        return new Bridge(driver, bridgesUri, jsonObject);
+        JSONObject jsonObject = client.create(bridgesUri, params);
+        return new Bridge(client, bridgesUri, jsonObject);
     }
 
     public class NewBridgeBuilder {

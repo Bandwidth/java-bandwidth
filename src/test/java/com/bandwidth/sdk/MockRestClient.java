@@ -1,4 +1,4 @@
-package com.bandwidth.sdk.driver;
+package com.bandwidth.sdk;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,12 +13,16 @@ import java.util.Map;
 /**
  * @author vpotapenko
  */
-public class MockRestDriver implements IRestDriver {
+public class MockRestClient extends BandwidthRestClient {
 
     public final List<RestRequest> requests = new ArrayList<RestRequest>();
 
     public JSONObject result;
     public JSONArray arrayResult;
+
+    public MockRestClient() {
+        super("", "", "");
+    }
 
     @Override
     public JSONArray getArray(String uri, Map<String, Object> params) throws IOException {
@@ -63,7 +67,6 @@ public class MockRestDriver implements IRestDriver {
         params.put("filePath", destFile.getPath());
         requests.add(new RestRequest("downloadFileTo", uri, params));
     }
-
 
     public static class RestRequest {
 

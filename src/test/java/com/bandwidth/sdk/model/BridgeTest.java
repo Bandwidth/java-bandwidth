@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,74 +27,74 @@ public class BridgeTest {
 
     @Test
     public void shouldUpdateAttributesOnServer() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
+        Bridge bridge = new Bridge(mockRestClient, "parentUri", jsonObject);
 
         assertThat(bridge.getId(), equalTo("id1"));
         bridge.setBridgeAudio(true);
         bridge.commit();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1"));
     }
 
     @Test
     public void shouldPostAudioOnServer() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
+        Bridge bridge = new Bridge(mockRestClient, "parentUri", jsonObject);
 
         bridge.newBridgeAudioBuilder().fileUrl("some url").create();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/audio"));
-        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo("some url"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1/audio"));
+        assertThat(mockRestClient.requests.get(0).params.get("fileUrl").toString(), equalTo("some url"));
     }
 
     @Test
     public void shouldStopAudioOnServer() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
+        Bridge bridge = new Bridge(mockRestClient, "parentUri", jsonObject);
 
         bridge.stopAudioFilePlaying();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/audio"));
-        assertThat(mockRestDriver.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1/audio"));
+        assertThat(mockRestClient.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
     }
 
     @Test
     public void shouldStopSentenceOnServer() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
+        Bridge bridge = new Bridge(mockRestClient, "parentUri", jsonObject);
 
         bridge.stopSentence();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/audio"));
-        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo(""));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1/audio"));
+        assertThat(mockRestClient.requests.get(0).params.get("sentence").toString(), equalTo(""));
     }
 
     @Test
     public void shouldGetBridgeCalls() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
-        Bridge bridge = new Bridge(mockRestDriver, "parentUri", jsonObject);
+        Bridge bridge = new Bridge(mockRestClient, "parentUri", jsonObject);
 
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"},{\"to\":\"+33333333333\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"out\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+44444444444\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id2\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}]");
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"},{\"to\":\"+33333333333\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"out\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+44444444444\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id2\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}]");
         List<Call> bridgeCalls = bridge.getBridgeCalls();
 
         assertThat(bridgeCalls.get(0).getFrom(), equalTo("+22222222222"));
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1/calls"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1/calls"));
     }
 
 }

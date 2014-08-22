@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,19 +16,19 @@ import static org.junit.Assert.assertThat;
 
 public class BridgesTest {
 
-    private MockRestDriver mockRestDriver;
+    private MockRestClient mockRestClient;
     private Bridges bridges;
 
     @Before
     public void setUp() throws Exception {
-        mockRestDriver = new MockRestDriver();
+        mockRestClient = new MockRestClient();
 
-        bridges = new Bridges(mockRestDriver, "parentUri");
+        bridges = new Bridges(mockRestClient, "parentUri");
     }
 
     @Test
     public void shouldGetBridgesList() throws ParseException, IOException {
-        mockRestDriver.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"id\": \"id1\",\n" +
                 "    \"state\": \"completed\",\n" +
@@ -56,32 +56,32 @@ public class BridgesTest {
         assertThat(bridgeList.get(0).isBridgeAudio(), equalTo(true));
         assertThat(bridgeList.get(0).getCalls(), equalTo("https://v1/users/userId/bridges/bridgeId/calls"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/bridges"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/bridges"));
     }
 
     @Test
     public void shouldCreateBridge() throws ParseException, IOException {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
 
         Bridge bridge = bridges.newBridgeBuilder().create();
         assertThat(bridge.getId(), equalTo("id1"));
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
         assertThat(bridge.getState(), equalTo("created"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/bridges"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/bridges"));
     }
 
     @Test
     public void shouldGetBridgeById() throws ParseException, IOException {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
         Bridge bridge = bridges.getBridge("id1");
         assertThat(bridge.getId(), equalTo("id1"));
         assertThat(bridge.getCalls(), equalTo("https://api.catapult.inetwork.com/v1/users/userId/bridges/bridgId/calls"));
         assertThat(bridge.getState(), equalTo("created"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/bridges/id1"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/bridges/id1"));
     }
 }

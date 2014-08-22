@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -13,18 +13,18 @@ import static org.junit.Assert.assertThat;
 
 public class ErrorsTest {
 
-    private MockRestDriver mockRestDriver;
+    private MockRestClient mockRestClient;
     private Errors errors;
 
     @Before
     public void setUp() throws Exception {
-        mockRestDriver = new MockRestDriver();
-        errors = new Errors(mockRestDriver, "parentUri");
+        mockRestClient = new MockRestClient();
+        errors = new Errors(mockRestClient, "parentUri");
     }
 
     @Test
     public void shouldGetErrorList() throws Exception {
-        mockRestDriver.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
+        mockRestClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"message\": \"The callback server took too long to respond\",\n" +
                 "    \"id\": \"ue-asvdtalmmhka2i63uzt66ma\",\n" +
@@ -92,13 +92,13 @@ public class ErrorsTest {
         List<Error> errorList = errors.getErrors();
         assertThat(errorList.size(), equalTo(2));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/errors"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/errors"));
     }
 
     @Test
     public void shouldGetErrorById() throws Exception {
-        mockRestDriver.result = (JSONObject) new JSONParser().parse("{\n" +
+        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
                 "  \"message\": \"The callback server took too long to respond\",\n" +
                 "  \"id\": \"ue-asvdtalmmhka2i63uzt66ma\",\n" +
                 "  \"category\": \"unavailable\",\n" +
@@ -137,7 +137,7 @@ public class ErrorsTest {
         assertThat(error.getCategory(), equalTo("unavailable"));
         assertThat(error.getMessage(), equalTo("The callback server took too long to respond"));
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/errors/ue-asvdtalmmhka2i63uzt66ma"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/errors/ue-asvdtalmmhka2i63uzt66ma"));
     }
 }

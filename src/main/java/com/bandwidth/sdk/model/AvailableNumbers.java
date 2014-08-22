@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class AvailableNumbers extends BaseModelObject {
 
-    public AvailableNumbers(IRestDriver driver) {
-        super(driver, null, null);
+    public AvailableNumbers(BandwidthRestClient client) {
+        super(client, null, null);
     }
 
     /**
@@ -46,11 +46,11 @@ public class AvailableNumbers extends BaseModelObject {
 
     private List<AvailableNumber> getLocalNumbers(Map<String, Object> params) throws IOException {
         String localUri = getLocalUri();
-        JSONArray array = driver.getArray(localUri, params);
+        JSONArray array = client.getArray(localUri, params);
 
         List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
-            numbers.add(new AvailableNumber(driver, localUri, (JSONObject) obj));
+            numbers.add(new AvailableNumber(client, localUri, (JSONObject) obj));
         }
         return numbers;
     }
@@ -78,11 +78,11 @@ public class AvailableNumbers extends BaseModelObject {
 
     private List<AvailableNumber> getTollFreeNumbers(Map<String, Object> params) throws IOException {
         String tollFreeUri = getTollFreeUri();
-        JSONArray array = driver.getArray(tollFreeUri, params);
+        JSONArray array = client.getArray(tollFreeUri, params);
 
         List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
-            numbers.add(new AvailableNumber(driver, tollFreeUri, (JSONObject) obj));
+            numbers.add(new AvailableNumber(client, tollFreeUri, (JSONObject) obj));
         }
         return numbers;
     }

@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.IRestDriver;
+import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -13,8 +13,8 @@ import java.util.Map;
  */
 public class Application extends BaseModelObject {
 
-    public Application(IRestDriver driver, String parentUri, JSONObject jsonObject) {
-        super(driver, parentUri, jsonObject);
+    public Application(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+        super(client, parentUri, jsonObject);
     }
 
     public String getName() {
@@ -92,7 +92,7 @@ public class Application extends BaseModelObject {
         Map<String, Object> params = toMap();
         params.remove("id");
 
-        driver.post(getUri(), params);
+        client.post(getUri(), params);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Application extends BaseModelObject {
      * @throws IOException
      */
     public void delete() throws IOException {
-        driver.delete(getUri());
+        client.delete(getUri());
     }
 
     @Override

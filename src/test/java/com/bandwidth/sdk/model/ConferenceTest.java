@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
@@ -36,15 +36,15 @@ public class ConferenceTest {
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        MockRestDriver mockRestDriver = new MockRestDriver();
-        mockRestDriver.result = jsonObject;
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.result = jsonObject;
 
-        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
+        Conference conference = new Conference(mockRestClient, "parentUri", jsonObject);
         conference.complete();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}"));
-        assertThat(mockRestDriver.requests.get(0).params.get("state").toString(), equalTo("completed"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/{conferenceId}"));
+        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 
     @Test
@@ -56,15 +56,15 @@ public class ConferenceTest {
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        MockRestDriver mockRestDriver = new MockRestDriver();
-        mockRestDriver.result = jsonObject;
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.result = jsonObject;
 
-        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
+        Conference conference = new Conference(mockRestClient, "parentUri", jsonObject);
         conference.mute();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}"));
-        assertThat(mockRestDriver.requests.get(0).params.get("mute").toString(), equalTo("true"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/{conferenceId}"));
+        assertThat(mockRestClient.requests.get(0).params.get("mute").toString(), equalTo("true"));
     }
 
     @Test
@@ -76,16 +76,16 @@ public class ConferenceTest {
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        MockRestDriver mockRestDriver = new MockRestDriver();
-        mockRestDriver.result = jsonObject;
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.result = jsonObject;
 
-        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
+        Conference conference = new Conference(mockRestClient, "parentUri", jsonObject);
 
         conference.conferenceAudioBuilder().sentence("Hello").locale(SentenceLocale.German).create();
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}/audio"));
-        assertThat(mockRestDriver.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
-        assertThat(mockRestDriver.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/{conferenceId}/audio"));
+        assertThat(mockRestClient.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
+        assertThat(mockRestClient.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
     }
 
     @Test
@@ -97,8 +97,8 @@ public class ConferenceTest {
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        MockRestDriver mockRestDriver = new MockRestDriver();
-        mockRestDriver.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
+        MockRestClient mockRestClient = new MockRestClient();
+        mockRestClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "      \"addedTime\": \"2013-07-12T15:54:47Z\",\n" +
                 "      \"hold\": false,\n" +
@@ -131,11 +131,11 @@ public class ConferenceTest {
                 "      \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId3}\"\n" +
                 "  }\n" +
                 "]");
-        Conference conference = new Conference(mockRestDriver, "parentUri", jsonObject);
+        Conference conference = new Conference(mockRestClient, "parentUri", jsonObject);
         List<ConferenceMember> members = conference.getMembers();
         assertThat(members.size(), equalTo(3));
         assertThat(members.get(1).getId(), equalTo("{memberId2}"));
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/{conferenceId}/members"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/{conferenceId}/members"));
     }
 }

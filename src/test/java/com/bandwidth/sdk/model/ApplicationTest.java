@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.driver.MockRestDriver;
+import com.bandwidth.sdk.MockRestClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -28,33 +28,33 @@ public class ApplicationTest {
 
     @Test
     public void shouldBeDeleted() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"autoAnswer\":true,\"incomingSmsUrl\":\"http:\\/\\/sms\\/callback.json\",\"name\":\"App1\",\"incomingCallUrl\":\"http:\\/\\/call\\/callback.json\"}");
-        Application application = new Application(mockRestDriver, "parentUri", jsonObject);
+        Application application = new Application(mockRestClient, "parentUri", jsonObject);
 
         assertThat(application.getId(), equalTo("id1"));
 
         application.delete();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("delete"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("delete"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1"));
     }
 
     @Test
     public void shouldUpdateAttributesOnServer() throws ParseException, IOException {
-        MockRestDriver mockRestDriver = new MockRestDriver();
+        MockRestClient mockRestClient = new MockRestClient();
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"autoAnswer\":true,\"incomingSmsUrl\":\"http:\\/\\/sms\\/callback.json\",\"name\":\"App1\",\"incomingCallUrl\":\"http:\\/\\/call\\/callback.json\"}");
-        Application application = new Application(mockRestDriver, "parentUri", jsonObject);
+        Application application = new Application(mockRestClient, "parentUri", jsonObject);
 
         assertThat(application.getId(), equalTo("id1"));
         application.setName("App2");
         application.setIncomingCallUrl("anotherUrl");
         application.commit();
 
-        assertThat(mockRestDriver.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestDriver.requests.get(0).uri, equalTo("parentUri/id1"));
-        assertThat(mockRestDriver.requests.get(0).params.get("name").toString(), equalTo("App2"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/id1"));
+        assertThat(mockRestClient.requests.get(0).params.get("name").toString(), equalTo("App2"));
     }
 }
