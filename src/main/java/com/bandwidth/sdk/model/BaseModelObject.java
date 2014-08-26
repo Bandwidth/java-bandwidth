@@ -76,7 +76,7 @@ public abstract class BaseModelObject {
         Object o = properties.get(key);
         if (o == null) return null;
 
-        return o instanceof Boolean ? (Boolean) o : Objects.equals(o.toString(), "true");
+        return o instanceof Boolean ? (Boolean) o : "true".equals(o.toString());
     }
 
     protected Long getPropertyAsLong(String key) {
