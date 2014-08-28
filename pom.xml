@@ -6,7 +6,7 @@
 
     <groupId>com.bandwidth.sdk</groupId>
     <artifactId>bandwidth-java-sdk</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>bandwidth-java-sdk</name>
     <description>Java SDK for use with the Catapult API.</description>
@@ -21,8 +21,8 @@
     </licenses>
 
     <scm>
-        <url>git@github.com:bandwidthcom/java-bandwidth.git</url>
-        <connection>scm:git:git@github.com:bandwidthcom/java-bandwidth.git</connection>
+        <url>https://github.com/bandwidthcom/java-bandwidth</url>
+        <connection>scm:git:https://github.com/bandwidthcom/java-bandwidth.git</connection>
         <developerConnection>scm:git:git@github.com:bandwidthcom/java-bandwidth.git</developerConnection>
     </scm>
 
@@ -172,4 +172,5 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
 </project>
