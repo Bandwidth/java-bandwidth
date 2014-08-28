@@ -4,7 +4,7 @@
 
     <groupId>com.bandwidth.sdk</groupId>
     <artifactId>bandwidth-java-sdk</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>bandwidth-java-sdk</name>
     <description>Java SDK for use with the Catapult API.</description>
@@ -22,7 +22,7 @@
         <url>https://github.com/bandwidthcom/java-bandwidth</url>
         <connection>scm:git:https://github.com/bandwidthcom/java-bandwidth.git</connection>
         <developerConnection>scm:git:git@github.com:bandwidthcom/java-bandwidth.git</developerConnection>
-      <tag>bandwidth-java-sdk-1.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>
