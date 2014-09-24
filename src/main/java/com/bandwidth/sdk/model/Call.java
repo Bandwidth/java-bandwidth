@@ -179,16 +179,16 @@ public class Call extends BaseModelObject {
      * @return events
      * @throws IOException
      */
-    public List<Event> getEventsList() throws IOException {
+    public List<BaseEvent> getEventsList() throws IOException {
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
         JSONArray array = client.getArray(eventsPath, null);
 
-        List<Event> list = new ArrayList<Event>();
+        List<BaseEvent> list = new ArrayList<BaseEvent>();
         for (Object object : array) {
-            list.add(new Event(client, eventsPath, (JSONObject) object));
+            list.add(new BaseEvent(client, eventsPath, (JSONObject) object));
         }
         return list;
     }
@@ -200,7 +200,7 @@ public class Call extends BaseModelObject {
      * @return information about event
      * @throws IOException
      */
-    public Event getEvent(String eventId) throws IOException {
+    public BaseEvent getEvent(String eventId) throws IOException {
         String eventPath = StringUtils.join(new String[]{
                 getUri(),
                 "events",
@@ -211,7 +211,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new Event(client, eventsPath, jsonObject);
+        return new BaseEvent(client, eventsPath, jsonObject);
     }
 
     /**
