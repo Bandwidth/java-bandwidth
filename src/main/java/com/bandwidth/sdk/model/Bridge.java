@@ -1,6 +1,8 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.RestResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,6 +16,47 @@ import java.util.*;
  * @author vpotapenko
  */
 public class Bridge extends BaseModelObject {
+		
+    public static Bridge createBridge(Call call1, Call call2)
+    	    throws IOException 
+    {
+    	assert (call1 != null && call2 != null);
+
+    	String callId1 = call1.getId();
+
+    	String callId2 = call2.getId();
+
+    	return Bridge.createBridge(callId1, callId2);
+    }
+
+    public static Bridge createBridge(String callId1, String callId2)
+    	    throws IOException 
+    {
+    	assert (callId1 != null && callId2 != null);
+
+    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+
+    	Map<String, Object> params = new HashMap<String, Object>();
+
+    	String bridgeParentUri = client.getUserUri() + "/bridges";
+
+    	params.put("bridgeAudio", "true");
+    	String[] callIds = new String[] { callId1, callId2 };
+    	params.put("callIds", callIds == null ? Collections.emptyList()
+    		: Arrays.asList(callIds));
+
+    	RestResponse response = client.post(bridgeParentUri, params);
+
+    	String bridgeId = response.getLocation().substring(
+    		client.getPath(bridgeParentUri).length());
+
+    	JSONObject callObj = client.getObjectFromLocation(response
+    		.getLocation());
+
+    	Bridge bridge = new Bridge(client, bridgeParentUri, callObj);
+
+    	return bridge;
+	}
 
     public Bridge(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);

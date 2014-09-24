@@ -21,7 +21,7 @@ public class MockRestClient extends BandwidthRestClient {
     public JSONArray arrayResult;
 
     public MockRestClient() {
-        super("", "", "");
+        super("", "", "", "", "");
     }
 
     @Override

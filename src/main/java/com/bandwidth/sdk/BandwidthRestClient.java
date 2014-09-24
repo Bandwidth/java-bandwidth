@@ -34,65 +34,76 @@ import java.util.Map;
  */
 public class BandwidthRestClient {
 
-    private static final String GET = "get";
-    private static final String POST = "post";
-    private static final String PUT = "put";
-    private static final String DELETE = "delete";
+    protected static final String GET = "get";
+    protected static final String POST = "post";
+    protected static final String PUT = "put";
+    protected static final String DELETE = "delete";
 
     public static String BANDWIDTH_APPPLATFORM_USER_ID = "BANDWIDTH_APPPLATFORM_USER_ID";
     public static String BANDWIDTH_APPPLATFORM_API_TOKEN = "BANDWIDTH_APPPLATFORM_API_TOKEN";
     public static String BANDWIDTH_APPPLATFORM_API_SECRET = "BANDWIDTH_APPPLATFORM_API_SECRET";
+    public static String BANDWIDTH_APPPLATFORM_API_ENDPOINT = "BANDWIDTH_APPPLATFORM_API_ENDPOINT";
+    public static String BANDWIDTH_APPPLATFORM_API_VERSION = "BANDWIDTH_APPPLATFORM_API_VERSION";
     
-    private final String usersUri;
+    protected final String usersUri;
 
-    private final String token;
-    private final String secret;
+    protected final String token;
+    protected final String secret;
 
-    private HttpClient httpClient;
+    protected HttpClient httpClient;
 
-    private Account account;
-    private Applications applications;
-    private AvailableNumbers availableNumbers;
-    private Bridges bridges;
-    private Calls calls;
-    private Conferences conferences;
-    private Errors errors;
-    private Messages messages;
-    private PhoneNumbers phoneNumbers;
-    private Recordings recordings;
-    private Media media;
+    protected Account account;
+    protected Applications applications;
+    protected AvailableNumbers availableNumbers;
+    protected Bridges bridges;
+    protected Calls calls;
+    protected Conferences conferences;
+    protected Errors errors;
+    protected Messages messages;
+    protected PhoneNumbers phoneNumbers;
+    protected Recordings recordings;
+    protected Media media;
     
-    private static BandwidthRestClient INSTANCE;    
+    protected static BandwidthRestClient INSTANCE; 
+    
+    protected String apiEndpoint;
+    protected String apiVersion;
     
     public static BandwidthRestClient getInstance() {
-	if (INSTANCE == null) {
-	    Map<String, String> env = System.getenv();
-	    for (String envName : env.keySet()) {
-		System.out.format("%s=%s%n", envName, env.get(envName));
-
-	    }
+    	if (INSTANCE == null) {
+    		Map<String, String> env = System.getenv();
+    		for (String envName : env.keySet()) {
+    			System.out.format("%s=%s%n", envName, env.get(envName));
+    		}
 
 	    // TODO set these up as heroku configuration variables
 	    String userId = env.get(BANDWIDTH_APPPLATFORM_USER_ID);
 	    String apiToken = env.get(BANDWIDTH_APPPLATFORM_API_TOKEN);
 	    String apiSecret = env.get(BANDWIDTH_APPPLATFORM_API_SECRET);
+	    String apiEndpoint = env.get(BANDWIDTH_APPPLATFORM_API_ENDPOINT);
+	    String apiVersion = env.get(BANDWIDTH_APPPLATFORM_API_VERSION);
 
-	    System.out.println("userId:" + userId);
-	    System.out.println("apiToken:" + apiToken);
-	    System.out.println("apiSecret:" + apiSecret);
-
-	    INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret);
+	    INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
 	}
 
 	return INSTANCE;
     }
     
 
-    public BandwidthRestClient(String userId, String token, String secret) {
+    protected BandwidthRestClient(String userId, String token, String secret, String apiEndpoint, String apiVersion) {
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
 
         this.token = token;
         this.secret = secret;
+        
+        this.apiEndpoint = apiEndpoint; 
+        this.apiVersion = apiVersion;
+        
+        if (apiEndpoint == null || apiVersion == null)
+        {
+        	this.apiEndpoint = BandwidthConstants.API_ENDPOINT;
+        	this.apiVersion = BandwidthConstants.API_VERSION;
+        }
 
         httpClient = new DefaultHttpClient();
     }
@@ -275,19 +286,29 @@ public class BandwidthRestClient {
 
     public JSONObject getObject(String uri) throws IOException {
         String path = getPath(uri);
-        RestResponse response = request(path, GET);
-        if (response.isError()) throw new IOException(response.getResponseText());
-
-        if (response.isJson()) {
-            try {
-                return (JSONObject) new JSONParser().parse(response.getResponseText());
-            } catch (org.json.simple.parser.ParseException e) {
-                throw new IOException(e);
-            }
-        } else {
-            throw new IOException("Response is not a JSON format.");
-        }
+        
+        return getObjectFromLocation(path);
     }
+    
+    public JSONObject getObjectFromLocation(String locationUrl)
+    	    throws IOException 
+    {
+    	RestResponse response = request(locationUrl, GET);
+    	if (response.isError())
+    	    throw new IOException(response.getResponseText());
+
+    	if (response.isJson()) {
+    	    try {
+    		return (JSONObject) new JSONParser().parse(response
+    			.getResponseText());
+    	    } catch (org.json.simple.parser.ParseException e) {
+    		throw new IOException(e);
+    	    }
+    	} else {
+    	    throw new IOException("Response is not a JSON format.");
+    	}
+
+    }    
 
     public JSONObject create(String uri, Map<String, Object> params) throws IOException {
         String path = getPath(uri);
@@ -367,19 +388,19 @@ public class BandwidthRestClient {
 
     public String getPath(String uri) {
         String[] parts = new String[]{
-                BandwidthConstants.API_ENDPOINT,
-                BandwidthConstants.API_VERSION,
+                apiEndpoint,
+                apiVersion,
                 uri,
         };
         return StringUtils.join(parts, '/');
     }
 
 
-    private RestResponse request(final String path, String method) throws IOException {
+    protected RestResponse request(final String path, String method) throws IOException {
         return request(path, method, null);
     }
 
-    private RestResponse request(final String path, String method,
+    protected RestResponse request(final String path, String method,
                                  Map<String, Object> paramList) throws IOException {
         if (paramList == null) paramList = Collections.emptyMap();
 
@@ -387,7 +408,7 @@ public class BandwidthRestClient {
         return performRequest(request);
     }
 
-    private RestResponse performRequest(HttpUriRequest request) throws IOException {
+    protected RestResponse performRequest(HttpUriRequest request) throws IOException {
         HttpResponse response;
         try {
             response = httpClient.execute(request);
@@ -423,7 +444,7 @@ public class BandwidthRestClient {
         }
     }
 
-    private HttpUriRequest setupRequest(String path, String method, final Map<String, Object> params) {
+    protected HttpUriRequest setupRequest(String path, String method, final Map<String, Object> params) {
         HttpUriRequest request = buildMethod(method, path, params);
 
         request.addHeader(new BasicHeader("Accept", "application/json"));
@@ -435,7 +456,7 @@ public class BandwidthRestClient {
         return request;
     }
 
-    private HttpUriRequest buildMethod(String method, final String path, final Map<String, Object> params) {
+    protected HttpUriRequest buildMethod(String method, final String path, final Map<String, Object> params) {
         if (StringUtils.equals(method, GET)) {
             return generateGetRequest(path, params);
         } else if (StringUtils.equals(method, POST)) {
@@ -449,7 +470,7 @@ public class BandwidthRestClient {
         }
     }
 
-    private HttpGet generateGetRequest(final String path, final Map<String, Object> paramMap) {
+    protected HttpGet generateGetRequest(final String path, final Map<String, Object> paramMap) {
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         for (String key : paramMap.keySet()) {
             pairs.add(new BasicNameValuePair(key, paramMap.get(key).toString()));
@@ -458,7 +479,7 @@ public class BandwidthRestClient {
         return new HttpGet(uri);
     }
 
-    private HttpPost generatePostRequest(final String path, final Map<String, Object> paramMap) {
+    protected HttpPost generatePostRequest(final String path, final Map<String, Object> paramMap) {
         URI uri = buildUri(path);
 
         String s = JSONObject.toJSONString(paramMap);
@@ -469,7 +490,7 @@ public class BandwidthRestClient {
         return post;
     }
 
-    private HttpPut generatePutRequest(final String path, final Map<String, Object> paramMap) {
+    protected HttpPut generatePutRequest(final String path, final Map<String, Object> paramMap) {
         URI uri = buildUri(path);
 
         HttpPut put = new HttpPut(uri);
@@ -481,16 +502,16 @@ public class BandwidthRestClient {
         return put;
     }
 
-    private HttpDelete generateDeleteRequest(final String path) {
+    protected HttpDelete generateDeleteRequest(final String path) {
         URI uri = buildUri(path);
         return new HttpDelete(uri);
     }
 
-    private URI buildUri(final String path) {
+    protected URI buildUri(final String path) {
         return buildUri(path, null);
     }
 
-    private URI buildUri(final String path, final List<NameValuePair> queryStringParams) {
+    protected URI buildUri(final String path, final List<NameValuePair> queryStringParams) {
         StringBuilder sb = new StringBuilder();
         sb.append(path);
 

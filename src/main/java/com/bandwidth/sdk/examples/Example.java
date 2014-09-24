@@ -15,8 +15,14 @@ import java.util.List;
 public class Example {
 
     public static void main(String[] args) throws IOException {
-         // todo should be replaced on real userId, token and secret
-        BandwidthRestClient client = new BandwidthRestClient("u-xtimpcu6fv62smbq5cus4xa", "t-5xcuy5and7vecnfsw2vvbyq", "xfqrw5xwx5ita67nfvpg477c3zz2jlgpjlhfjji");
+    	
+        // be sure to set your Application Platform userId, api token and api secret 
+    	// as environment variables, e.g. 
+    	// BANDWIDTH_APPPLATFORM_USER_ID
+    	// BANDWIDTH_APPPLATFORM_API_TOKEN
+    	// BANDWIDTH_APPPLATFORM_API_SECRET
+
+        BandwidthRestClient client = BandwidthRestClient.getInstance();
 
         printAccount(client);
         printApplications(client);
