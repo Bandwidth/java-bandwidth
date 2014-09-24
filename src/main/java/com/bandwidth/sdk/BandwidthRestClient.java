@@ -39,6 +39,10 @@ public class BandwidthRestClient {
     private static final String PUT = "put";
     private static final String DELETE = "delete";
 
+    public static String BANDWIDTH_APPPLATFORM_USER_ID = "BANDWIDTH_APPPLATFORM_USER_ID";
+    public static String BANDWIDTH_APPPLATFORM_API_TOKEN = "BANDWIDTH_APPPLATFORM_API_TOKEN";
+    public static String BANDWIDTH_APPPLATFORM_API_SECRET = "BANDWIDTH_APPPLATFORM_API_SECRET";
+    
     private final String usersUri;
 
     private final String token;
@@ -57,6 +61,32 @@ public class BandwidthRestClient {
     private PhoneNumbers phoneNumbers;
     private Recordings recordings;
     private Media media;
+    
+    private static BandwidthRestClient INSTANCE;    
+    
+    public static BandwidthRestClient getInstance() {
+	if (INSTANCE == null) {
+	    Map<String, String> env = System.getenv();
+	    for (String envName : env.keySet()) {
+		System.out.format("%s=%s%n", envName, env.get(envName));
+
+	    }
+
+	    // TODO set these up as heroku configuration variables
+	    String userId = env.get(BANDWIDTH_APPPLATFORM_USER_ID);
+	    String apiToken = env.get(BANDWIDTH_APPPLATFORM_API_TOKEN);
+	    String apiSecret = env.get(BANDWIDTH_APPPLATFORM_API_SECRET);
+
+	    System.out.println("userId:" + userId);
+	    System.out.println("apiToken:" + apiToken);
+	    System.out.println("apiSecret:" + apiSecret);
+
+	    INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret);
+	}
+
+	return INSTANCE;
+    }
+    
 
     public BandwidthRestClient(String userId, String token, String secret) {
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);

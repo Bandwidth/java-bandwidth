@@ -1,6 +1,8 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.RestResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,6 +17,94 @@ import java.util.*;
  */
 public class Call extends BaseModelObject {
 
+	/**
+	 * Factory method to create a call object. Takes a callId, and makes
+	 * an API call to to get the latest state and uses that for the internal
+	 * representation
+	 * 
+	 * @param callId
+	 * @return
+	 * @throws IOException
+	 */
+    public static Call createCall(String callId) throws IOException
+    {
+    	assert(callId != null);
+    	
+    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+    	
+    	String callParentUri = client.getUserUri() + "/calls";
+    	
+    	String callUri = callParentUri + "/" + callId;
+    	
+    	JSONObject callObj = client.getObject(callUri);
+    	
+    	Call call = new Call(client, callParentUri, callObj); 
+    	
+    	return call;
+    }
+    
+    /**
+     * Conveniance method to dials a call from a phone number to a phone number
+     * @param to
+     * @param from
+     * @param callbackUrl
+     * @param maps
+     * @return
+     * @throws IOException
+     */
+    public static Call makeCall(String to, String from, String callbackUrl, Map <String, Object> ... maps)  throws IOException
+    {
+    	assert(to != null && from != null);
+    	    	
+    	JSONObject params = new JSONObject();
+    	params.put("to", to);
+    	params.put("from", from);
+    	params.put("callbackUrl", callbackUrl);
+    	
+    	for (Map <String, Object>map : maps)
+    	{
+    		for (String key : map.keySet()) 
+    		{
+    			params.put(key, map.get(key));
+    		}
+    	}
+    	
+    	Call call = makeCall(params);
+    	    	
+    	return call;
+    }
+    
+    /**
+     * Dials a call, from a phone number to a phone number.
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static Call makeCall(Map <String, Object>params)  throws IOException
+    {
+    	assert (params != null);
+    	
+       	BandwidthRestClient client = BandwidthRestClient.getInstance();       	
+    	
+    	String callParentUri = client.getUserUri() + "/calls";
+    	
+    	System.out.println("callParentUri:" + callParentUri);
+    	
+    	RestResponse response = client.post(callParentUri, params);
+    	    	
+    	// success here, otherwise an exception is generated
+    	
+    	String callId = response.getLocation().substring(client.getPath(callParentUri).length() + 1);
+    	
+    	System.out.println("callId:" + callId);
+    	
+    	Call call = createCall(callId);
+    	    	    	
+    	return call;
+    }
+	
+	
+	
     public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
     }
