@@ -230,6 +230,16 @@ public class BandwidthRestClient {
     }
 
     /**
+     * Returns API url with userid 
+     * 
+     * @return usersUri
+     */
+    public String getUserUri() {
+    	return usersUri;
+    }
+
+
+    /**
      * Returns information about this number.
      *
      * @param number searching number
@@ -303,10 +313,12 @@ public class BandwidthRestClient {
         }
     }
 
-    public void post(String uri, Map<String, Object> params) throws IOException {
+    public RestResponse post(String uri, Map<String, Object> params) throws IOException {
         String path = getPath(uri);
         RestResponse response = request(path, POST, params);
         if (response.isError()) throw new IOException(response.getResponseText());
+        
+        return response;
     }
 
     public void delete(String uri) throws IOException {
@@ -353,7 +365,7 @@ public class BandwidthRestClient {
         }
     }
 
-    private String getPath(String uri) {
+    public String getPath(String uri) {
         String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
@@ -495,40 +507,5 @@ public class BandwidthRestClient {
         }
 
         return uri;
-    }
-
-    private class RestResponse {
-
-        private String responseText;
-        private boolean error;
-        private String contentType;
-        private String location;
-
-        public RestResponse(String text, int status) {
-            this.responseText = text;
-            this.error = (status >= 400);
-        }
-
-
-        public String getResponseText() {
-            return responseText;
-        }
-        public boolean isError() {
-            return error;
-        }
-        public void setContentType(String contentType) {
-            this.contentType = contentType;
-        }
-
-        public boolean isJson() {
-            return (this.contentType.toLowerCase().contains("application/json"));
-        }
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
     }
 }
