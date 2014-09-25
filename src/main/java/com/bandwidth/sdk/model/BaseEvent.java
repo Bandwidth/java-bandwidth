@@ -13,7 +13,7 @@ import java.util.logging.Level;
  *
  * @author vpotapenko
  */
-public class BaseEvent extends BaseModelObject implements Event{
+public class BaseEvent extends BaseModelObject implements Event {
 	
 	protected EventType eventType;
 	/**
@@ -24,71 +24,71 @@ public class BaseEvent extends BaseModelObject implements Event{
 	 */
     public static Event createEventFromString(String in) throws AppPlatformException {
 
-	JSONObject jsonObj = null;
-	try {
-	    jsonObj = (JSONObject) new JSONParser().parse(in);
-	} catch (org.json.simple.parser.ParseException e) {
-	    throw new AppPlatformException(e);
-	}
-
-	EventType eventType = EventType.getEnum((String) jsonObj
-		.get("eventType"));
-
-	Event event = null;
-	switch (eventType) {
-	case INCOMINGCALL:
-	    event = new IncomingCallEvent(jsonObj);
-	    break;
-
-	case ANSWER:
-	    event = new AnswerEvent(jsonObj);
-	    break;
-
-	case SPEAK:
-	    event = new SpeakEvent(jsonObj);
-	    break;
-
-	case PLAYBACK:
-	    event = new PlaybackEvent(jsonObj);
-	    break;
-
-	case GATHER:
-	    event = new GatherEvent(jsonObj);
-	    break;
-
-	case HANGUP:
-	    event = new HangupEvent(jsonObj);
-	    break;
-
-	case DTMF:
-	    event = new DtmfEvent(jsonObj);
-	    break;
-
-	case REJECT:
-	    event = new RejectEvent(jsonObj);
-	    break;
-
-	case RECORDING:
-	    event = new RecordingEvent(jsonObj);
-	    break;
-
-	case SMS:
-	    event = new SmsEvent(jsonObj);
-	    break;
-
-	case TIMEOUT:
-	    event = new TimeoutEvent(jsonObj);
-	    break;
-
-	default:
-	    event = new BaseEvent(jsonObj);
-	}
+		JSONObject jsonObj = null;
+		try {
+		    jsonObj = (JSONObject) new JSONParser().parse(in);
+		} catch (org.json.simple.parser.ParseException e) {
+		    throw new AppPlatformException(e);
+		}
+	
+		EventType eventType = EventType.getEnum((String) jsonObj
+			.get("eventType"));
+	
+		Event event = null;
+		switch (eventType) {
+			case INCOMINGCALL:
+			    event = new IncomingCallEvent(jsonObj);
+			    break;
+		
+			case ANSWER:
+			    event = new AnswerEvent(jsonObj);
+			    break;
+		
+			case SPEAK:
+			    event = new SpeakEvent(jsonObj);
+			    break;
+		
+			case PLAYBACK:
+			    event = new PlaybackEvent(jsonObj);
+			    break;
+		
+			case GATHER:
+			    event = new GatherEvent(jsonObj);
+			    break;
+		
+			case HANGUP:
+			    event = new HangupEvent(jsonObj);
+			    break;
+		
+			case DTMF:
+			    event = new DtmfEvent(jsonObj);
+			    break;
+		
+			case REJECT:
+			    event = new RejectEvent(jsonObj);
+			    break;
+		
+			case RECORDING:
+			    event = new RecordingEvent(jsonObj);
+			    break;
+		
+			case SMS:
+			    event = new SmsEvent(jsonObj);
+			    break;
+		
+			case TIMEOUT:
+			    event = new TimeoutEvent(jsonObj);
+			    break;
+		
+			default:
+			    event = new BaseEvent(jsonObj);
+		}
 
 	return event;
     }
 
     public void execute(Visitor visitor) {
-	visitor.processEvent(this);
+    	visitor.processEvent(this);
     }
 	
     public BaseEvent(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
@@ -109,7 +109,20 @@ public class BaseEvent extends BaseModelObject implements Event{
     public Object getData() {
         return getProperty("data");
     }
+    
+    public String getProperty(String property) {
+    	return getPropertyAsString(property);
+    }
 
+    public void setProperty(String name, String value) {
+    	putProperty(name, value);
+    }
+    
+    public EventType getEventType() {
+    	return eventType;
+    }
+
+    
     @Override
     public String toString() {
         return "Event{" +

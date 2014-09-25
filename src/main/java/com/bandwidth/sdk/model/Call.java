@@ -88,15 +88,11 @@ public class Call extends BaseModelObject {
     	
     	String callParentUri = client.getUserUri() + "/calls";
     	
-    	System.out.println("callParentUri:" + callParentUri);
-    	
     	RestResponse response = client.post(callParentUri, params);
     	    	
     	// success here, otherwise an exception is generated
     	
     	String callId = response.getLocation().substring(client.getPath(callParentUri).length() + 1);
-    	
-    	System.out.println("callId:" + callId);
     	
     	Call call = createCall(callId);
     	    	    	
@@ -108,6 +104,85 @@ public class Call extends BaseModelObject {
     public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
     }
+    
+    public void speakSentence(Map params) throws IOException {
+		assert (params != null);
+	
+		String audioUrl = getUri() + "/audio";
+	
+		getClient().post(audioUrl, params);
+    }
+
+    public void speakSentence(String sentence) throws IOException {
+    	speakSentence(sentence, null);
+    }
+
+    public void speakSentence(String sentence, String tag) throws IOException {
+		JSONObject params = new JSONObject();
+		params.put("sentence", sentence);
+		params.put("voice", "kate");
+		params.put("gender", "female");
+		params.put("locale", "en_US");
+	
+		if (tag != null)
+		    params.put("tag", tag);
+	
+		speakSentence(params);
+    }
+
+    public void playRecording(String recordingUrl) throws IOException {
+		assert (recordingUrl != null);
+	
+		String audioUrl = getUri() + "/audio";
+	
+		JSONObject params = new JSONObject();
+		params.put("fileUrl", recordingUrl);
+	
+		getClient().post(audioUrl, params);
+    }
+
+    public void playAudio(Map<String, Object> params) throws IOException {
+		assert (params != null);
+	
+		String audioUrl = getUri() + "/audio";
+	
+		getClient().post(audioUrl, params);
+    }
+
+    public void createGather(String promptSentence) throws IOException {
+		assert (promptSentence != null);
+	
+		String gatherUrl = getUri() + "/gather";
+	
+		JSONObject params = new JSONObject();
+	
+		params.put("tag", getId());
+		params.put("maxDigits", "1");
+	
+		JSONObject prompt = new JSONObject();
+		prompt.put("sentence", promptSentence);
+		prompt.put("gender", "female");
+		prompt.put("voice", "kate");
+		prompt.put("locale", "en_US");
+		prompt.put("bargeable", "true");
+	
+		params.put("prompt", prompt);
+	
+		getClient().post(gatherUrl, params);
+
+    }
+
+    public void createGather(Map<String, Object> gatherParams,
+	    Map<String, Object> promptParams) throws IOException {
+		String gatherUrl = getUri() + "/gather";
+		assert (gatherParams != null);
+
+		if (promptParams != null && !promptParams.isEmpty())
+		    gatherParams.put("prompt", promptParams);
+	
+		getClient().post(gatherUrl, gatherParams);
+    }
+    
 
     public String getDirection() {
         return getPropertyAsString("direction");
