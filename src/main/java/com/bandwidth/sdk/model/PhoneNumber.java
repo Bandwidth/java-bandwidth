@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
@@ -14,6 +15,17 @@ import java.util.Map;
  * @author vpotapenko
  */
 public class PhoneNumber extends BaseModelObject {
+
+    public static PhoneNumber getPhoneNumber(String phoneNumberId) throws IOException {
+        assert(phoneNumberId != null);
+
+        BandwidthRestClient client = BandwidthRestClient.getInstance();
+        String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
+        JSONObject phoneNumberObj = client.getObject(phoneNumberUri);
+        PhoneNumber number = new PhoneNumber(client, client.getUserResourceUri(
+                BandwidthConstants.PHONE_NUMBER_URI_PATH), phoneNumberObj);
+        return number;
+    }
 
     public PhoneNumber(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);

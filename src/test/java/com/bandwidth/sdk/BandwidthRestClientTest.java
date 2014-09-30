@@ -6,6 +6,7 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class BandwidthRestClientTest {
@@ -32,4 +33,42 @@ public class BandwidthRestClientTest {
         assertThat(client.requests.get(0).name, CoreMatchers.equalTo("getObject"));
         assertThat(client.requests.get(0).uri, CoreMatchers.equalTo("phoneNumbers/numberInfo/number"));
     }
+
+    @Test
+    public void shouldGetProperUserResourceUri() throws Exception {
+        String resourceUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+        assertEquals("users/userId/calls", resourceUri);
+    }
+
+    @Test
+    public void shouldGetProperResourceInstanceUri() throws Exception {
+        String resourceInstanceUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, "myId");
+        assertEquals("users/userId/calls/myId", resourceInstanceUri);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void getResourceUriShouldFailWithNullPath() throws Exception{
+        client.getUserResourceUri(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithNullPath() throws Exception{
+        client.getUserResourceInstanceUri(null, "myId");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithEmptyPath() throws Exception{
+        client.getUserResourceInstanceUri("", "myId");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithNullId() throws Exception{
+        client.getUserResourceInstanceUri("path", null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithEmptyId() throws Exception{
+        client.getUserResourceInstanceUri("path", "");
+    }
+
 }

@@ -88,6 +88,18 @@ public class BandwidthRestClient {
 
 	return INSTANCE;
     }
+
+    public String getUserResourceUri(String path){
+        if(StringUtils.isEmpty(path))
+            throw new IllegalArgumentException("Path cannot be null");
+        return getUserUri() + path;
+    }
+
+    public String getUserResourceInstanceUri(String path, String instanceId){
+        if(StringUtils.isEmpty(path) || StringUtils.isEmpty(instanceId))
+            throw new IllegalArgumentException("Path and Instance Id cannot be null");
+        return getUserResourceUri(path) + "/" + instanceId;
+    }
     
 
     protected BandwidthRestClient(String userId, String token, String secret, String apiEndpoint, String apiVersion) {

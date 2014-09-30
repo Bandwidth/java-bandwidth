@@ -98,9 +98,8 @@ public class Call extends BaseModelObject {
     	    	    	
     	return call;
     }
-	
-	
-	
+
+
     public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
     }
