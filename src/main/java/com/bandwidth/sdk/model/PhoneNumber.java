@@ -16,10 +16,8 @@ import java.util.Map;
  */
 public class PhoneNumber extends BaseModelObject {
 
-    public static PhoneNumber getPhoneNumber(String phoneNumberId) throws IOException {
+    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, String phoneNumberId) throws IOException {
         assert(phoneNumberId != null);
-
-        BandwidthRestClient client = BandwidthRestClient.getInstance();
         String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
         JSONObject phoneNumberObj = client.getObject(phoneNumberUri);
         PhoneNumber number = new PhoneNumber(client, client.getUserResourceUri(

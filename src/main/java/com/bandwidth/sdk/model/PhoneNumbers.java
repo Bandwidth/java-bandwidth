@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -77,7 +78,7 @@ public class PhoneNumbers extends BaseModelObject {
     protected String getUri() {
         return StringUtils.join(new String[]{
                 parentUri,
-                "phoneNumbers"
+                BandwidthConstants.PHONE_NUMBER_URI_PATH
         }, '/');
     }
 
