@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,8 +22,8 @@ public class AccountTest {
 
     @Before
     public void setUp() {
-        mockRestClient = new MockRestClient();
-        account = new Account(mockRestClient, "parentUri");
+        mockRestClient = TestsHelper.getClient();
+        account = new Account(mockRestClient);
     }
 
     @SuppressWarnings("unchecked")
@@ -39,7 +40,7 @@ public class AccountTest {
         assertThat(bandwidthAccountInfo.getBalance(), equalTo(1000.68));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/account"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/account"));
     }
 
     @SuppressWarnings("unchecked")
@@ -55,7 +56,7 @@ public class AccountTest {
         assertThat(transactions.get(1).getNumber(), equalTo("+number2"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/account/transactions"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/account/transactions"));
         assertThat((Integer) mockRestClient.requests.get(0).params.get("maxItems"), equalTo(10));
     }
 

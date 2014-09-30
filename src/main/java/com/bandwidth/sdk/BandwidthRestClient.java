@@ -46,6 +46,7 @@ public class BandwidthRestClient {
     public static String BANDWIDTH_APPPLATFORM_API_VERSION = "BANDWIDTH_APPPLATFORM_API_VERSION";
     
     protected final String usersUri;
+    protected final String baseUri;
 
     protected final String token;
     protected final String secret;
@@ -92,7 +93,7 @@ public class BandwidthRestClient {
     public String getUserResourceUri(String path){
         if(StringUtils.isEmpty(path))
             throw new IllegalArgumentException("Path cannot be null");
-        return getUserUri() + path;
+        return StringUtils.join(new String[] {getUserUri(), path}, "/");
     }
 
     public String getUserResourceInstanceUri(String path, String instanceId){
@@ -100,10 +101,17 @@ public class BandwidthRestClient {
             throw new IllegalArgumentException("Path and Instance Id cannot be null");
         return getUserResourceUri(path) + "/" + instanceId;
     }
+
+    public String getBaseResourceUri(String path){
+        if(StringUtils.isEmpty(path))
+            throw new IllegalArgumentException("Path cannot be null");
+        return path + "/";
+    }
     
 
     protected BandwidthRestClient(String userId, String token, String secret, String apiEndpoint, String apiVersion) {
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
+        baseUri = "";
 
         this.token = token;
         this.secret = secret;
@@ -127,7 +135,7 @@ public class BandwidthRestClient {
      */
     public Account getAccount() {
         if (account == null) {
-            account = new Account(this, usersUri);
+            account = new Account(this);
         }
         return account;
     }
@@ -139,7 +147,7 @@ public class BandwidthRestClient {
      */
     public Applications getApplications() {
         if (applications == null) {
-            applications = new Applications(this, usersUri);
+            applications = new Applications(this);
         }
         return applications;
     }
@@ -276,7 +284,7 @@ public class BandwidthRestClient {
                 number
         }, '/');
         JSONObject object = getObject(uri);
-        return new NumberInfo(this, uri, object);
+        return new NumberInfo(object);
     }
 
 

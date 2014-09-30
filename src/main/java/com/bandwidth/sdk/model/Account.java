@@ -16,8 +16,8 @@ import java.util.*;
  */
 public class Account extends BaseModelObject {
 
-    public Account(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Account(BandwidthRestClient client){
+        super(client, null);
     }
 
     /**
@@ -27,9 +27,8 @@ public class Account extends BaseModelObject {
      * @throws IOException
      */
     public AccountInfo getAccountInfo() throws IOException {
-        String uri = getUri();
-        JSONObject jsonObject = client.getObject(uri);
-        return new AccountInfo(client, uri, jsonObject);
+        JSONObject jsonObject = client.getObject(getUri());
+        return new AccountInfo(client, jsonObject);
     }
 
     /**

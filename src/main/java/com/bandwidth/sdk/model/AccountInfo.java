@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
@@ -10,13 +11,13 @@ import org.json.simple.JSONObject;
  */
 public class AccountInfo extends BaseModelObject {
 
-    public AccountInfo(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public AccountInfo(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
 
     @Override
     protected String getUri() {
-        return null;
+        return client.getUserResourceUri(BandwidthConstants.ACCOUNT_URI_PATH);
     }
 
 

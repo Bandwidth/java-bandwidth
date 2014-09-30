@@ -26,5 +26,6 @@ public abstract class BandwidthConstants {
     public static final String ACCOUNT_URI_PATH = "account";
     public static final String APPLICATIONS_URI_PATH = "applications";
     public static final String MEDIA_URI_PATH = "media";
+    public static final String ACCOUNT_TRANSACTIONS_URI_PATH = "account/transactions";
 
 }

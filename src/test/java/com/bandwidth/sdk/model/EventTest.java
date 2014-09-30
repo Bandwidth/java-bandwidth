@@ -13,9 +13,8 @@ public class EventTest {
     public void shouldBeCreatedFromJson() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
 
-        BaseEvent event = new BaseEvent(null, null, jsonObject);
+        BaseEvent event = new BaseEvent(jsonObject);
         assertThat(event.getId(), CoreMatchers.equalTo("ce-hsdbdbdhd"));
         assertThat(event.getData().toString(), CoreMatchers.equalTo("Call Id wasn't found on FreeSWITCH anymore"));
-
     }
 }

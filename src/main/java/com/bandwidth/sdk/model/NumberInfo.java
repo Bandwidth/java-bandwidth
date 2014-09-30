@@ -16,6 +16,10 @@ public class NumberInfo extends AbsModelObject {
 //        super(client, parentUri, jsonObject);
 //    }
 
+    public NumberInfo(JSONObject jsonObject){
+        updateProperties(jsonObject);
+    }
+
 
     public String getName() {
         return getPropertyAsString("name");

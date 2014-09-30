@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
@@ -10,13 +11,13 @@ import org.json.simple.JSONObject;
  */
 public class AvailableNumber extends BaseModelObject {
 
-    public AvailableNumber(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public AvailableNumber(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
 
     @Override
     protected String getUri() {
-        return null;
+        return client.getBaseResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_URI_PATH);
     }
 
     public String getNumber() {

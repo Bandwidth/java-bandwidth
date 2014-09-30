@@ -15,10 +15,30 @@ import java.util.Map;
  */
 public class MockRestClient extends BandwidthRestClient {
 
+    private String userId;
+    private String token;
+    private String secret;
+    private String endpoint;
+    private String version;
+
     public final List<RestRequest> requests = new ArrayList<RestRequest>();
 
     public JSONObject result;
     public JSONArray arrayResult;
+
+    public MockRestClient(String userId, String token, String secret, String endpoint, String version){
+        super(userId, token, secret, endpoint, version);
+        this.userId = userId;
+        this.token = token;
+        this.secret = secret;
+        this.endpoint = endpoint;
+        this.version = version;
+    }
+
+    // Used to compare url buildout properly
+    public String getUserId(){
+        return this.userId;
+    }
 
     public MockRestClient() {
         super("userId", "", "", "", "");
