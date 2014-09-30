@@ -97,7 +97,8 @@ public class BaseEvent extends AbsModelObject implements Event {
 //    }
 //
     protected BaseEvent(JSONObject json) {
-		eventType = EventType.getEnum((String) json.get("eventType"));
+		updateProperties(json);
+        eventType = EventType.getEnum((String) json.get("eventType"));
     }
     
     public Date getTime() {
