@@ -16,7 +16,7 @@ public class Application extends BaseModelObject {
 
     public static Application getApplication(BandwidthRestClient client, String id) throws IOException {
         assert(id != null);
-        String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, id);
+        String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, id);
         JSONObject applicationObj = client.getObject(applicationUri);
         Application application = new Application(client, applicationObj);
         return application;

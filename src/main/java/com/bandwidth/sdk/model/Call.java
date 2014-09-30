@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.RestResponse;
 
@@ -106,7 +107,8 @@ public class Call extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return null;
+        return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, getId());
+
     }
 
     public void speakSentence(Map params) throws IOException {

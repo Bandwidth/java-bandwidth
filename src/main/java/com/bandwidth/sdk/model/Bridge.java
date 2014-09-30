@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.RestResponse;
 
@@ -64,7 +65,7 @@ public class Bridge extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return null;
+        return client.getUserResourceInstanceUri(BandwidthConstants.BRIDGES_URI_PATH, getId());
     }
 
     /**
