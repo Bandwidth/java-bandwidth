@@ -1,6 +1,8 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.RestResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,9 +17,172 @@ import java.util.*;
  */
 public class Call extends BaseModelObject {
 
+	/**
+	 * Factory method to create a call object. Takes a callId, and makes
+	 * an API call to to get the latest state and uses that for the internal
+	 * representation
+	 * 
+	 * @param callId
+	 * @return
+	 * @throws IOException
+	 */
+    public static Call createCall(String callId) throws IOException
+    {
+    	assert(callId != null);
+    	
+    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+    	
+    	String callParentUri = client.getUserUri() + "/calls";
+    	
+    	String callUri = callParentUri + "/" + callId;
+    	
+    	JSONObject callObj = client.getObject(callUri);
+    	
+    	Call call = new Call(client, callParentUri, callObj); 
+    	
+    	return call;
+    }
+    
+    /**
+     * Conveniance method to dials a call from a phone number to a phone number
+     * @param to
+     * @param from
+     * @param callbackUrl
+     * @param maps
+     * @return
+     * @throws IOException
+     */
+    public static Call makeCall(String to, String from, String callbackUrl, Map <String, Object> ... maps)  throws IOException
+    {
+    	assert(to != null && from != null);
+    	    	
+    	JSONObject params = new JSONObject();
+    	params.put("to", to);
+    	params.put("from", from);
+    	params.put("callbackUrl", callbackUrl);
+    	
+    	for (Map <String, Object>map : maps)
+    	{
+    		for (String key : map.keySet()) 
+    		{
+    			params.put(key, map.get(key));
+    		}
+    	}
+    	
+    	Call call = makeCall(params);
+    	    	
+    	return call;
+    }
+    
+    /**
+     * Dials a call, from a phone number to a phone number.
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static Call makeCall(Map <String, Object>params)  throws IOException
+    {
+    	assert (params != null);
+    	
+       	BandwidthRestClient client = BandwidthRestClient.getInstance();       	
+    	
+    	String callParentUri = client.getUserUri() + "/calls";
+    	
+    	RestResponse response = client.post(callParentUri, params);
+    	    	
+    	// success here, otherwise an exception is generated
+    	
+    	String callId = response.getLocation().substring(client.getPath(callParentUri).length() + 1);
+    	
+    	Call call = createCall(callId);
+    	    	    	
+    	return call;
+    }
+	
+	
+	
     public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
     }
+    
+    public void speakSentence(Map params) throws IOException {
+		assert (params != null);
+	
+		String audioUrl = getUri() + "/audio";
+	
+		getClient().post(audioUrl, params);
+    }
+
+    public void speakSentence(String sentence) throws IOException {
+    	speakSentence(sentence, null);
+    }
+
+    public void speakSentence(String sentence, String tag) throws IOException {
+		JSONObject params = new JSONObject();
+		params.put("sentence", sentence);
+		params.put("voice", "kate");
+		params.put("gender", "female");
+		params.put("locale", "en_US");
+	
+		if (tag != null)
+		    params.put("tag", tag);
+	
+		speakSentence(params);
+    }
+
+    public void playRecording(String recordingUrl) throws IOException {
+		assert (recordingUrl != null);
+	
+		String audioUrl = getUri() + "/audio";
+	
+		JSONObject params = new JSONObject();
+		params.put("fileUrl", recordingUrl);
+	
+		getClient().post(audioUrl, params);
+    }
+
+    public void playAudio(Map<String, Object> params) throws IOException {
+		assert (params != null);
+	
+		String audioUrl = getUri() + "/audio";
+	
+		getClient().post(audioUrl, params);
+    }
+
+    public void createGather(String promptSentence) throws IOException {
+		assert (promptSentence != null);
+	
+		String gatherUrl = getUri() + "/gather";
+	
+		JSONObject params = new JSONObject();
+	
+		params.put("tag", getId());
+		params.put("maxDigits", "1");
+	
+		JSONObject prompt = new JSONObject();
+		prompt.put("sentence", promptSentence);
+		prompt.put("gender", "female");
+		prompt.put("voice", "kate");
+		prompt.put("locale", "en_US");
+		prompt.put("bargeable", "true");
+	
+		params.put("prompt", prompt);
+	
+		getClient().post(gatherUrl, params);
+
+    }
+
+    public void createGather(Map<String, Object> gatherParams,
+	    Map<String, Object> promptParams) throws IOException {
+		String gatherUrl = getUri() + "/gather";
+		assert (gatherParams != null);
+
+		if (promptParams != null && !promptParams.isEmpty())
+		    gatherParams.put("prompt", promptParams);
+	
+		getClient().post(gatherUrl, gatherParams);
+    }
+    
 
     public String getDirection() {
         return getPropertyAsString("direction");
@@ -89,16 +254,16 @@ public class Call extends BaseModelObject {
      * @return events
      * @throws IOException
      */
-    public List<Event> getEventsList() throws IOException {
+    public List<BaseEvent> getEventsList() throws IOException {
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
         JSONArray array = client.getArray(eventsPath, null);
 
-        List<Event> list = new ArrayList<Event>();
+        List<BaseEvent> list = new ArrayList<BaseEvent>();
         for (Object object : array) {
-            list.add(new Event(client, eventsPath, (JSONObject) object));
+            list.add(new BaseEvent(client, eventsPath, (JSONObject) object));
         }
         return list;
     }
@@ -110,7 +275,7 @@ public class Call extends BaseModelObject {
      * @return information about event
      * @throws IOException
      */
-    public Event getEvent(String eventId) throws IOException {
+    public BaseEvent getEvent(String eventId) throws IOException {
         String eventPath = StringUtils.join(new String[]{
                 getUri(),
                 "events",
@@ -121,7 +286,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new Event(client, eventsPath, jsonObject);
+        return new BaseEvent(client, eventsPath, jsonObject);
     }
 
     /**

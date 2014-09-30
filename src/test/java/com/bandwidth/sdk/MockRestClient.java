@@ -21,7 +21,7 @@ public class MockRestClient extends BandwidthRestClient {
     public JSONArray arrayResult;
 
     public MockRestClient() {
-        super("", "", "");
+        super("", "", "", "", "");
     }
 
     @Override
@@ -43,8 +43,10 @@ public class MockRestClient extends BandwidthRestClient {
     }
 
     @Override
-    public void post(String uri, Map<String, Object> params) throws IOException {
+    public RestResponse post(String uri, Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("post", uri, params));
+        
+        return null;
     }
 
     @Override

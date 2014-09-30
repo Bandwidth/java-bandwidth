@@ -39,6 +39,10 @@ public abstract class BaseModelObject {
     public String getId() {
         return getPropertyAsString("id");
     }
+    
+    protected BandwidthRestClient getClient() {
+    	return client;
+    }
 
     protected String getUri() {
         // default implementation of uri
