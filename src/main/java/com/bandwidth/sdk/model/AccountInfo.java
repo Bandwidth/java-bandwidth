@@ -14,6 +14,12 @@ public class AccountInfo extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
+
     public String getAccountType() {
         return getPropertyAsString("accountType");
     }

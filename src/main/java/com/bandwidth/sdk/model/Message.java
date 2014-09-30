@@ -16,6 +16,11 @@ public class Message extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public String getMessageId() {
         return getPropertyAsString("messageId");
     }

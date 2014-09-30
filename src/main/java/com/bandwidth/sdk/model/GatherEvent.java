@@ -6,11 +6,11 @@ import com.bandwidth.sdk.BandwidthRestClient;
 
 public class GatherEvent extends BaseEvent{
 
-	public GatherEvent(BandwidthRestClient client, String parentUri,
-			JSONObject jsonObject) {
-		super(client, parentUri, jsonObject);
-		// TODO Auto-generated constructor stub
-	}
+//	public GatherEvent(BandwidthRestClient client, String parentUri,
+//			JSONObject jsonObject) {
+//		super(client, parentUri, jsonObject);
+//		// TODO Auto-generated constructor stub
+//	}
 
 	public GatherEvent(JSONObject json) {
 		super(json);

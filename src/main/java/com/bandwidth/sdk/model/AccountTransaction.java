@@ -16,6 +16,11 @@ public class AccountTransaction extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public String getType() {
         return getPropertyAsString("type");
     }

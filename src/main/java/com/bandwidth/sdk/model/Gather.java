@@ -19,6 +19,11 @@ public class Gather extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     /**
      * Changes state to completed.
      *

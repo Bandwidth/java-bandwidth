@@ -103,7 +103,12 @@ public class Call extends BaseModelObject {
     public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
     }
-    
+
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public void speakSentence(Map params) throws IOException {
 		assert (params != null);
 	
@@ -262,7 +267,7 @@ public class Call extends BaseModelObject {
 
         List<BaseEvent> list = new ArrayList<BaseEvent>();
         for (Object object : array) {
-            list.add(new BaseEvent(client, eventsPath, (JSONObject) object));
+            list.add(new BaseEvent((JSONObject) object));
         }
         return list;
     }
@@ -285,7 +290,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new BaseEvent(client, eventsPath, jsonObject);
+        return new BaseEvent(jsonObject);
     }
 
     /**

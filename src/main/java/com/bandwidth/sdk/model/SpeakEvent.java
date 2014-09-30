@@ -6,11 +6,11 @@ import com.bandwidth.sdk.BandwidthRestClient;
 
 public class SpeakEvent extends BaseEvent {
 
-	public SpeakEvent(BandwidthRestClient client, String parentUri,
-			JSONObject jsonObject) {
-		super(client, parentUri, jsonObject);
-		// TODO Auto-generated constructor stub
-	}
+//	public SpeakEvent(BandwidthRestClient client, String parentUri,
+//			JSONObject jsonObject) {
+//		super(client, parentUri, jsonObject);
+//		// TODO Auto-generated constructor stub
+//	}
 
 	public SpeakEvent(JSONObject json) {
 		super(json);

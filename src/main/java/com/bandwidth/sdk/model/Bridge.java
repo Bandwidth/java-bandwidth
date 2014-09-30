@@ -62,6 +62,11 @@ public class Bridge extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     /**
      * Gets list of calls that are on the bridge
      *

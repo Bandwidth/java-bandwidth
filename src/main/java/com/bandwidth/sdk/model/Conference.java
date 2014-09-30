@@ -19,6 +19,11 @@ public class Conference extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public String getFrom() {
         return getPropertyAsString("from");
     }

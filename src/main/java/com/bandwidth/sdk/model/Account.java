@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -62,10 +63,11 @@ public class Account extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "account"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.ACCOUNT_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                "account"
+//        }, '/');
     }
 
     public class TransactionsQueryBuilder {

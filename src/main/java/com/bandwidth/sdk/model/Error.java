@@ -18,6 +18,11 @@ public class Error extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public String getMessage() {
         return getPropertyAsString("message");
     }

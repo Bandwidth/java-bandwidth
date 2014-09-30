@@ -60,10 +60,12 @@ public class MediaFile extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                getMediaName()
-        }, '/');
+        //TODO: what should this be?
+        return null;
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                getMediaName()
+//        }, '/');
     }
 
 }

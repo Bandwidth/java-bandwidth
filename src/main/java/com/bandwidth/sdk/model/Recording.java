@@ -16,6 +16,11 @@ public class Recording extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public String getMedia() {
         return getPropertyAsString("media");
     }

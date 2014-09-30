@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -74,10 +75,11 @@ public class Applications extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "applications"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                "applications"
+//        }, '/');
     }
 
     private Application createApplication(Map<String, Object> params) throws IOException {

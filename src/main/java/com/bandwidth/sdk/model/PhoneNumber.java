@@ -2,6 +2,7 @@ package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -23,6 +24,20 @@ public class PhoneNumber extends BaseModelObject {
         PhoneNumber number = new PhoneNumber(client, client.getUserResourceUri(
                 BandwidthConstants.PHONE_NUMBER_URI_PATH), phoneNumberObj);
         return number;
+    }
+
+    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+        return new PhoneNumber(client, jsonObject);
+
+    }
+
+    protected PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+        super(client, jsonObject);
+
+    }
+
+    public String getUri(){
+        return client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, getId());
     }
 
     public PhoneNumber(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {

@@ -10,11 +10,12 @@ import java.util.Date;
  *
  * @author vpotapenko
  */
-public class NumberInfo extends BaseModelObject {
+public class NumberInfo extends AbsModelObject {
 
-    public NumberInfo(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
-    }
+//    public NumberInfo(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+//        super(client, parentUri, jsonObject);
+//    }
+
 
     public String getName() {
         return getPropertyAsString("name");

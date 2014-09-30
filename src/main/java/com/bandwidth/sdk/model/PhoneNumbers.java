@@ -76,10 +76,11 @@ public class PhoneNumbers extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                BandwidthConstants.PHONE_NUMBER_URI_PATH
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                BandwidthConstants.PHONE_NUMBER_URI_PATH
+//        }, '/');
     }
 
     private List<PhoneNumber> getNumbers(Map<String, Object> params) throws IOException {

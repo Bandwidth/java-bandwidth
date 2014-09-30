@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -49,10 +50,11 @@ public class Conferences extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "conferences"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                "conferences"
+//        }, '/');
     }
 
     private Conference createConference(Map<String, Object> params) throws IOException {

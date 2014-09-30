@@ -6,11 +6,11 @@ import com.bandwidth.sdk.BandwidthRestClient;
 
 public class IncomingCallEvent extends BaseEvent {
 
-	public IncomingCallEvent(BandwidthRestClient client, String parentUri,
-			JSONObject jsonObject) {
-		super(client, parentUri, jsonObject);
-		// TODO Auto-generated constructor stub
-	}
+//	public IncomingCallEvent(BandwidthRestClient client, String parentUri,
+//			JSONObject jsonObject) {
+//		super(client, parentUri, jsonObject);
+//		// TODO Auto-generated constructor stub
+//	}
 
 	public IncomingCallEvent(JSONObject json) {
 		super(json);

@@ -17,6 +17,11 @@ public class Application extends BaseModelObject {
         super(client, parentUri, jsonObject);
     }
 
+    @Override
+    protected String getUri() {
+        return null;
+    }
+
     public String getName() {
         return getPropertyAsString("name");
     }

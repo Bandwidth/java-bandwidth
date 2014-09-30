@@ -13,7 +13,7 @@ import java.util.logging.Level;
  *
  * @author vpotapenko
  */
-public class BaseEvent extends BaseModelObject implements Event {
+public class BaseEvent extends AbsModelObject implements Event {
 	
 	protected EventType eventType;
 	/**
@@ -90,14 +90,13 @@ public class BaseEvent extends BaseModelObject implements Event {
     public void execute(Visitor visitor) {
     	visitor.processEvent(this);
     }
-	
-    public BaseEvent(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
-    }
-    
+
+
+//    public BaseEvent(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
+//        super(client, parentUri, jsonObject);
+//    }
+//
     protected BaseEvent(JSONObject json) {
-		super(BandwidthRestClient.getInstance(), null, json);
-	
 		eventType = EventType.getEnum((String) json.get("eventType"));
     }
     
