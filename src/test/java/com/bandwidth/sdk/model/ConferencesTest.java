@@ -18,7 +18,7 @@ public class ConferencesTest {
     public void setUp() throws Exception {
         mockRestClient = new MockRestClient();
 
-        conferences = new Conferences(mockRestClient, "parentUri");
+        conferences = new Conferences(mockRestClient);
     }
 
     @Test

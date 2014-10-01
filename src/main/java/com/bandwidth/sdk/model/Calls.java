@@ -19,8 +19,8 @@ import java.util.Map;
  */
 public class Calls extends BaseModelObject {
 
-    public Calls(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Calls(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -59,7 +59,7 @@ public class Calls extends BaseModelObject {
                 callId
         }, '/');
         JSONObject jsonObject = client.getObject(eventPath);
-        return new Call(client, callsUri, jsonObject);
+        return new Call(client, jsonObject);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class Calls extends BaseModelObject {
 
         List<Call> calls = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            calls.add(new Call(client, callsUri, (JSONObject) obj));
+            calls.add(new Call(client, (JSONObject) obj));
         }
         return calls;
     }
@@ -85,7 +85,7 @@ public class Calls extends BaseModelObject {
     private Call newCall(Map<String, Object> params) throws IOException {
         String callsUri = getUri();
         JSONObject jsonObject = client.create(callsUri, params);
-        return new Call(client, callsUri, jsonObject);
+        return new Call(client, jsonObject);
     }
 
     public class QueryCallsBuilder {

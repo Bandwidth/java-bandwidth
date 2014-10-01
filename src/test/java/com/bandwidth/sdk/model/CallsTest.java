@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,9 +21,9 @@ public class CallsTest {
 
     @Before
     public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
+        mockRestClient = TestsHelper.getClient();
 
-        calls = new Calls(mockRestClient, "parentUri");
+        calls = new Calls(mockRestClient);
     }
 
     @Test
@@ -37,7 +38,7 @@ public class CallsTest {
         assertThat(callList.get(1).getFrom(), equalTo("+44444444444"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/calls"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
         assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("2"));
     }
 
@@ -49,7 +50,7 @@ public class CallsTest {
         assertThat(bandwidthCall, notNullValue());
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/calls"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
         assertThat(mockRestClient.requests.get(0).params.get("from").toString(), equalTo("from"));
         assertThat(mockRestClient.requests.get(0).params.get("to").toString(), equalTo("to"));
     }
@@ -62,6 +63,6 @@ public class CallsTest {
         assertThat(bandwidthCall, notNullValue());
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/calls/id1"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/id1"));
     }
 }

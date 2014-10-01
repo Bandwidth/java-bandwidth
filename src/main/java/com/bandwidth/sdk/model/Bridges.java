@@ -19,8 +19,8 @@ import java.util.Map;
  */
 public class Bridges extends BaseModelObject {
 
-    public Bridges(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Bridges(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -35,7 +35,7 @@ public class Bridges extends BaseModelObject {
         String bridgesUri = getUri();
         List<Bridge> bridges = new ArrayList<Bridge>();
         for (Object obj : array) {
-            bridges.add(new Bridge(client, bridgesUri, (JSONObject) obj));
+            bridges.add(new Bridge(client, (JSONObject) obj));
         }
         return bridges;
     }
@@ -54,7 +54,7 @@ public class Bridges extends BaseModelObject {
                 id
         }, '/');
         JSONObject jsonObject = client.getObject(eventPath);
-        return new Bridge(client, bridgesUri, jsonObject);
+        return new Bridge(client, jsonObject);
     }
 
     /**
@@ -79,7 +79,7 @@ public class Bridges extends BaseModelObject {
     private Bridge createBridge(Map<String, Object> params) throws IOException {
         String bridgesUri = getUri();
         JSONObject jsonObject = client.create(bridgesUri, params);
-        return new Bridge(client, bridgesUri, jsonObject);
+        return new Bridge(client, jsonObject);
     }
 
     public class NewBridgeBuilder {

@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,9 +22,9 @@ public class BridgesTest {
 
     @Before
     public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
+        mockRestClient = TestsHelper.getClient();
 
-        bridges = new Bridges(mockRestClient, "parentUri");
+        bridges = new Bridges(mockRestClient);
     }
 
     @Test
@@ -57,7 +58,7 @@ public class BridgesTest {
         assertThat(bridgeList.get(0).getCalls(), equalTo("https://v1/users/userId/bridges/bridgeId/calls"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/bridges"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/bridges"));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class BridgesTest {
         assertThat(bridge.getState(), equalTo("created"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/bridges"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/bridges"));
     }
 
     @Test
@@ -82,6 +83,6 @@ public class BridgesTest {
         assertThat(bridge.getState(), equalTo("created"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/bridges/id1"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/bridges/id1"));
     }
 }

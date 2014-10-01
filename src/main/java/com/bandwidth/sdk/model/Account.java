@@ -48,7 +48,7 @@ public class Account extends BaseModelObject {
 
         List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
         for (Object obj : array) {
-            transactions.add(new AccountTransaction(client, transactionsUri, (JSONObject) obj));
+            transactions.add(new AccountTransaction(client, (JSONObject) obj));
         }
         return transactions;
     }

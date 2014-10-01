@@ -12,8 +12,8 @@ import java.util.Date;
  */
 public class ConferenceMember extends BaseModelObject {
 
-    public ConferenceMember(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public ConferenceMember(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
 
     @Override

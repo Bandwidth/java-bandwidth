@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class Conferences extends BaseModelObject {
 
-    public Conferences(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Conferences(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -34,7 +34,7 @@ public class Conferences extends BaseModelObject {
                 id
         }, '/');
         JSONObject jsonObject = client.getObject(conferenceUri);
-        return new Conference(client, conferencesUri, jsonObject);
+        return new Conference(client, jsonObject);
     }
 
     /**
@@ -60,7 +60,7 @@ public class Conferences extends BaseModelObject {
     private Conference createConference(Map<String, Object> params) throws IOException {
         String conferencesUri = getUri();
         JSONObject jsonObject = client.create(conferencesUri, params);
-        return new Conference(client, conferencesUri, jsonObject);
+        return new Conference(client, jsonObject);
     }
 
     public class NewConferenceBuilder {

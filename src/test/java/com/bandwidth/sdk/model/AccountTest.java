@@ -15,14 +15,13 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class AccountTest {
+public class AccountTest extends BaseModelTest {
 
-    private MockRestClient mockRestClient;
     private Account account;
 
     @Before
     public void setUp() {
-        mockRestClient = TestsHelper.getClient();
+        super.setUp();
         account = new Account(mockRestClient);
     }
 

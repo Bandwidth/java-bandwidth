@@ -39,7 +39,7 @@ public class Call extends BaseModelObject {
     	
     	JSONObject callObj = client.getObject(callUri);
     	
-    	Call call = new Call(client, callParentUri, callObj); 
+    	Call call = new Call(client, callObj);
     	
     	return call;
     }
@@ -101,8 +101,8 @@ public class Call extends BaseModelObject {
     }
 
 
-    public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public Call(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
 
     @Override

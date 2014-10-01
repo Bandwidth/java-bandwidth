@@ -171,7 +171,7 @@ public class BandwidthRestClient {
      */
     public Bridges getBridges() {
         if (bridges == null) {
-            bridges = new Bridges(this, usersUri);
+            bridges = new Bridges(this);
         }
         return bridges;
     }
@@ -183,7 +183,7 @@ public class BandwidthRestClient {
      */
     public Calls getCalls() {
         if (calls == null) {
-            calls = new Calls(this, usersUri);
+            calls = new Calls(this);
         }
         return calls;
     }
@@ -195,7 +195,7 @@ public class BandwidthRestClient {
      */
     public Conferences getConferences() {
         if (conferences == null) {
-            conferences = new Conferences(this, usersUri);
+            conferences = new Conferences(this);
         }
         return conferences;
     }
