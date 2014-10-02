@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class ConferencesTest {
         assertThat(conference.getFrom(), equalTo("+number"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/conferences"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences"));
         assertThat(mockRestClient.requests.get(0).params.get("from").toString(), equalTo("fromNumber"));
         assertThat(mockRestClient.requests.get(0).params.get("callbackUrl").toString(), equalTo("url"));
     }
@@ -44,6 +45,6 @@ public class ConferencesTest {
         assertThat(conference.getFrom(), equalTo("+number"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/conferences/conf-id1"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/conf-id1"));
     }
 }

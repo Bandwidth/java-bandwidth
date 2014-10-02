@@ -9,7 +9,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ErrorTest {
+public class ErrorTest extends BaseModelTest {
 
     @Test
     public void shouldBeCreatedFromJson() throws Exception {

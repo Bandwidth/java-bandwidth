@@ -462,7 +462,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new Gather(client, gathersPath, jsonObject);
+        return new Gather(client,jsonObject);
     }
 
     private void createGather(Map<String, Object> params) throws IOException {
