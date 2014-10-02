@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class Errors extends BaseModelObject {
 
-    public Errors(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Errors(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -57,9 +57,5 @@ public class Errors extends BaseModelObject {
     @Override
     protected String getUri() {
         return client.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH);
-//        return StringUtils.join(new String[]{
-//                parentUri,
-//                "errors"
-//        }, '/');
     }
 }

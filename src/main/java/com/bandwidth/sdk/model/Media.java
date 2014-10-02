@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class Media extends BaseModelObject {
 
-    public Media(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Media(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -34,7 +34,7 @@ public class Media extends BaseModelObject {
 
         List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
         for (Object obj : array) {
-            mediaFiles.add(new MediaFile(client, uri, (JSONObject) obj));
+            mediaFiles.add(new MediaFile(client, (JSONObject) obj));
         }
         return mediaFiles;
     }

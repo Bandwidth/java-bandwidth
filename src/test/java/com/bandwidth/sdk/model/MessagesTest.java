@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -11,15 +12,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class MessagesTest {
+public class MessagesTest extends BaseModelTest {
 
-    private MockRestClient mockRestClient;
     private Messages messages;
 
     @Before
-    public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
-        messages = new Messages(mockRestClient, "parentUri");
+    public void setUp() {
+        super.setUp();
+        messages = new Messages(mockRestClient);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class MessagesTest {
         assertThat(list.get(0).getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/messages"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
         assertThat(mockRestClient.requests.get(0).params.get("page").toString(), equalTo("5"));
         assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("10"));
     }
@@ -77,7 +77,7 @@ public class MessagesTest {
         assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
         assertThat(message.getFrom(), equalTo("+number2"));
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/messages/m-ckobmmd4fgqumyhssgd6lqy"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages/m-ckobmmd4fgqumyhssgd6lqy"));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class MessagesTest {
         Message message = messages.newMessageBuilder().from("from").to("to").tag("tag").text("hello").create();
         assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
         assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/messages"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
         assertThat(mockRestClient.requests.get(0).params.get("from").toString(), equalTo("from"));
         assertThat(mockRestClient.requests.get(0).params.get("to").toString(), equalTo("to"));
         assertThat(mockRestClient.requests.get(0).params.get("tag").toString(), equalTo("tag"));

@@ -17,8 +17,8 @@ import java.util.Map;
  */
 public class Recordings extends BaseModelObject {
 
-    public Recordings(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Recordings(BandwidthRestClient client) {
+        super(client, null);
     }
 
     public QueryRecordingsBuilder queryRecordingsBuilder() {
@@ -49,10 +49,6 @@ public class Recordings extends BaseModelObject {
     @Override
     protected String getUri() {
         return client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
-//        return StringUtils.join(new String[]{
-//                parentUri,
-//                "recordings"
-//        }, '/');
     }
 
     public class QueryRecordingsBuilder {

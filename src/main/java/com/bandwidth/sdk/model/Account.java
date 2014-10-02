@@ -63,10 +63,6 @@ public class Account extends BaseModelObject {
     @Override
     protected String getUri() {
         return client.getUserResourceUri(BandwidthConstants.ACCOUNT_URI_PATH);
-//        return StringUtils.join(new String[]{
-//                parentUri,
-//                "account"
-//        }, '/');
     }
 
     public class TransactionsQueryBuilder {

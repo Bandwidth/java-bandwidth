@@ -207,7 +207,7 @@ public class BandwidthRestClient {
      */
     public Errors getErrors() {
         if (errors == null) {
-            errors = new Errors(this, usersUri);
+            errors = new Errors(this);
         }
         return errors;
     }
@@ -219,7 +219,7 @@ public class BandwidthRestClient {
      */
     public Messages getMessages() {
         if (messages == null) {
-            messages = new Messages(this, usersUri);
+            messages = new Messages(this);
         }
         return messages;
     }
@@ -231,7 +231,7 @@ public class BandwidthRestClient {
      */
     public PhoneNumbers getPhoneNumbers() {
         if (phoneNumbers == null) {
-            phoneNumbers = new PhoneNumbers(this, usersUri);
+            phoneNumbers = new PhoneNumbers(this);
         }
         return phoneNumbers;
     }
@@ -243,7 +243,7 @@ public class BandwidthRestClient {
      */
     public Recordings getRecordings() {
         if (recordings == null) {
-            recordings = new Recordings(this, usersUri);
+            recordings = new Recordings(this);
         }
         return recordings;
     }
@@ -255,7 +255,7 @@ public class BandwidthRestClient {
      */
     public Media getMedia() {
         if (media == null) {
-            media = new Media(this, usersUri);
+            media = new Media(this);
         }
         return media;
     }

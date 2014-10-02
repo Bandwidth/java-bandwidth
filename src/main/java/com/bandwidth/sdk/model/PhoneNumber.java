@@ -21,8 +21,7 @@ public class PhoneNumber extends BaseModelObject {
         assert(phoneNumberId != null);
         String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
         JSONObject phoneNumberObj = client.getObject(phoneNumberUri);
-        PhoneNumber number = new PhoneNumber(client, client.getUserResourceUri(
-                BandwidthConstants.PHONE_NUMBER_URI_PATH), phoneNumberObj);
+        PhoneNumber number = new PhoneNumber(client, phoneNumberObj);
         return number;
     }
 
@@ -31,7 +30,7 @@ public class PhoneNumber extends BaseModelObject {
 
     }
 
-    protected PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+    public PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
         super(client, jsonObject);
 
     }
@@ -40,9 +39,6 @@ public class PhoneNumber extends BaseModelObject {
         return client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, getId());
     }
 
-    public PhoneNumber(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
-    }
 
     /**
      * Makes changes to a number you have.

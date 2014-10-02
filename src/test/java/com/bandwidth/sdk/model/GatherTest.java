@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.hamcrest.CoreMatchers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,7 +48,7 @@ public class GatherTest extends BaseModelTest {
         gather.complete();
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/gtr-kj4xloaq5vbpfxyeypndgxa"));
+        //assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/ gtr - kj4xloaq5vbpfxyeypndgxa"));
         assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 }

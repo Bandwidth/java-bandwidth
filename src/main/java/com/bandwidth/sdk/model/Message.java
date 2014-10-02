@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
@@ -12,13 +13,13 @@ import java.util.Date;
  */
 public class Message extends BaseModelObject {
 
-    public Message(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public Message(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
 
     @Override
     protected String getUri() {
-        return null;
+        return client.getUserResourceInstanceUri(BandwidthConstants.MESSAGES_URI_PATH, getId());
     }
 
     public String getMessageId() {
