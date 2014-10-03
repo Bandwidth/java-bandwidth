@@ -3,6 +3,8 @@ package com.bandwidth.sdk.model;
 import com.bandwidth.sdk.BandwidthConstants;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,6 @@ import java.util.Map;
  */
 public class Call2 extends Resource {
 
-    private String id;
     private String direction;
 
 
@@ -24,28 +25,26 @@ public class Call2 extends Resource {
     protected void setUp(JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         this.direction = (String) jsonObject.get("direction");
-
     }
 
 
     @Override
     public Call2 get(String id) throws Exception {
-        return new Call2(toJSONObject(client.get(String.format(BandwidthConstants.CALLS_URI_PATH,"%s", id), null)));
+        return new Call2(toJSONObject(client.get(String.format(BandwidthConstants.CALLS_URI_PATH, "%s", id), null)));
     }
 
     @Override
-    public List<Call2> list() {
-        return null;
+    public List<Call2> list(Map<String, Object> query) throws Exception {
+        List<Call2> calls = new ArrayList<Call2>();
+        for (Object obj : toJSONArray(client.get(BandwidthConstants.CALLS_URI_PATH, query))) {
+            calls.add(new Call2((JSONObject) obj));
+        }
+        return calls;
     }
 
     @Override
-    public String create(Map<String, Object> params) {
-        //should create a new call
-        return null;
-    }
-
-    public String getId(){
-        return id;
+    public String create(Map<String, Object> params) throws IOException {
+        return client.post(BandwidthConstants.CALLS_URI_PATH, params).getResponseText();
     }
 
     public String getDirection() {

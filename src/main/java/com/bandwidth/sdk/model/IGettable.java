@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,6 @@ import java.util.Map;
  */
 public interface IGettable {
     public IGettable get(String id) throws Exception;
-    public List<?> list();
-    public String create(Map<String, Object> params);
+    public List<?> list(Map<String, Object> query) throws Exception;
+    public String create(Map<String, Object> params) throws IOException;
 }
