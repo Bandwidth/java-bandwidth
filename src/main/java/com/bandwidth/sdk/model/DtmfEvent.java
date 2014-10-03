@@ -6,11 +6,11 @@ import com.bandwidth.sdk.BandwidthRestClient;
 
 public class DtmfEvent extends BaseEvent {
 
-	public DtmfEvent(BandwidthRestClient client, String parentUri,
-			JSONObject jsonObject) {
-		super(client, parentUri, jsonObject);
-		// TODO Auto-generated constructor stub
-	}
+//	public DtmfEvent(BandwidthRestClient client, String parentUri,
+//			JSONObject jsonObject) {
+//		super(client, parentUri, jsonObject);
+//		// TODO Auto-generated constructor stub
+//	}
 
 	public DtmfEvent(JSONObject json) {
 		super(json);

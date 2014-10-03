@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
@@ -13,8 +14,22 @@ import java.util.Map;
  */
 public class Application extends BaseModelObject {
 
-    public Application(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public static Application getApplication(BandwidthRestClient client, String id) throws IOException {
+        assert(id != null);
+        String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, id);
+        JSONObject applicationObj = client.getObject(applicationUri);
+        Application application = new Application(client, applicationObj);
+        return application;
+    }
+
+
+    public Application(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client,jsonObject);
+    }
+
+    @Override
+    protected String getUri() {
+        return client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, getId());
     }
 
     public String getName() {

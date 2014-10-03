@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.RestResponse;
 
@@ -53,13 +54,19 @@ public class Bridge extends BaseModelObject {
     	JSONObject callObj = client.getObjectFromLocation(response
     		.getLocation());
 
-    	Bridge bridge = new Bridge(client, bridgeParentUri, callObj);
+    	Bridge bridge = new Bridge(client, callObj);
 
     	return bridge;
 	}
 
-    public Bridge(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public Bridge(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
+    }
+
+
+    @Override
+    protected String getUri() {
+        return client.getUserResourceInstanceUri(BandwidthConstants.BRIDGES_URI_PATH, getId());
     }
 
     /**
@@ -77,7 +84,7 @@ public class Bridge extends BaseModelObject {
 
         List<Call> callList = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            callList.add(new Call(client, callsPath, (JSONObject) obj));
+            callList.add(new Call(client, (JSONObject) obj));
         }
         return callList;
     }

@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -16,8 +17,8 @@ import java.util.Map;
  */
 public class Recordings extends BaseModelObject {
 
-    public Recordings(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Recordings(BandwidthRestClient client) {
+        super(client, null);
     }
 
     public QueryRecordingsBuilder queryRecordingsBuilder() {
@@ -47,10 +48,7 @@ public class Recordings extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "recordings"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
     }
 
     public class QueryRecordingsBuilder {

@@ -10,7 +10,7 @@ import java.util.Calendar;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class AccountTransactionTest {
+public class AccountTransactionTest extends BaseModelTest {
 
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
@@ -23,7 +23,7 @@ public class AccountTransactionTest {
                 "    \"productType\": \"sms-out\",\n" +
                 "    \"number\": \"1672617-17281\"\n" +
                 "  }");
-        AccountTransaction transaction = new AccountTransaction(null, "parentUri", jsonObject);
+        AccountTransaction transaction = new AccountTransaction( mockRestClient, jsonObject);
 
         assertThat(transaction.getId(), equalTo("81782"));
         assertThat(transaction.getAmount(), equalTo(0.0075));

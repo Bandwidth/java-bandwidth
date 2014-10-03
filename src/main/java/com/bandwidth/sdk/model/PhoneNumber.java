@@ -1,6 +1,8 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -15,9 +17,28 @@ import java.util.Map;
  */
 public class PhoneNumber extends BaseModelObject {
 
-    public PhoneNumber(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, String phoneNumberId) throws IOException {
+        assert(phoneNumberId != null);
+        String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
+        JSONObject phoneNumberObj = client.getObject(phoneNumberUri);
+        PhoneNumber number = new PhoneNumber(client, phoneNumberObj);
+        return number;
     }
+
+    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+        return new PhoneNumber(client, jsonObject);
+
+    }
+
+    public PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+        super(client, jsonObject);
+
+    }
+
+    public String getUri(){
+        return client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, getId());
+    }
+
 
     /**
      * Makes changes to a number you have.

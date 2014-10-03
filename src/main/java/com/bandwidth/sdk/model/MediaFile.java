@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -14,8 +15,8 @@ import java.io.IOException;
  */
 public class MediaFile extends BaseModelObject {
 
-    public MediaFile(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public MediaFile(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
 
     public Long getContentLength() {
@@ -60,10 +61,7 @@ public class MediaFile extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                getMediaName()
-        }, '/');
+        return client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, getMediaName());
     }
 
 }

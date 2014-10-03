@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,15 +13,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class PhoneNumbersTest {
+public class PhoneNumbersTest  extends BaseModelTest{
 
-    private MockRestClient mockRestClient;
     private PhoneNumbers phoneNumbers;
 
     @Before
-    public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
-        phoneNumbers = new PhoneNumbers(mockRestClient, "parentUri");
+    public void setUp() {
+        super.setUp();
+        phoneNumbers = new PhoneNumbers(mockRestClient);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PhoneNumbersTest {
         assertThat(list.get(0).getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/phoneNumbers"));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class PhoneNumbersTest {
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/phoneNumbers"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class PhoneNumbersTest {
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers/n-bdllkjjddr5vuvglfluxdwi"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/phoneNumbers/n-bdllkjjddr5vuvglfluxdwi"));
     }
 
     @Test
@@ -112,6 +112,6 @@ public class PhoneNumbersTest {
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/phoneNumbers/+number"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/phoneNumbers/+number"));
     }
 }

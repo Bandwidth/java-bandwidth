@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -18,8 +19,9 @@ import java.util.Map;
  */
 public class Applications extends BaseModelObject {
 
-    public Applications(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+
+    public Applications(BandwidthRestClient client){
+        super(client, null);
     }
 
     /**
@@ -32,22 +34,22 @@ public class Applications extends BaseModelObject {
         return new QueryApplicationsBuilder();
     }
 
-    /**
-     * Gets information about one of your applications.
-     *
-     * @param id application id
-     * @return application
-     * @throws IOException
-     */
-    public Application getApplication(String id) throws IOException {
-        String applicationsUri = getUri();
-        String uri = StringUtils.join(new String[]{
-                applicationsUri,
-                id
-        }, '/');
-        JSONObject jsonObject = client.getObject(uri);
-        return new Application(client, applicationsUri, jsonObject);
-    }
+//    /**
+//     * Gets information about one of your applications.
+//     *
+//     * @param id application id
+//     * @return application
+//     * @throws IOException
+//     */
+//    public Application getApplication(String id) throws IOException {
+//        String applicationsUri = getUri();
+//        String uri = StringUtils.join(new String[]{
+//                applicationsUri,
+//                id
+//        }, '/');
+//        JSONObject jsonObject = client.getObject(uri);
+//        return new Application(client, applicationsUri, jsonObject);
+//    }
 
     /**
      * Creates builder for creating an application that can handle calls and messages for one of your phone number. Many phone numbers can share an application.
@@ -67,23 +69,24 @@ public class Applications extends BaseModelObject {
 
         List<Application> applications = new ArrayList<Application>();
         for (Object obj : array) {
-            applications.add(new Application(client, applicationsUri, (JSONObject) obj));
+            applications.add(new Application(client, (JSONObject) obj));
         }
         return applications;
     }
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "applications"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                "applications"
+//        }, '/');
     }
 
     private Application createApplication(Map<String, Object> params) throws IOException {
         String applicationsUri = getUri();
         JSONObject jsonObject = client.create(applicationsUri, params);
-        return new Application(client, applicationsUri, jsonObject);
+        return new Application(client, jsonObject);
     }
 
     public class QueryApplicationsBuilder {

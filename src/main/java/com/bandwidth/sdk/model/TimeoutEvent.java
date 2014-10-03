@@ -6,11 +6,11 @@ import com.bandwidth.sdk.BandwidthRestClient;
 
 public class TimeoutEvent extends BaseEvent {
 
-	public TimeoutEvent(BandwidthRestClient client, String parentUri,
-			JSONObject jsonObject) {
-		super(client, parentUri, jsonObject);
-		// TODO Auto-generated constructor stub
-	}
+//	public TimeoutEvent(BandwidthRestClient client, String parentUri,
+//			JSONObject jsonObject) {
+//		super(client, parentUri, jsonObject);
+//		// TODO Auto-generated constructor stub
+//	}
 
 	public TimeoutEvent(JSONObject json) {
 		super(json);

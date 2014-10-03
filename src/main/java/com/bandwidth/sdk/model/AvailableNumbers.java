@@ -50,7 +50,7 @@ public class AvailableNumbers extends BaseModelObject {
 
         List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
-            numbers.add(new AvailableNumber(client, localUri, (JSONObject) obj));
+            numbers.add(new AvailableNumber(client, (JSONObject) obj));
         }
         return numbers;
     }
@@ -82,7 +82,7 @@ public class AvailableNumbers extends BaseModelObject {
 
         List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
-            numbers.add(new AvailableNumber(client, tollFreeUri, (JSONObject) obj));
+            numbers.add(new AvailableNumber(client, (JSONObject) obj));
         }
         return numbers;
     }

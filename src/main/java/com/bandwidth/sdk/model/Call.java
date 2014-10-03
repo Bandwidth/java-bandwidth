@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.RestResponse;
 
@@ -38,7 +39,7 @@ public class Call extends BaseModelObject {
     	
     	JSONObject callObj = client.getObject(callUri);
     	
-    	Call call = new Call(client, callParentUri, callObj); 
+    	Call call = new Call(client, callObj);
     	
     	return call;
     }
@@ -98,13 +99,18 @@ public class Call extends BaseModelObject {
     	    	    	
     	return call;
     }
-	
-	
-	
-    public Call(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+
+
+    public Call(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
     }
-    
+
+    @Override
+    protected String getUri() {
+        return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, getId());
+
+    }
+
     public void speakSentence(Map params) throws IOException {
 		assert (params != null);
 	
@@ -263,7 +269,7 @@ public class Call extends BaseModelObject {
 
         List<BaseEvent> list = new ArrayList<BaseEvent>();
         for (Object object : array) {
-            list.add(new BaseEvent(client, eventsPath, (JSONObject) object));
+            list.add(new BaseEvent((JSONObject) object));
         }
         return list;
     }
@@ -286,7 +292,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new BaseEvent(client, eventsPath, jsonObject);
+        return new BaseEvent(jsonObject);
     }
 
     /**
@@ -456,7 +462,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new Gather(client, gathersPath, jsonObject);
+        return new Gather(client,jsonObject);
     }
 
     private void createGather(Map<String, Object> params) throws IOException {

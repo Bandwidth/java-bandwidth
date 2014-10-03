@@ -191,7 +191,7 @@ public class Example {
 
         System.out.println("\nApplication by id:");
         String id = applicationList.get(0).getId();
-        Application application = applications.getApplication(id);
+        Application application = Application.getApplication(client, id);
         System.out.println(application);
     }
 

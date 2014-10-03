@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
@@ -15,8 +16,14 @@ import java.util.Map;
  */
 public class Gather extends BaseModelObject {
 
-    public Gather(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public Gather(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
+    }
+
+    @Override
+    protected String getUri() {
+        return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH + "/" +
+            getCall() + "/" + BandwidthConstants.GATHER_URI_PATH, getId());
     }
 
     /**

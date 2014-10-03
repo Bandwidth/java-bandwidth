@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -18,8 +19,8 @@ import java.util.Map;
  */
 public class Calls extends BaseModelObject {
 
-    public Calls(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Calls(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -58,15 +59,16 @@ public class Calls extends BaseModelObject {
                 callId
         }, '/');
         JSONObject jsonObject = client.getObject(eventPath);
-        return new Call(client, callsUri, jsonObject);
+        return new Call(client, jsonObject);
     }
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "calls"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                "calls"
+//        }, '/');
     }
 
     private List<Call> getCalls(Map<String, Object> params) throws IOException {
@@ -75,7 +77,7 @@ public class Calls extends BaseModelObject {
 
         List<Call> calls = new ArrayList<Call>();
         for (Object obj : jsonArray) {
-            calls.add(new Call(client, callsUri, (JSONObject) obj));
+            calls.add(new Call(client, (JSONObject) obj));
         }
         return calls;
     }
@@ -83,7 +85,7 @@ public class Calls extends BaseModelObject {
     private Call newCall(Map<String, Object> params) throws IOException {
         String callsUri = getUri();
         JSONObject jsonObject = client.create(callsUri, params);
-        return new Call(client, callsUri, jsonObject);
+        return new Call(client, jsonObject);
     }
 
     public class QueryCallsBuilder {

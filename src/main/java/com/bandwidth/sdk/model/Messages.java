@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -18,8 +19,8 @@ import java.util.Map;
  */
 public class Messages extends BaseModelObject {
 
-    public Messages(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Messages(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -36,7 +37,7 @@ public class Messages extends BaseModelObject {
                 id
         }, '/');
         JSONObject jsonObject = client.getObject(uri);
-        return new Message(client, messagesUri, jsonObject);
+        return new Message(client, jsonObject);
     }
 
     /**
@@ -67,7 +68,7 @@ public class Messages extends BaseModelObject {
 
         List<Message> messages = new ArrayList<Message>();
         for (Object obj : jsonArray) {
-            messages.add(new Message(client, messagesUri, (JSONObject) obj));
+            messages.add(new Message(client, (JSONObject) obj));
         }
         return messages;
     }
@@ -75,15 +76,12 @@ public class Messages extends BaseModelObject {
     private Message newMessage(Map<String, Object> params) throws IOException {
         String uri = getUri();
         JSONObject jsonObject = client.create(uri, params);
-        return new Message(client, uri, jsonObject);
+        return new Message(client, jsonObject);
     }
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "messages"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
     }
 
 

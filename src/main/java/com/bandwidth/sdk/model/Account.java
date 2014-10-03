@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -15,8 +16,8 @@ import java.util.*;
  */
 public class Account extends BaseModelObject {
 
-    public Account(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Account(BandwidthRestClient client){
+        super(client, null);
     }
 
     /**
@@ -26,9 +27,8 @@ public class Account extends BaseModelObject {
      * @throws IOException
      */
     public AccountInfo getAccountInfo() throws IOException {
-        String uri = getUri();
-        JSONObject jsonObject = client.getObject(uri);
-        return new AccountInfo(client, uri, jsonObject);
+        JSONObject jsonObject = client.getObject(getUri());
+        return new AccountInfo(client, jsonObject);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Account extends BaseModelObject {
 
         List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
         for (Object obj : array) {
-            transactions.add(new AccountTransaction(client, transactionsUri, (JSONObject) obj));
+            transactions.add(new AccountTransaction(client, (JSONObject) obj));
         }
         return transactions;
     }
@@ -62,10 +62,7 @@ public class Account extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "account"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.ACCOUNT_URI_PATH);
     }
 
     public class TransactionsQueryBuilder {

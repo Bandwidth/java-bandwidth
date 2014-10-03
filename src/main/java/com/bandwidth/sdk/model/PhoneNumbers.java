@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -19,8 +20,8 @@ import java.util.Map;
  */
 public class PhoneNumbers extends BaseModelObject {
 
-    public PhoneNumbers(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public PhoneNumbers(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -59,7 +60,7 @@ public class PhoneNumbers extends BaseModelObject {
                 id
         }, '/');
         JSONObject jsonObject = client.getObject(uri);
-        return new PhoneNumber(client, numbersUri, jsonObject);
+        return new PhoneNumber(client, jsonObject);
     }
 
     /**
@@ -75,10 +76,7 @@ public class PhoneNumbers extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "phoneNumbers"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
     }
 
     private List<PhoneNumber> getNumbers(Map<String, Object> params) throws IOException {
@@ -87,7 +85,7 @@ public class PhoneNumbers extends BaseModelObject {
 
         List<PhoneNumber> numbers = new ArrayList<PhoneNumber>();
         for (Object obj : jsonArray) {
-            numbers.add(new PhoneNumber(client, uri, (JSONObject) obj));
+            numbers.add(new PhoneNumber(client, (JSONObject) obj));
         }
         return numbers;
     }
@@ -95,7 +93,7 @@ public class PhoneNumbers extends BaseModelObject {
     private PhoneNumber newNumber(Map<String, Object> params) throws IOException {
         String uri = getUri();
         JSONObject jsonObject = client.create(uri, params);
-        return new PhoneNumber(client, uri, jsonObject);
+        return new PhoneNumber(client, jsonObject);
     }
 
     public class QueryNumbersBuilder {

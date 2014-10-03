@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -15,8 +16,13 @@ import java.util.*;
  */
 public class Conference extends BaseModelObject {
 
-    public Conference(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public Conference(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
+    }
+
+    @Override
+    protected String getUri() {
+        return client.getUserResourceInstanceUri(BandwidthConstants.CONFERENCES_URI_PATH, getId());
     }
 
     public String getFrom() {
@@ -98,7 +104,7 @@ public class Conference extends BaseModelObject {
 
         List<ConferenceMember> members = new ArrayList<ConferenceMember>();
         for (Object obj : array) {
-            members.add(new ConferenceMember(client, membersPath, (JSONObject) obj));
+            members.add(new ConferenceMember(client, (JSONObject) obj));
         }
         return members;
     }

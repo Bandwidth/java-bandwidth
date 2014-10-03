@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -11,15 +12,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ErrorsTest {
+public class ErrorsTest extends BaseModelTest {
 
-    private MockRestClient mockRestClient;
     private Errors errors;
 
     @Before
-    public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
-        errors = new Errors(mockRestClient, "parentUri");
+    public void setUp() {
+        super.setUp();
+        errors = new Errors(mockRestClient);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ErrorsTest {
         assertThat(errorList.size(), equalTo(2));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/errors"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors"));
     }
 
     @Test
@@ -138,6 +138,6 @@ public class ErrorsTest {
         assertThat(error.getMessage(), equalTo("The callback server took too long to respond"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/errors/ue-asvdtalmmhka2i63uzt66ma"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors/ue-asvdtalmmhka2i63uzt66ma"));
     }
 }

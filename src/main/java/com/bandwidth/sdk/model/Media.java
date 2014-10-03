@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -17,8 +18,8 @@ import java.util.List;
  */
 public class Media extends BaseModelObject {
 
-    public Media(BandwidthRestClient client, String parentUri) {
-        super(client, parentUri, null);
+    public Media(BandwidthRestClient client) {
+        super(client, null);
     }
 
     /**
@@ -33,7 +34,7 @@ public class Media extends BaseModelObject {
 
         List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
         for (Object obj : array) {
-            mediaFiles.add(new MediaFile(client, uri, (JSONObject) obj));
+            mediaFiles.add(new MediaFile(client, (JSONObject) obj));
         }
         return mediaFiles;
     }
@@ -78,10 +79,11 @@ public class Media extends BaseModelObject {
 
     @Override
     protected String getUri() {
-        return StringUtils.join(new String[]{
-                parentUri,
-                "media"
-        }, '/');
+        return client.getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
+//        return StringUtils.join(new String[]{
+//                parentUri,
+//                "media"
+//        }, '/');
     }
 
 

@@ -46,6 +46,7 @@ public class BandwidthRestClient {
     public static String BANDWIDTH_APPPLATFORM_API_VERSION = "BANDWIDTH_APPPLATFORM_API_VERSION";
     
     protected final String usersUri;
+    protected final String baseUri;
 
     protected final String token;
     protected final String secret;
@@ -88,10 +89,29 @@ public class BandwidthRestClient {
 
 	return INSTANCE;
     }
+
+    public String getUserResourceUri(String path){
+        if(StringUtils.isEmpty(path))
+            throw new IllegalArgumentException("Path cannot be null");
+        return StringUtils.join(new String[] {getUserUri(), path}, "/");
+    }
+
+    public String getUserResourceInstanceUri(String path, String instanceId){
+        if(StringUtils.isEmpty(path) || StringUtils.isEmpty(instanceId))
+            throw new IllegalArgumentException("Path and Instance Id cannot be null");
+        return getUserResourceUri(path) + "/" + instanceId;
+    }
+
+    public String getBaseResourceUri(String path){
+        if(StringUtils.isEmpty(path))
+            throw new IllegalArgumentException("Path cannot be null");
+        return path + "/";
+    }
     
 
     protected BandwidthRestClient(String userId, String token, String secret, String apiEndpoint, String apiVersion) {
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
+        baseUri = "";
 
         this.token = token;
         this.secret = secret;
@@ -115,7 +135,7 @@ public class BandwidthRestClient {
      */
     public Account getAccount() {
         if (account == null) {
-            account = new Account(this, usersUri);
+            account = new Account(this);
         }
         return account;
     }
@@ -127,7 +147,7 @@ public class BandwidthRestClient {
      */
     public Applications getApplications() {
         if (applications == null) {
-            applications = new Applications(this, usersUri);
+            applications = new Applications(this);
         }
         return applications;
     }
@@ -151,7 +171,7 @@ public class BandwidthRestClient {
      */
     public Bridges getBridges() {
         if (bridges == null) {
-            bridges = new Bridges(this, usersUri);
+            bridges = new Bridges(this);
         }
         return bridges;
     }
@@ -163,7 +183,7 @@ public class BandwidthRestClient {
      */
     public Calls getCalls() {
         if (calls == null) {
-            calls = new Calls(this, usersUri);
+            calls = new Calls(this);
         }
         return calls;
     }
@@ -175,7 +195,7 @@ public class BandwidthRestClient {
      */
     public Conferences getConferences() {
         if (conferences == null) {
-            conferences = new Conferences(this, usersUri);
+            conferences = new Conferences(this);
         }
         return conferences;
     }
@@ -187,7 +207,7 @@ public class BandwidthRestClient {
      */
     public Errors getErrors() {
         if (errors == null) {
-            errors = new Errors(this, usersUri);
+            errors = new Errors(this);
         }
         return errors;
     }
@@ -199,7 +219,7 @@ public class BandwidthRestClient {
      */
     public Messages getMessages() {
         if (messages == null) {
-            messages = new Messages(this, usersUri);
+            messages = new Messages(this);
         }
         return messages;
     }
@@ -211,7 +231,7 @@ public class BandwidthRestClient {
      */
     public PhoneNumbers getPhoneNumbers() {
         if (phoneNumbers == null) {
-            phoneNumbers = new PhoneNumbers(this, usersUri);
+            phoneNumbers = new PhoneNumbers(this);
         }
         return phoneNumbers;
     }
@@ -223,7 +243,7 @@ public class BandwidthRestClient {
      */
     public Recordings getRecordings() {
         if (recordings == null) {
-            recordings = new Recordings(this, usersUri);
+            recordings = new Recordings(this);
         }
         return recordings;
     }
@@ -235,7 +255,7 @@ public class BandwidthRestClient {
      */
     public Media getMedia() {
         if (media == null) {
-            media = new Media(this, usersUri);
+            media = new Media(this);
         }
         return media;
     }
@@ -264,7 +284,7 @@ public class BandwidthRestClient {
                 number
         }, '/');
         JSONObject object = getObject(uri);
-        return new NumberInfo(this, uri, object);
+        return new NumberInfo(object);
     }
 
 

@@ -1,6 +1,8 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
+import com.sun.xml.internal.rngom.parse.host.Base;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,15 +14,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class RecordingsTest {
+public class RecordingsTest extends BaseModelTest{
 
-    private MockRestClient mockRestClient;
     private Recordings recordings;
 
     @Before
-    public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
-        recordings = new Recordings(mockRestClient, "parentUri");
+    public void setUp() {
+        super.setUp();
+        recordings = new Recordings(mockRestClient);
     }
 
     @Test
@@ -59,7 +60,7 @@ public class RecordingsTest {
         assertThat(list.get(2).getState(), equalTo("complete"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/recordings"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings"));
         assertThat(mockRestClient.requests.get(0).params.get("page").toString(), equalTo("5"));
         assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("10"));
     }
@@ -80,6 +81,6 @@ public class RecordingsTest {
         assertThat(recording.getState(), equalTo("complete"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/recordings/{recordingId2}"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings/{recordingId2}"));
     }
 }

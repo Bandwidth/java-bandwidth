@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -12,15 +13,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class MediaTest {
+public class MediaTest extends BaseModelTest{
 
-    private MockRestClient mockRestClient;
     private Media media;
 
     @Before
-    public void setUp() throws Exception {
-        mockRestClient = new MockRestClient();
-        media = new Media(mockRestClient, "parentUri");
+    public void setUp() {
+        super.setUp();
+        media = new Media(mockRestClient);
     }
 
     @Test
@@ -46,10 +46,10 @@ public class MediaTest {
         List<MediaFile> mediaFiles = media.getMediaFiles();
         assertThat(mediaFiles.size(), equalTo(3));
         assertThat(mediaFiles.get(0).getMediaName(), equalTo("{mediaName1}"));
-        assertThat(mediaFiles.get(0).getUri(), equalTo("parentUri/media/{mediaName1}"));
+        assertThat(mediaFiles.get(0).getUri(), equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName1}"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/media"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/media"));
     }
 
     @Test
@@ -73,10 +73,10 @@ public class MediaTest {
                 "]");
 
         MediaFile mediaFile = media.upload("{mediaName3}", new File("path_to_file"), null);
-        assertThat(mediaFile.getUri(), equalTo("parentUri/media/{mediaName3}"));
+        assertThat(mediaFile.getUri(), equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName3}"));
 
         assertThat(mockRestClient.requests.get(0).name, equalTo("uploadFile"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("parentUri/media/{mediaName3}"));
+        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName3}"));
         assertThat(mockRestClient.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
     }
 }
