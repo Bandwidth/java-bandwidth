@@ -18,6 +18,8 @@ public abstract class AbsModelObject {
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
     protected final Map<String, Object> properties = new HashMap<String, Object>();
 
+    // Interface methods
+
     protected void updateProperties(JSONObject jsonObject) {
         if (jsonObject != null) {
             for (Object key : jsonObject.keySet()) {

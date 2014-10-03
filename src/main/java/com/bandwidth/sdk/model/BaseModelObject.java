@@ -14,10 +14,7 @@ import java.util.*;
  */
 public abstract class BaseModelObject extends AbsModelObject {
 
-
     protected final BandwidthRestClient client;
-    //protected final String parentUri;
-
 
     protected BaseModelObject(BandwidthRestClient client, JSONObject jsonObject){
         this.client = client;
@@ -26,8 +23,6 @@ public abstract class BaseModelObject extends AbsModelObject {
 
     protected BaseModelObject(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         this.client = client;
-        //this.parentUri = parentUri;
-
         updateProperties(jsonObject);
     }
 
@@ -37,10 +32,4 @@ public abstract class BaseModelObject extends AbsModelObject {
     }
 
     protected abstract String getUri();
-//        // default implementation of uri
-//        return StringUtils.join(new String[]{
-//                parentUri,
-//                getId()
-//        }, '/');
-
 }

@@ -16,7 +16,21 @@ import java.util.*;
  *
  * @author vpotapenko
  */
-public class Call extends BaseModelObject {
+public class Call extends BaseModelObject implements IGettable  {
+
+    public Call get(String id){
+
+        return null;
+    }
+
+    public String create(Map<String, Object> params){
+        return null;
+    }
+
+    public List<Call> list(){
+        return new ArrayList<Call>();
+
+    }
 
 	/**
 	 * Factory method to create a call object. Takes a callId, and makes

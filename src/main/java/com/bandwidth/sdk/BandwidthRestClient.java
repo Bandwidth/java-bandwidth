@@ -77,17 +77,16 @@ public class BandwidthRestClient {
     			System.out.format("%s=%s%n", envName, env.get(envName));
     		}
 
-	    // TODO set these up as heroku configuration variables
-	    String userId = env.get(BANDWIDTH_APPPLATFORM_USER_ID);
-	    String apiToken = env.get(BANDWIDTH_APPPLATFORM_API_TOKEN);
-	    String apiSecret = env.get(BANDWIDTH_APPPLATFORM_API_SECRET);
-	    String apiEndpoint = env.get(BANDWIDTH_APPPLATFORM_API_ENDPOINT);
-	    String apiVersion = env.get(BANDWIDTH_APPPLATFORM_API_VERSION);
+            // TODO set these up as heroku configuration variables
+            String userId = env.get(BANDWIDTH_APPPLATFORM_USER_ID);
+            String apiToken = env.get(BANDWIDTH_APPPLATFORM_API_TOKEN);
+            String apiSecret = env.get(BANDWIDTH_APPPLATFORM_API_SECRET);
+            String apiEndpoint = env.get(BANDWIDTH_APPPLATFORM_API_ENDPOINT);
+            String apiVersion = env.get(BANDWIDTH_APPPLATFORM_API_VERSION);
 
-	    INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
-	}
-
-	return INSTANCE;
+            INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
+	    }
+    	return INSTANCE;
     }
 
     public String getUserResourceUri(String path){
