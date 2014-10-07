@@ -3,6 +3,7 @@ package com.bandwidth.sdk.model;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 import java.io.IOException;
 import java.util.Map;
@@ -14,6 +15,13 @@ import java.util.Map;
  */
 public class Application extends BaseModelObject {
 
+	/**
+	 * Factory method for Application, returns Application object
+	 * @param client
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
     public static Application getApplication(BandwidthRestClient client, String id) throws IOException {
         assert(id != null);
         String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, id);
@@ -21,8 +29,51 @@ public class Application extends BaseModelObject {
         Application application = new Application(client, applicationObj);
         return application;
     }
+    
+    /**
+     * Factory method for Application. Returns Application object from id
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    public static Application getApplication(String id) throws IOException {
+        assert(id != null);
 
+        BandwidthRestClient client = BandwidthRestClient.getInstance();
+        return Application.getApplication(client ,id);
+    }
 
+    
+    /**
+     * Factory method for Application list. Returns a list of Application object with default page size of 25
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Application> getApplications() throws IOException {
+    	
+    	// default page size is 25
+     	return getApplications(0, 25);
+    }
+    
+    /**
+     * Factory method for Application list. Returns a list of Application object with page and size preferences
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Application> getApplications(int page, int size) throws IOException {
+    	
+        String applicationUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
+
+        ResourceList<Application> applications = 
+        			new ResourceList<Application>(page, size, applicationUri, Application.class);
+
+        applications.initialize();
+        
+        return applications;
+    }
+    
     public Application(BandwidthRestClient client, JSONObject jsonObject) {
         super(client,jsonObject);
     }

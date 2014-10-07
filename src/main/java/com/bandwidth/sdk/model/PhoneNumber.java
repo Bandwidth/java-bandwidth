@@ -17,6 +17,13 @@ import java.util.Map;
  */
 public class PhoneNumber extends BaseModelObject {
 
+	/**
+	 * Factory method for PhoneNumber. Returns PhoneNumber object
+	 * @param client
+	 * @param phoneNumberId
+	 * @return
+	 * @throws IOException
+	 */
     public static PhoneNumber getPhoneNumber(BandwidthRestClient client, String phoneNumberId) throws IOException {
         assert(phoneNumberId != null);
         String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
@@ -25,10 +32,47 @@ public class PhoneNumber extends BaseModelObject {
         return number;
     }
 
+    /**
+     * Factory method for PhoneNumber, returns PhoneNumber object by id
+     * @param client
+     * @param jsonObject
+     * @return
+     */
     public static PhoneNumber getPhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
         return new PhoneNumber(client, jsonObject);
 
     }
+    
+    /**
+     * Factory method for PhoneNumber list, returns list of PhoneNumber objects with default page setting
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<PhoneNumber> getPhoneNumbers() throws IOException {
+    	
+    	// default page size is 25
+     	return getPhoneNumbers(0, 25);
+    }
+    
+    /**
+     * Factory method for PhoneNumber list, returns list of PhoneNumber objects with page, size preferences
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<PhoneNumber> getPhoneNumbers(int page, int size) throws IOException {
+    	
+        String resourceUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
+
+        ResourceList<PhoneNumber> phoneNumbers = 
+        			new ResourceList<PhoneNumber>(page, size, resourceUri, PhoneNumber.class);
+
+        phoneNumbers.initialize();
+        
+        return phoneNumbers;
+    }
+    
 
     public PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
         super(client, jsonObject);

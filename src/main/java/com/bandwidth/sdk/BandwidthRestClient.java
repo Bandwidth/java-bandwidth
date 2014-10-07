@@ -1,6 +1,7 @@
 package com.bandwidth.sdk;
 
 import com.bandwidth.sdk.model.*;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
@@ -15,6 +16,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.Header;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -39,11 +46,11 @@ public class BandwidthRestClient {
     protected static final String PUT = "put";
     protected static final String DELETE = "delete";
 
-    public static String BANDWIDTH_APPPLATFORM_USER_ID = "BANDWIDTH_APPPLATFORM_USER_ID";
-    public static String BANDWIDTH_APPPLATFORM_API_TOKEN = "BANDWIDTH_APPPLATFORM_API_TOKEN";
-    public static String BANDWIDTH_APPPLATFORM_API_SECRET = "BANDWIDTH_APPPLATFORM_API_SECRET";
-    public static String BANDWIDTH_APPPLATFORM_API_ENDPOINT = "BANDWIDTH_APPPLATFORM_API_ENDPOINT";
-    public static String BANDWIDTH_APPPLATFORM_API_VERSION = "BANDWIDTH_APPPLATFORM_API_VERSION";
+    public static String BANDWIDTH_USER_ID = "BANDWIDTH_USER_ID";
+    public static String BANDWIDTH_API_TOKEN = "BANDWIDTH_API_TOKEN";
+    public static String BANDWIDTH_API_SECRET = "BANDWIDTH_API_SECRET";
+    public static String BANDWIDTH_API_ENDPOINT = "BANDWIDTH_API_ENDPOINT";
+    public static String BANDWIDTH_API_VERSION = "BANDWIDTH_API_VERSION";
     
     protected final String usersUri;
     protected final String baseUri;
@@ -52,18 +59,6 @@ public class BandwidthRestClient {
     protected final String secret;
 
     protected HttpClient httpClient;
-
-    protected Account account;
-    protected Applications applications;
-    protected AvailableNumbers availableNumbers;
-    protected Bridges bridges;
-    protected Calls calls;
-    protected Conferences conferences;
-    protected Errors errors;
-    protected Messages messages;
-    protected PhoneNumbers phoneNumbers;
-    protected Recordings recordings;
-    protected Media media;
     
     protected static BandwidthRestClient INSTANCE; 
     
@@ -74,20 +69,19 @@ public class BandwidthRestClient {
     	if (INSTANCE == null) {
     		Map<String, String> env = System.getenv();
     		for (String envName : env.keySet()) {
-    			System.out.format("%s=%s%n", envName, env.get(envName));
+    			//System.out.format("%s=%s%n", envName, env.get(envName));
     		}
 
-	    // TODO set these up as heroku configuration variables
-	    String userId = env.get(BANDWIDTH_APPPLATFORM_USER_ID);
-	    String apiToken = env.get(BANDWIDTH_APPPLATFORM_API_TOKEN);
-	    String apiSecret = env.get(BANDWIDTH_APPPLATFORM_API_SECRET);
-	    String apiEndpoint = env.get(BANDWIDTH_APPPLATFORM_API_ENDPOINT);
-	    String apiVersion = env.get(BANDWIDTH_APPPLATFORM_API_VERSION);
+		    String userId = env.get(BANDWIDTH_USER_ID);
+		    String apiToken = env.get(BANDWIDTH_API_TOKEN);
+		    String apiSecret = env.get(BANDWIDTH_API_SECRET);
+		    String apiEndpoint = env.get(BANDWIDTH_API_ENDPOINT);
+		    String apiVersion = env.get(BANDWIDTH_API_VERSION);
+	
+		    INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
+    	}
 
-	    INSTANCE = new BandwidthRestClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
-	}
-
-	return INSTANCE;
+    	return INSTANCE;
     }
 
     public String getUserResourceUri(String path){
@@ -129,138 +123,6 @@ public class BandwidthRestClient {
     }
 
     /**
-     * Gets point for <code>/v1/users/{userId}/account</code>
-     *
-     * @return point for account
-     */
-    public Account getAccount() {
-        if (account == null) {
-            account = new Account(this);
-        }
-        return account;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/applications</code>
-     *
-     * @return point for applications
-     */
-    public Applications getApplications() {
-        if (applications == null) {
-            applications = new Applications(this);
-        }
-        return applications;
-    }
-
-    /**
-     * Gets point for <code>/v1/availableNumbers</code>
-     *
-     * @return point for available numbers
-     */
-    public AvailableNumbers getAvailableNumbers() {
-        if (availableNumbers == null) {
-            availableNumbers = new AvailableNumbers(this);
-        }
-        return availableNumbers;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/bridges</code>
-     *
-     * @return point for bridges
-     */
-    public Bridges getBridges() {
-        if (bridges == null) {
-            bridges = new Bridges(this);
-        }
-        return bridges;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/calls</code>
-     *
-     * @return point for calls
-     */
-    public Calls getCalls() {
-        if (calls == null) {
-            calls = new Calls(this);
-        }
-        return calls;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/conferences</code>
-     *
-     * @return point for conferences
-     */
-    public Conferences getConferences() {
-        if (conferences == null) {
-            conferences = new Conferences(this);
-        }
-        return conferences;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/errors</code>
-     *
-     * @return point for errors
-     */
-    public Errors getErrors() {
-        if (errors == null) {
-            errors = new Errors(this);
-        }
-        return errors;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/messages</code>
-     *
-     * @return point for messages
-     */
-    public Messages getMessages() {
-        if (messages == null) {
-            messages = new Messages(this);
-        }
-        return messages;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/phoneNumbers</code>
-     *
-     * @return point for phone numbers
-     */
-    public PhoneNumbers getPhoneNumbers() {
-        if (phoneNumbers == null) {
-            phoneNumbers = new PhoneNumbers(this);
-        }
-        return phoneNumbers;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/recordings</code>
-     *
-     * @return point for recordings
-     */
-    public Recordings getRecordings() {
-        if (recordings == null) {
-            recordings = new Recordings(this);
-        }
-        return recordings;
-    }
-
-    /**
-     * Gets point for <code>/v1/users/{userId}/media</code>
-     *
-     * @return point for media
-     */
-    public Media getMedia() {
-        if (media == null) {
-            media = new Media(this);
-        }
-        return media;
-    }
-
-    /**
      * Returns API url with userid 
      * 
      * @return usersUri
@@ -286,11 +148,67 @@ public class BandwidthRestClient {
         JSONObject object = getObject(uri);
         return new NumberInfo(object);
     }
-
-
-    public JSONArray getArray(String uri, Map<String, Object> params) throws IOException {
+    
+    /**
+     * HTTP get method. Returns a RestResponse object
+     * @param uri
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public RestResponse get(String uri, Map<String, Object> params) 
+    													throws IOException {
+    	
+    //	System.out.println("get(ENTRY):" + uri);
+    	HttpClient client = new DefaultHttpClient();    	
+    	
         String path = getPath(uri);
+        
+        //System.out.println("path:" + path);
+        
+        
+        // TODO put this in a method
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        for (String key : params.keySet()) {
+            pairs.add(new BasicNameValuePair(key, params.get(key).toString()));
+        }
+        
+        URI fullUri = buildUri(path, pairs);
+        
+        //System.out.println("fullUri:" + fullUri);
+        
+        HttpGet httpGet = new HttpGet(fullUri);
+        
+        setHeaders(httpGet);
+        
+        HttpResponse httpResponse = client.execute(httpGet);
+        
+        return RestResponse.createRestResponse(httpResponse);
+    }
+    
+    
+    protected void setHeaders(HttpRequest request) {
+        
+        request.addHeader(new BasicHeader("Accept", "application/json"));
+        request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
+        String s = token + ":" + secret;
+        String auth = new String(Base64.encodeBase64(s.getBytes()));
+        request.setHeader(new BasicHeader("Authorization", "Basic " + auth));
+    }
+
+   	
+    	
+   
+   
+    
+    
+    public JSONArray getArray(String uri, Map<String, Object> params) throws IOException {
+        
+    	
+    	String path = getPath(uri);
+        
         RestResponse response = request(path, GET, params);
+        
         if (response.isError()) throw new IOException(response.getResponseText());
 
         if (response.isJson()) {
@@ -454,7 +372,7 @@ public class BandwidthRestClient {
             if (headers.length > 0) {
                 restResponse.setLocation(headers[0].getValue());
             }
-
+            
             return restResponse;
 
         } catch (final ClientProtocolException e1) {
@@ -465,7 +383,8 @@ public class BandwidthRestClient {
     }
 
     protected HttpUriRequest setupRequest(String path, String method, final Map<String, Object> params) {
-        HttpUriRequest request = buildMethod(method, path, params);
+       
+    	HttpUriRequest request = buildMethod(method, path, params);
 
         request.addHeader(new BasicHeader("Accept", "application/json"));
         request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));

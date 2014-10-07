@@ -17,7 +17,25 @@ import java.util.*;
  * @author vpotapenko
  */
 public class Bridge extends BaseModelObject {
+	
+	/**
+	 * Factory method for Bridge, returns Bridge object from an id
+	 * @param callId
+	 * @return
+	 * @throws IOException
+	 */
+	public static Bridge getBridge(String callId) throws IOException {
 		
+		return Bridge.createBridge(callId, null);
+	}
+	
+	/**
+	 * Convenience method to create a Bridge object from two Call objects
+	 * @param call1
+	 * @param call2
+	 * @return
+	 * @throws IOException
+	 */
     public static Bridge createBridge(Call call1, Call call2)
     	    throws IOException 
     {
@@ -30,6 +48,13 @@ public class Bridge extends BaseModelObject {
     	return Bridge.createBridge(callId1, callId2);
     }
 
+    /**
+     * Convenience method to create a Bridge object from two call ids
+     * @param callId1
+     * @param callId2
+     * @return
+     * @throws IOException
+     */
     public static Bridge createBridge(String callId1, String callId2)
     	    throws IOException 
     {
@@ -58,6 +83,37 @@ public class Bridge extends BaseModelObject {
 
     	return bridge;
 	}
+    
+    /**
+     * Factory method for Bridge list, returns list of Bridge objects with default page setting
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Bridge> getBridges() throws IOException {
+    	
+    	// default page size is 25
+     	return getBridges(0, 25);
+    }
+    
+    /**
+     * Factory method for Bridge list, returns list of Bridge objects with page, size preference
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Bridge> getBridges(int page, int size) throws IOException {
+    	
+        String resourceUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+
+        ResourceList<Bridge> bridges = 
+        			new ResourceList<Bridge>(page, size, resourceUri, Bridge.class);
+
+        bridges.initialize();
+        
+        return bridges;
+    }
+    
 
     public Bridge(BandwidthRestClient client, JSONObject jsonObject) {
         super(client, jsonObject);
