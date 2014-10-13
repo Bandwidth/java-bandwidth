@@ -15,6 +15,17 @@ import java.util.*;
  * @author vpotapenko
  */
 public class Account extends BaseModelObject {
+	
+	/**
+	 * Account factory method. Returns Account object
+	 * @param client
+	 */
+	
+	public static Account getAccount() {
+		BandwidthRestClient client = BandwidthRestClient.getInstance();
+		
+		return new Account(client);
+	}
 
     public Account(BandwidthRestClient client){
         super(client, null);

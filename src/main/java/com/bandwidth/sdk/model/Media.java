@@ -21,23 +21,37 @@ public class Media extends BaseModelObject {
     public Media(BandwidthRestClient client) {
         super(client, null);
     }
-
+    
     /**
-     * Gets a list of your media files.
-     *
-     * @return list of media files.
+     * Factory method for MediaFile list, returns a list of MediaFile object with default page, size
+     * @return
      * @throws IOException
      */
-    public List<MediaFile> getMediaFiles() throws IOException {
-        String uri = getUri();
-        JSONArray array = client.getArray(uri, null);
+    public static ResourceList<MediaFile> getMediaFiles() throws IOException {
+    	
+    	// default page size is 25
+     	return getMediaFiles(0, 25);
+    }
+    
+    /**
+     * Factory method for MediaFile list, returns a list of MediaFile objects with page, size preference
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<MediaFile> getMediaFiles(int page, int size) throws IOException {
+    	
+        String mediaUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
 
-        List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
-        for (Object obj : array) {
-            mediaFiles.add(new MediaFile(client, (JSONObject) obj));
-        }
+        ResourceList<MediaFile> mediaFiles = 
+        			new ResourceList<MediaFile>(page, size, mediaUri, MediaFile.class);
+
+        mediaFiles.initialize();
+        
         return mediaFiles;
     }
+    
 
     /**
      * Uploads media file.

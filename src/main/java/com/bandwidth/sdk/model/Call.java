@@ -19,6 +19,57 @@ import java.util.*;
 public class Call extends BaseModelObject {
 
 	/**
+     * Factory method for Call, returns information about an active or completed call.
+     *
+     * @param callId call id
+     * @return information about a call
+     * @throws IOException
+     */
+    public static Call getCall(String callId) throws IOException {
+    	
+    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+        String callsUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+        String eventPath = StringUtils.join(new String[]{
+                callsUri,
+                callId
+        }, '/');
+        JSONObject jsonObject = client.getObject(eventPath);
+        
+        return new Call(client, jsonObject);
+    }
+
+    /**
+     * Factory method for Call list, returns a list of Call objects with default page, size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Call> getCalls() throws IOException {
+    	
+    	// default page size is 25
+     	return getCalls(0, 25);
+    }
+    
+    /**
+     * Factor method for Call list, returns a list of Call objects with page, size preference 
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Call> getCalls(int page, int size) throws IOException {
+    	
+        String callUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+
+        ResourceList<Call> calls = 
+        			new ResourceList<Call>(page, size, callUri, Call.class);
+
+        calls.initialize();
+        
+        return calls;
+    }
+    
+
+	/**
 	 * Factory method to create a call object. Takes a callId, and makes
 	 * an API call to to get the latest state and uses that for the internal
 	 * representation
