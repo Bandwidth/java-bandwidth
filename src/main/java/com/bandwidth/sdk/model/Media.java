@@ -52,6 +52,29 @@ public class Media extends BaseModelObject {
         return mediaFiles;
     }
     
+    /**
+     * Gets a list of your media files.
+     * For test only
+     * 
+     * TODO - refactor tests to use static method. Must provide someway to use the mock client for the 
+     * static methods
+     * 
+     *
+     * @return list of media files.
+     * @throws IOException
+     */
+    public List<MediaFile> getMediaFiles(BandwidthRestClient client) throws IOException {
+        String uri = getUri();
+        JSONArray array = client.getArray(uri, null);
+
+        List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
+        for (Object obj : array) {
+            mediaFiles.add(new MediaFile(client, (JSONObject) obj));
+        }
+        return mediaFiles;
+    }
+
+    
 
     /**
      * Uploads media file.
@@ -69,7 +92,8 @@ public class Media extends BaseModelObject {
         }, '/');
         client.uploadFile(uri, file, contentType);
 
-        List<MediaFile> mediaFiles = getMediaFiles();
+        // TODO - refactor to use the static method. Must provide a way to use singleton with tests.
+        List<MediaFile> mediaFiles = getMediaFiles(client);
         for (MediaFile mediaFile : mediaFiles) {
             if (StringUtils.equals(mediaFile.getMediaName(), mediaName)) return mediaFile;
         }
