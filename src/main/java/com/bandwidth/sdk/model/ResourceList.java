@@ -36,6 +36,8 @@ public class ResourceList<E> extends ArrayList<E> {
 	protected Class<E> clazz;	
 	protected String resourceUri;
 	
+	BandwidthRestClient client;
+	
 
 	public ResourceList(String resourceUri, Class <E> clazz) {
 		super();
@@ -128,7 +130,8 @@ public class ResourceList<E> extends ArrayList<E> {
 	 */
 	protected void getPage(JSONObject params) {
 		
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+		if (this.client == null)
+			client = BandwidthRestClient.getInstance();
     	
         try {
 	        RestResponse response = client.get(resourceUri, params); 
@@ -198,6 +201,16 @@ public class ResourceList<E> extends ArrayList<E> {
 	public void setResponse(RestResponse response) {
 		this.response = response;
 	}
+
+	public BandwidthRestClient getClient() {
+		return client;
+	}
+
+	public void setClient(BandwidthRestClient client) {
+		this.client = client;
+	}
+	
+	
 
 
 }

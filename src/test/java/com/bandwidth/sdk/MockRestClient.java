@@ -1,10 +1,17 @@
 package com.bandwidth.sdk;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +32,8 @@ public class MockRestClient extends BandwidthRestClient {
 
     public JSONObject result;
     public JSONArray arrayResult;
+    
+    protected RestResponse restResponse;
 
     public MockRestClient(String userId, String token, String secret, String endpoint, String version){
         super(userId, token, secret, endpoint, version);
@@ -34,6 +43,22 @@ public class MockRestClient extends BandwidthRestClient {
         this.endpoint = endpoint;
         this.version = version;
     }
+    
+    
+    /**
+     * HTTP get method. Returns a RestResponse object
+     * @param uri
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public RestResponse get(String uri, Map<String, Object> params) 
+    													throws IOException {
+    	
+    	
+        return getRestResponse();
+    }
+    
 
     // Used to compare url buildout properly
     public String getUserId(){
@@ -89,6 +114,15 @@ public class MockRestClient extends BandwidthRestClient {
         params.put("filePath", destFile.getPath());
         requests.add(new RestRequest("downloadFileTo", uri, params));
     }
+    
+    public RestResponse getRestResponse() {
+    	return restResponse;
+    }
+    
+    public void setRestResponse(RestResponse restResponse) {
+    	this.restResponse = restResponse;
+    }
+    
 
     public static class RestRequest {
 

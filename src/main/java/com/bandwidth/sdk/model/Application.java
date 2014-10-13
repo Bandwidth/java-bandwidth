@@ -64,15 +64,31 @@ public class Application extends BaseModelObject {
      */
     public static ResourceList<Application> getApplications(int page, int size) throws IOException {
     	
-        String applicationUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
+    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+        
+        return getApplications(client, page, size);
+    }
+    
+    /**
+     * Factory method for Application list. Returns a list of Application object with page and size preferences
+     * Allow different Client implementaitons
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Application> getApplications(BandwidthRestClient client, int page, int size) throws IOException {
+    	
+        String applicationUri = client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
 
         ResourceList<Application> applications = 
         			new ResourceList<Application>(page, size, applicationUri, Application.class);
-
+        applications.setClient(client);
         applications.initialize();
         
         return applications;
     }
+    
     
     public Application(BandwidthRestClient client, JSONObject jsonObject) {
         super(client,jsonObject);
