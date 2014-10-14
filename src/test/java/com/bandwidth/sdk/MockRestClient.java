@@ -45,20 +45,19 @@ public class MockRestClient extends BandwidthRestClient {
         this.version = version;
     }
     
-    
-    /**
-     * HTTP get method. Returns a RestResponse object
-     * @param uri
-     * @param params
-     * @return
-     * @throws IOException
-     */
     @Override
     public RestResponse get(String uri, Map<String, Object> params) throws IOException {
     	
         return getRestResponse();
     }
     
+    @Override
+    public RestResponse post(String uri, Map<String, Object> params) throws IOException {
+        requests.add(new RestRequest("post", uri, params));
+        
+        return restResponse;
+    }
+   
 
     // Used to compare url buildout properly
     public String getUserId(){
@@ -95,12 +94,6 @@ public class MockRestClient extends BandwidthRestClient {
         return result;
     }
 
-    @Override
-    public RestResponse post(String uri, Map<String, Object> params) throws IOException {
-        requests.add(new RestRequest("post", uri, params));
-        
-        return restResponse;
-    }
 
     @Override
     public void delete(String uri) throws IOException {
