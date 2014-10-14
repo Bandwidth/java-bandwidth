@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,24 +25,62 @@ public class PhoneNumber extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, String phoneNumberId) throws IOException {
+    public static PhoneNumber getPhoneNumber(String phoneNumberId) throws IOException {
         assert(phoneNumberId != null);
+
+        return getPhoneNumber(BandwidthRestClient.getInstance(), phoneNumberId);
+    }
+	
+	/**
+	 * Factory method for PhoneNumber. Returns PhoneNumber object
+	 * @param client
+	 * @param phoneNumberId
+	 * @return
+	 * @throws IOException
+	 */
+    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, String phoneNumberId) throws IOException {
+        assert(client != null && phoneNumberId != null);
         String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
         JSONObject phoneNumberObj = client.getObject(phoneNumberUri);
         PhoneNumber number = new PhoneNumber(client, phoneNumberObj);
         return number;
     }
-
+    
     /**
-     * Factory method for PhoneNumber, returns PhoneNumber object by id
+     * Factory method for PhoneNumber, returns PhoneNumber object given a JSON map
      * @param client
      * @param jsonObject
      * @return
      */
-    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+    protected static PhoneNumber getPhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
         return new PhoneNumber(client, jsonObject);
 
     }
+    
+    /**
+     * Factory method to allocate a phone number given a set of params. Note that this assumes that the phone number
+     * has been previously search for as an AvailableNumber
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static PhoneNumber createPhoneNumber(Map<String, Object> params) throws IOException {
+        return createPhoneNumber(BandwidthRestClient.getInstance(), params);
+    }
+    
+    /**
+     * Factory method to allocate a phone number given a set of params. Note that this assumes that the phone number
+     * has been previously search for as an AvailableNumber
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static PhoneNumber createPhoneNumber(BandwidthRestClient client, Map<String, Object> params) throws IOException {
+        String uri = client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
+        JSONObject jsonObject = client.create(uri, params);
+        return getPhoneNumber(client, jsonObject);
+    }
+    
     
     /**
      * Factory method for PhoneNumber list, returns list of PhoneNumber objects with default page setting
@@ -63,15 +102,30 @@ public class PhoneNumber extends BaseModelObject {
      */
     public static ResourceList<PhoneNumber> getPhoneNumbers(int page, int size) throws IOException {
     	
-        String resourceUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
+        
+        return getPhoneNumbers(BandwidthRestClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factory method for PhoneNumber list, returns list of PhoneNumber objects with page, size preferences
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<PhoneNumber> getPhoneNumbers(BandwidthRestClient client, int page, int size) throws IOException {
+    	
+        String resourceUri = client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
 
         ResourceList<PhoneNumber> phoneNumbers = 
         			new ResourceList<PhoneNumber>(page, size, resourceUri, PhoneNumber.class);
 
+        phoneNumbers.setClient(client);
         phoneNumbers.initialize();
         
         return phoneNumbers;
     }
+    
     
 
     public PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
