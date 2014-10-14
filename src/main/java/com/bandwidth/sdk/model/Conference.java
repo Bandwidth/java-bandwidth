@@ -15,7 +15,60 @@ import java.util.*;
  * @author vpotapenko
  */
 public class Conference extends BaseModelObject {
+	
+    /**
+     * Retrieves the conference information.
+     *
+     * @param id conference id
+     * @return conference information.
+     * @throws IOException
+     */
+    public static Conference getConference(String id) throws IOException {
+        return getConference(BandwidthRestClient.getInstance(), id);
+    }
+    
+    /**
+     * Retrieves the conference information.
+     *
+     * @param id conference id
+     * @return conference information.
+     * @throws IOException
+     */
+    public static Conference getConference(BandwidthRestClient client, String id) throws IOException {
+        String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
+        String conferenceUri = StringUtils.join(new String[]{
+                conferencesUri,
+                id
+        }, '/');
+        JSONObject jsonObject = client.getObject(conferenceUri);
+        return new Conference(client, jsonObject);
+    }
+    
+	
+	
+	/**
+	 * Factory method to create a conference given a set of params
+	 * @param params
+	 * @return
+	 * @throws IOException
+	 */
+    public static Conference createConference(Map<String, Object> params) throws IOException {
 
+    	return createConference(BandwidthRestClient.getInstance(), params);
+    }
+    
+	/**
+	 * Factory method to create a conference given a set of params and a client object
+	 * @param params
+	 * @return
+	 * @throws IOException
+	 */
+    public static Conference createConference(BandwidthRestClient client, Map<String, Object> params) throws IOException {
+        String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
+        JSONObject jsonObject = client.create(conferencesUri, params);
+        return new Conference(client, jsonObject);
+    }
+     
     public Conference(BandwidthRestClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
