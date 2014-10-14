@@ -47,7 +47,8 @@ public class MockRestClient extends BandwidthRestClient {
     
     @Override
     public RestResponse get(String uri, Map<String, Object> params) throws IOException {
-    	
+        requests.add(new RestRequest("get", uri, params));
+   	
         return getRestResponse();
     }
     

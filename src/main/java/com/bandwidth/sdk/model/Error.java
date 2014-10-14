@@ -26,7 +26,17 @@ public class Error extends BaseModelObject {
      * @throws IOException
      */
     public static Error getError(String id) throws IOException {
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+
+    	return getError(BandwidthRestClient.getInstance(), id);
+    }
+    
+    /**
+     * Factory method for Error. Returns Error object from id.
+     * @param id error id
+     * @return information about one user error
+     * @throws IOException
+     */
+    public static Error getError(BandwidthRestClient client, String id) throws IOException {
         String errorsUri = client.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH);
         String uri = StringUtils.join(new String[]{
                 errorsUri,
@@ -35,6 +45,7 @@ public class Error extends BaseModelObject {
         JSONObject jsonObject = client.getObject(uri);
         return new Error(client, errorsUri, jsonObject);
     }
+    
 
     /**
      * Factory method for errors list. Returns a list of Error objects, default 25 per page
@@ -55,16 +66,31 @@ public class Error extends BaseModelObject {
      * @throws IOException
      */
     public static ResourceList<Error> getErrors(int page, int size) throws IOException {
+    	        
+        return getErrors(BandwidthRestClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factory method for errors list. Returns a list of error objects, given the page and size preferences.
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Error> getErrors(BandwidthRestClient client, int page, int size) throws IOException {
     	
-        String resourceUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH);
+        String resourceUri = client.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH);
 
         ResourceList<Error> errors = 
         			new ResourceList<Error>(page, size, resourceUri, Error.class);
+        
+        errors.setClient(client);
 
         errors.initialize();
         
         return errors;
     }
+    
 
     public Error(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
