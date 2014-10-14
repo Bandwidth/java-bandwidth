@@ -18,19 +18,56 @@ import java.util.*;
  */
 public class Bridge extends BaseModelObject {
 	
+	
+    /**
+     * Convenience method to get information about a specific bridge. Returns a Bridge object given an id
+     *
+     * @param id bridge id
+     * @return information about a specific bridge
+     * @throws IOException
+     */
+    public static Bridge getBridge(String id) throws IOException {
+        
+        BandwidthRestClient client = BandwidthRestClient.getInstance();
+        return getBridge(client, id); 
+    }
+    
+    
+    /**
+     * Convenience method to return a bridge object given a client and an id
+     * @param client
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    public static Bridge getBridge(BandwidthRestClient client, String id) throws IOException {
+        
+    	String bridgesUri =  client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+
+        String eventPath = StringUtils.join(new String[]{
+                bridgesUri,
+                id
+        }, '/');
+
+        JSONObject jsonObject = client.getObject(eventPath);
+        return new Bridge(client, jsonObject);
+    }
+    
+
+	
 	/**
-	 * Factory method for Bridge, returns Bridge object from an id
+	 * Convenience factory method for Bridge, returns Bridge object from an id
 	 * @param callId
 	 * @return
 	 * @throws IOException
 	 */
-	public static Bridge getBridge(String callId) throws IOException {
+	public static Bridge createBridge(String id) throws IOException {
 		
-		return Bridge.createBridge(callId, null);
+		return Bridge.createBridge(id, null);
 	}
 	
 	/**
-	 * Convenience method to create a Bridge object from two Call objects
+	 * Convenience factory method to create a Bridge object from two Call objects
 	 * @param call1
 	 * @param call2
 	 * @return
@@ -39,7 +76,7 @@ public class Bridge extends BaseModelObject {
     public static Bridge createBridge(Call call1, Call call2)
     	    throws IOException 
     {
-    	assert (call1 != null && call2 != null);
+    	assert (call1 != null);
 
     	String callId1 = call1.getId();
 
@@ -49,7 +86,7 @@ public class Bridge extends BaseModelObject {
     }
 
     /**
-     * Convenience method to create a Bridge object from two call ids
+     * Convenience factory method to create a Bridge object from two call ids
      * @param callId1
      * @param callId2
      * @return
@@ -58,23 +95,52 @@ public class Bridge extends BaseModelObject {
     public static Bridge createBridge(String callId1, String callId2)
     	    throws IOException 
     {
-    	assert (callId1 != null && callId2 != null);
+    	assert (callId1 != null);
 
     	BandwidthRestClient client = BandwidthRestClient.getInstance();
 
-    	Map<String, Object> params = new HashMap<String, Object>();
+    	return createBridge(client, callId1, callId2);
+	}
+    
+    /**
+     * Convenience method to create a Bridge object from two call ids
+     * @param callId1
+     * @param callId2
+     * @return
+     * @throws IOException
+     */
+    public static Bridge createBridge(BandwidthRestClient client, String callId1, String callId2)
+    	    throws IOException 
+    {
+    	assert (callId1 != null);
 
-    	String bridgeParentUri = client.getUserUri() + "/bridges";
+    	HashMap<String, Object> params = new HashMap<String, Object>();
 
     	params.put("bridgeAudio", "true");
     	String[] callIds = new String[] { callId1, callId2 };
     	params.put("callIds", callIds == null ? Collections.emptyList()
     		: Arrays.asList(callIds));
 
-    	RestResponse response = client.post(bridgeParentUri, params);
+    	return createBridge(client, params);
+	}
+    
+    /**
+     * Convenience factory method to create a Bridge object from a params maps
+     * @param callId1
+     * @param callId2
+     * @return
+     * @throws IOException
+     */
+    public static Bridge createBridge(BandwidthRestClient client, Map<String, Object>params)
+    	    throws IOException {
+    	assert (params != null);
+
+    	String bridgesUri =  client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+
+    	RestResponse response = client.post(bridgesUri, params);
 
     	String bridgeId = response.getLocation().substring(
-    		client.getPath(bridgeParentUri).length());
+    		client.getPath(bridgesUri).length());
 
     	JSONObject callObj = client.getObjectFromLocation(response
     		.getLocation());
@@ -83,6 +149,7 @@ public class Bridge extends BaseModelObject {
 
     	return bridge;
 	}
+    
     
     /**
      * Factory method for Bridge list, returns list of Bridge objects with default page setting
@@ -104,15 +171,30 @@ public class Bridge extends BaseModelObject {
      */
     public static ResourceList<Bridge> getBridges(int page, int size) throws IOException {
     	
-        String resourceUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+    	
+        return getBridges(BandwidthRestClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factory method for Bridge list, returns list of Bridge objects with page, size preference
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Bridge> getBridges(BandwidthRestClient client, int page, int size) throws IOException {
+    	
+        String resourceUri = client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
 
         ResourceList<Bridge> bridges = 
         			new ResourceList<Bridge>(page, size, resourceUri, Bridge.class);
 
+        bridges.setClient(client);
         bridges.initialize();
         
         return bridges;
     }
+    
     
 
     public Bridge(BandwidthRestClient client, JSONObject jsonObject) {

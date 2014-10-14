@@ -8,6 +8,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,9 +53,8 @@ public class MockRestClient extends BandwidthRestClient {
      * @return
      * @throws IOException
      */
-    public RestResponse get(String uri, Map<String, Object> params) 
-    													throws IOException {
-    	
+    @Override
+    public RestResponse get(String uri, Map<String, Object> params) throws IOException {
     	
         return getRestResponse();
     }
@@ -82,6 +82,14 @@ public class MockRestClient extends BandwidthRestClient {
     }
 
     @Override
+    public JSONObject getObjectFromLocation(String locationUrl)
+    	    throws IOException 
+    {
+    	return getObject(locationUrl);
+    }    
+    
+
+    @Override
     public JSONObject create(String uri, Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("create", uri, params));
         return result;
@@ -91,7 +99,7 @@ public class MockRestClient extends BandwidthRestClient {
     public RestResponse post(String uri, Map<String, Object> params) throws IOException {
         requests.add(new RestRequest("post", uri, params));
         
-        return null;
+        return restResponse;
     }
 
     @Override

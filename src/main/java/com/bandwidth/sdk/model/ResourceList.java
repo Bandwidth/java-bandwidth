@@ -61,7 +61,6 @@ public class ResourceList<E> extends ArrayList<E> {
 	 * initializes ArrayList with first page from BW API
 	 */
 	public void initialize() {
-		System.out.println("inititalize(ENTRY)");
 		
         JSONObject params = new JSONObject();
         params.put("page", page);
@@ -74,8 +73,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	 * Customer iterator calls out to BW API when there is more data to retrieve
 	 */
 	public Iterator<E> iterator() {
-		System.out.println("ResourceList.iterator(ENTRY)");
-
+		
 		Iterator<E> it = new Iterator<E>() {
 
 			@Override
@@ -159,13 +157,11 @@ public class ResourceList<E> extends ArrayList<E> {
 	
 
 	public ListIterator<E> listIterator() {
-		System.out.println("ResourceList.listIterator(ENTRY)");
 
 		return super.listIterator();
 	}
 
 	public ListIterator<E> listIterator(int index) {
-		System.out.println("ResourceList.listIterator(ENTRY):index");
 
 		return super.listIterator(index);
 	}
