@@ -35,16 +35,29 @@ public class Recording extends BaseModelObject {
      * @throws IOException
      */
     public static ResourceList<Recording> getRecordings(int page, int size) throws IOException {
+    	        
+        return getRecordings(BandwidthRestClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factory method for Recording list, returns list of Recording objects with page, size preference
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Recording> getRecordings(BandwidthRestClient client, int page, int size) throws IOException {
     	
-        String recordingUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
+        String recordingUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
 
         ResourceList<Recording> recordings = 
         			new ResourceList<Recording>(page, size, recordingUri, Recording.class);
-
+        recordings.setClient(client);
         recordings.initialize();
         
         return recordings;
     }
+    
     
     /**
      * Recording factory method. Returns recording object from id
@@ -54,7 +67,17 @@ public class Recording extends BaseModelObject {
      */
     public static Recording getRecording(String id) throws IOException {
     	
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+        return getRecording(BandwidthRestClient.getInstance(), id);
+    }
+    
+    /**
+     * Recording factory method. Returns recording object from id
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    public static Recording getRecording(BandwidthRestClient client, String id) throws IOException {
+    	
         String recordingsUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
         String uri = StringUtils.join(new String[]{
                 recordingsUri,
@@ -63,12 +86,19 @@ public class Recording extends BaseModelObject {
         JSONObject jsonObject = client.getObject(uri);
         return new Recording(client, recordingsUri, jsonObject);
     }
+    
+    
 
 	
 
     public Recording(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
         super(client, parentUri, jsonObject);
     }
+    
+    public Recording(BandwidthRestClient client, JSONObject jsonObject) {
+        super(client, jsonObject);
+    }
+    
 
     @Override
     protected String getUri() {
