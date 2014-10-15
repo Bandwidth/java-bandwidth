@@ -4,7 +4,14 @@ import java.io.IOException;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Available number information.
@@ -43,7 +50,67 @@ public class AvailableNumber extends BaseModelObject {
         
         return availableNumbers;
     }
+    
+    /**
+     * Convenience factory method to return tollfree numbers based on the given search criteria
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static List<AvailableNumber> searchTollFree(Map<String, Object>params) throws IOException {
+    	return searchTollFree(BandwidthRestClient.getInstance(), params);
+    }
+    
+    /**
+     * Convenience factory method to return tollfree numbers based on the given search criteria for a given client
+     * @param client
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static List<AvailableNumber> searchTollFree(BandwidthRestClient client, Map<String, Object>params) 
+    																							throws IOException {
+    	
+        String tollFreeUri = client.getUserResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_TOLL_FREE_URI_PATH);
+        JSONArray array = client.getArray(tollFreeUri, params);
 
+        List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
+        for (Object obj : array) {
+            numbers.add(new AvailableNumber(client, (JSONObject) obj));
+        }
+        return numbers;
+    }
+
+    /**
+     * Convenience factory method to return local numbers based on a given search criteria
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static List<AvailableNumber> searchLocal(Map<String, Object>params) throws IOException {
+    	return searchTollFree(BandwidthRestClient.getInstance(), params);
+    }
+    
+    /**
+     * Convenience factory method to return local numbers based on a given search criteria for a given client 
+     * @param client
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static List<AvailableNumber> searchLocal(BandwidthRestClient client, Map<String, Object>params) 
+    																							throws IOException {
+    	
+        String tollFreeUri = client.getUserResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_LOCAL_URI_PATH);
+        JSONArray array = client.getArray(tollFreeUri, params);
+
+        List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
+        for (Object obj : array) {
+            numbers.add(new AvailableNumber(client, (JSONObject) obj));
+        }
+        return numbers;
+    }
+    
 	
     public AvailableNumber(BandwidthRestClient client, JSONObject jsonObject) {
         super(client, jsonObject);

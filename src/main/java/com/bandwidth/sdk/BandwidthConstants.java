@@ -21,6 +21,8 @@ public abstract class BandwidthConstants {
     public static final String ERRORS_URI_PATH = "errors";
     public static final String MESSAGES_URI_PATH = "messages";
     public static final String AVAILABLE_NUMBERS_URI_PATH = "availableNumbers";
+    public static final String AVAILABLE_NUMBERS_TOLL_FREE_URI_PATH = "availableNumbers/tollFree";
+    public static final String AVAILABLE_NUMBERS_LOCAL_URI_PATH = "availableNumbers/local";
     public static final String BRIDGES_URI_PATH = "bridges";
     public static final String RECORDINGS_URI_PATH = "recordings";
     public static final String ACCOUNT_URI_PATH = "account";
