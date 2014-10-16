@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author vpotapenko
  */
-public class Bridge extends BaseModelObject {
+public class Bridge extends ResourceBase {
 	
 	
     /**
@@ -26,10 +26,10 @@ public class Bridge extends BaseModelObject {
      * @return information about a specific bridge
      * @throws IOException
      */
-    public static Bridge getBridge(String id) throws IOException {
+    public static Bridge get(String id) throws Exception {
         
-        BandwidthRestClient client = BandwidthRestClient.getInstance();
-        return getBridge(client, id); 
+        BandwidthClient client = BandwidthClient.getInstance();
+        return get(client, id); 
     }
     
     
@@ -40,17 +40,15 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Bridge getBridge(BandwidthRestClient client, String id) throws IOException {
+    public static Bridge get(BandwidthClient client, String id) throws Exception {
+        assert(client != null);
         
-    	String bridgesUri =  client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+    	String bridgesUri =  client.getUserResourceInstanceUri(BandwidthConstants.BRIDGES_URI_PATH, id);
 
-        String eventPath = StringUtils.join(new String[]{
-                bridgesUri,
-                id
-        }, '/');
 
-        JSONObject jsonObject = client.getObject(eventPath);
+        JSONObject jsonObject = toJSONObject(client.get(bridgesUri, null));
         return new Bridge(client, jsonObject);
+        
     }
     
 
@@ -61,9 +59,9 @@ public class Bridge extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Bridge createBridge(String id) throws IOException {
+	public static Bridge create(String id) throws Exception {
 		
-		return Bridge.createBridge(id, null);
+		return Bridge.create(id, null);
 	}
 	
 	/**
@@ -73,8 +71,8 @@ public class Bridge extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-    public static Bridge createBridge(Call call1, Call call2)
-    	    throws IOException 
+    public static Bridge create(Call call1, Call call2)
+    	    throws Exception 
     {
     	assert (call1 != null);
 
@@ -82,7 +80,7 @@ public class Bridge extends BaseModelObject {
 
     	String callId2 = call2.getId();
 
-    	return Bridge.createBridge(callId1, callId2);
+    	return Bridge.create(callId1, callId2);
     }
 
     /**
@@ -92,14 +90,14 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Bridge createBridge(String callId1, String callId2)
-    	    throws IOException 
+    public static Bridge create(String callId1, String callId2)
+    	    throws Exception 
     {
     	assert (callId1 != null);
 
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+    	BandwidthClient client = BandwidthClient.getInstance();
 
-    	return createBridge(client, callId1, callId2);
+    	return create(client, callId1, callId2);
 	}
     
     /**
@@ -109,8 +107,8 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Bridge createBridge(BandwidthRestClient client, String callId1, String callId2)
-    	    throws IOException 
+    public static Bridge create(BandwidthClient client, String callId1, String callId2)
+    	    throws Exception 
     {
     	assert (callId1 != null);
 
@@ -121,7 +119,7 @@ public class Bridge extends BaseModelObject {
     	params.put("callIds", callIds == null ? Collections.emptyList()
     		: Arrays.asList(callIds));
 
-    	return createBridge(client, params);
+    	return create(client, params);
 	}
     
     /**
@@ -131,19 +129,15 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Bridge createBridge(BandwidthRestClient client, Map<String, Object>params)
-    	    throws IOException {
-    	assert (params != null);
+    public static Bridge create(BandwidthClient client, Map<String, Object>params)
+    	    throws Exception {
+    	assert (client!= null && params != null);
 
     	String bridgesUri =  client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
 
     	RestResponse response = client.post(bridgesUri, params);
 
-    	String bridgeId = response.getLocation().substring(
-    		client.getPath(bridgesUri).length());
-
-    	JSONObject callObj = client.getObjectFromLocation(response
-    		.getLocation());
+    	JSONObject callObj = toJSONObject(client.get(response.getLocation(), null));
 
     	Bridge bridge = new Bridge(client, callObj);
 
@@ -156,10 +150,10 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Bridge> getBridges() throws IOException {
+    public static ResourceList<Bridge> list() throws IOException {
     	
     	// default page size is 25
-     	return getBridges(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -169,10 +163,10 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Bridge> getBridges(int page, int size) throws IOException {
+    public static ResourceList<Bridge> list(int page, int size) throws IOException {
     	
     	
-        return getBridges(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -182,7 +176,7 @@ public class Bridge extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Bridge> getBridges(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<Bridge> list(BandwidthClient client, int page, int size) throws IOException {
     	
         String resourceUri = client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
 
@@ -197,12 +191,17 @@ public class Bridge extends BaseModelObject {
     
     
 
-    public Bridge(BandwidthRestClient client, JSONObject jsonObject) {
+    public Bridge(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
-
-
+    
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }    
+
+
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.BRIDGES_URI_PATH, getId());
     }
@@ -213,12 +212,12 @@ public class Bridge extends BaseModelObject {
      * @return list of calls
      * @throws IOException
      */
-    public List<Call> getBridgeCalls() throws IOException {
+    public List<Call> getBridgeCalls() throws Exception {
         String callsPath = StringUtils.join(new String[]{
                 getUri(),
                 "calls"
         }, '/');
-        JSONArray jsonArray = client.getArray(callsPath, null);
+        JSONArray jsonArray = toJSONArray(client.get(callsPath, null));
 
         List<Call> callList = new ArrayList<Call>();
         for (Object obj : jsonArray) {

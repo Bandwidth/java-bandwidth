@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -14,13 +14,18 @@ import java.util.Map;
  *
  * @author vpotapenko
  */
-public class Gather extends BaseModelObject {
+public class Gather extends ResourceBase {
 
-    public Gather(BandwidthRestClient client, JSONObject jsonObject) {
+    public Gather(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
-
+    
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+    
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH + "/" +
             getCall() + "/" + BandwidthConstants.GATHER_URI_PATH, getId());
@@ -31,12 +36,12 @@ public class Gather extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void complete() throws IOException {
+    public void complete() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
         client.post(getUri(), params);
 
-        JSONObject jsonObject = client.getObject(getUri());
+        JSONObject jsonObject = toJSONObject(client.get(getUri(), null));
         updateProperties(jsonObject);
     }
 

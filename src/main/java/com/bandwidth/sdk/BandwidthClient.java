@@ -109,6 +109,16 @@ public class BandwidthClient implements Client{
         return path + "/";
     }
     
+    public String getPath(String uri) {
+        String[] parts = new String[]{
+                apiEndpoint,
+                apiVersion,
+                uri,
+        };
+        return StringUtils.join(parts, '/');
+    }
+    
+    
     /**
      * Returns API url with userid 
      * 
@@ -117,9 +127,7 @@ public class BandwidthClient implements Client{
     public String getUserUri() {
     	return usersUri;
     }
-    
-    
-
+        
 
     public RestResponse post(String uri, Map<String, Object> params) throws IOException {
         return request(getPath(uri), GET, params);
@@ -140,16 +148,6 @@ public class BandwidthClient implements Client{
 
     public RestResponse delete(String uri) throws IOException {
         return request(getPath(uri), DELETE);
-    }
-
-
-    protected String getPath(String uri) {
-        String[] parts = new String[]{
-                apiEndpoint,
-                apiVersion,
-                uri,
-        };
-        return StringUtils.join(parts, '/');
     }
 
 

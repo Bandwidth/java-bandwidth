@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Example {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
     	
         // be sure to set your Application Platform userId, api token and api secret 
     	// as environment variables, e.g. 
@@ -26,22 +26,23 @@ public class Example {
         //printAccount();
         
         printApplications();
-        
-       /* printPhoneNumbers();
-        
-        printBridges();
 
+        printBridges();
+        
+        printCalls();
+
+        printRecordings(); 
+        
+        /* printPhoneNumbers();
+        
         printErrors();
         
         printMedia(); 
         
         printMessages();
-
-        printCalls();
-        
+ 
         printAvailableNumbers();
         
-        printRecordings(); 
         */
     }
     
@@ -55,7 +56,7 @@ public class Example {
 
     }
     
-    private static void printPhoneNumbers() throws IOException {
+    private static void printPhoneNumbers() throws Exception {
         System.out.println("\nPhoneNumbers:");
         
         ResourceList<PhoneNumber> phoneNumbers = PhoneNumber.getPhoneNumbers(0,4);
@@ -65,9 +66,9 @@ public class Example {
 
     }
     
-    private static void printBridges() throws IOException {
+    private static void printBridges() throws Exception {
         System.out.println("\nBridges:");
-        ResourceList<Bridge> bridgeList = Bridge.getBridges();
+        ResourceList<Bridge> bridgeList = Bridge.list();
         for (Bridge bridge : bridgeList) {
             System.out.println(bridge);
         }
@@ -99,15 +100,15 @@ public class Example {
         }
     }
 
-    private static void printRecordings() throws IOException {
+    private static void printRecordings() throws Exception {
         System.out.println("\nRecordings:");
-        List<Recording> list = Recording.getRecordings(0, 5);
+        List<Recording> list = Recording.list(0, 5);
         for (Recording recording : list) {
             System.out.println(recording);
         }
 
         if (!list.isEmpty()) {
-            Recording recording = Recording.getRecording(list.get(0).getId());
+            Recording recording = Recording.get(list.get(0).getId());
             System.out.println("\nRecording by Id");
             System.out.println(recording);
         }
@@ -144,15 +145,15 @@ public class Example {
         }
     }
 
-    private static void printCalls() throws IOException {
+    private static void printCalls() throws Exception {
         System.out.println("\nCalls:");
-        List<Call> callList = Call.getCalls(0, 30);
+        List<Call> callList = Call.list(0, 30);
         for (Call call : callList) {
             System.out.println(call);
         }
 
         if (!callList.isEmpty()) {
-            Call call = Call.getCall(callList.get(0).getId());
+            Call call = Call.get(callList.get(0).getId());
             System.out.println("\nCall by Id");
             System.out.println(call);
 

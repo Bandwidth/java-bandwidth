@@ -42,4 +42,20 @@ public abstract class ResourceBase extends ModelBase {
 		return (JSONArray) new JSONParser().parse(response.getResponseText());
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public BandwidthClient getClient() {
+		return client;
+	}
+
+	public Map<String, Object> getProperties() {
+		return properties;
+	}	
+
 }

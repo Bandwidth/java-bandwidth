@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -14,17 +14,17 @@ import java.util.Date;
  *
  * @author vpotapenko
  */
-public class Recording extends BaseModelObject {
+public class Recording extends ResourceBase {
 	
 	/**
 	 * Factory method for Recording list, returns list of Recording objects with default page, size
 	 * @return
 	 * @throws IOException
 	 */
-    public static ResourceList<Recording> getRecordings() throws IOException {
+    public static ResourceList<Recording> list() throws IOException {
     	
     	// default page size is 25
-     	return getRecordings(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -34,9 +34,9 @@ public class Recording extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Recording> getRecordings(int page, int size) throws IOException {
+    public static ResourceList<Recording> list(int page, int size) throws IOException {
     	        
-        return getRecordings(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -46,7 +46,7 @@ public class Recording extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Recording> getRecordings(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<Recording> list(BandwidthClient client, int page, int size) throws IOException {
     	
         String recordingUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
 
@@ -65,9 +65,9 @@ public class Recording extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Recording getRecording(String id) throws IOException {
+    public static Recording get(String id) throws Exception {
     	
-        return getRecording(BandwidthRestClient.getInstance(), id);
+        return get(BandwidthClient.getInstance(), id);
     }
     
     /**
@@ -76,31 +76,37 @@ public class Recording extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Recording getRecording(BandwidthRestClient client, String id) throws IOException {
+    public static Recording get(BandwidthClient client, String id) throws Exception {
     	
         String recordingsUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
         String uri = StringUtils.join(new String[]{
                 recordingsUri,
                 id
         }, '/');
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         return new Recording(client, recordingsUri, jsonObject);
     }
     
     
 
-	
+	String parentUri;
 
-    public Recording(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    public Recording(BandwidthClient client, String parentUri, JSONObject jsonObject) {
+        super(client, jsonObject);
+        this.parentUri = parentUri;
     }
     
-    public Recording(BandwidthRestClient client, JSONObject jsonObject) {
+    public Recording(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
     
-
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+    
+    
     protected String getUri() {
         return null;
     }
