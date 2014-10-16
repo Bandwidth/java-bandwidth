@@ -1,6 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -25,7 +26,10 @@ public class MediaTest extends BaseModelTest{
 
     @Test
     public void shouldGetMediaFiles() throws Exception {
-        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        
+        RestResponse restResponse = new RestResponse();
+		
+        restResponse.setResponseText("[\n" +
                 "  {\n" +
                 "    \"contentLength\": 561276,\n" +
                 "    \"mediaName\": \"{mediaName1}\",\n" +
@@ -42,13 +46,18 @@ public class MediaTest extends BaseModelTest{
                 "    \"content\": \"https://api.com/v1/users/users/{userId}/media/{mediaName3}\"\n" +
                 "  }\n" +
                 "]");
+        restResponse.setContentType("application/json");
+        restResponse.setStatus(201);
+         
+        mockRestClient.setRestResponse(restResponse);
+        
 
-        List<MediaFile> mediaFiles = media.getMediaFiles(mockRestClient);
+        List<MediaFile> mediaFiles = Media.getMediaFiles(mockRestClient, 0, 3);
         assertThat(mediaFiles.size(), equalTo(3));
         assertThat(mediaFiles.get(0).getMediaName(), equalTo("{mediaName1}"));
         assertThat(mediaFiles.get(0).getUri(), equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName1}"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
+        assertThat(mockRestClient.requests.get(0).name, equalTo("get"));
         assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/media"));
     }
 

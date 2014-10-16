@@ -42,15 +42,29 @@ public class Media extends BaseModelObject {
      */
     public static ResourceList<MediaFile> getMediaFiles(int page, int size) throws IOException {
     	
-        String mediaUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
+        
+        return getMediaFiles(BandwidthRestClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factory method for MediaFile list, returns a list of MediaFile objects with page, size preference
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<MediaFile> getMediaFiles(BandwidthRestClient client, int page, int size) throws IOException {
+    	
+        String mediaUri = client.getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
 
         ResourceList<MediaFile> mediaFiles = 
         			new ResourceList<MediaFile>(page, size, mediaUri, MediaFile.class);
-
+        mediaFiles.setClient(client);
         mediaFiles.initialize();
         
         return mediaFiles;
     }
+    
     
     /**
      * Gets a list of your media files.
