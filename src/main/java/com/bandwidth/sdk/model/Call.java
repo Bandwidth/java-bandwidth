@@ -368,16 +368,16 @@ public class Call extends BaseModelObject {
      * @return events
      * @throws IOException
      */
-    public List<BaseEvent> getEventsList() throws IOException {
+    public List<EventBase> getEventsList() throws IOException {
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
         JSONArray array = client.getArray(eventsPath, null);
 
-        List<BaseEvent> list = new ArrayList<BaseEvent>();
+        List<EventBase> list = new ArrayList<EventBase>();
         for (Object object : array) {
-            list.add(new BaseEvent((JSONObject) object));
+            list.add(new EventBase((JSONObject) object));
         }
         return list;
     }
@@ -389,7 +389,7 @@ public class Call extends BaseModelObject {
      * @return information about event
      * @throws IOException
      */
-    public BaseEvent getEvent(String eventId) throws IOException {
+    public EventBase getEvent(String eventId) throws IOException {
         String eventPath = StringUtils.join(new String[]{
                 getUri(),
                 "events",
@@ -400,7 +400,7 @@ public class Call extends BaseModelObject {
                 getUri(),
                 "events"
         }, '/');
-        return new BaseEvent(jsonObject);
+        return new EventBase(jsonObject);
     }
 
     /**

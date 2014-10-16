@@ -11,7 +11,7 @@ import com.bandwidth.sdk.BandwidthRestClient;
  * @author smitchell
  * 
  */
-public class AnswerEvent extends BaseEvent {
+public class AnswerEvent extends EventBase {
 
 	/**
 	 * @param json

@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 
-public class HangupEvent extends BaseEvent{
+public class HangupEvent extends EventBase{
 
 //	public HangupEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {

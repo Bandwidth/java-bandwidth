@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author vpotapenko
  */
-public class NumberInfo extends AbsModelObject {
+public class NumberInfo extends ModelBase {
 
 //    public NumberInfo(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
 //        super(client, parentUri, jsonObject);

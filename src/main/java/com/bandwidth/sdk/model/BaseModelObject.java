@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * @author vpotapenko
  */
-public abstract class BaseModelObject extends AbsModelObject {
+public abstract class BaseModelObject extends ModelBase {
 
 
     protected final BandwidthRestClient client;

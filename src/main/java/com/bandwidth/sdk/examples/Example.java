@@ -156,13 +156,13 @@ public class Example {
             System.out.println(call);
 
             System.out.println("\nCall events");
-            List<BaseEvent> eventsList = call.getEventsList();
-            for (BaseEvent event : eventsList) {
+            List<EventBase> eventsList = call.getEventsList();
+            for (EventBase event : eventsList) {
                 System.out.println(event);
             }
 
             if (!eventsList.isEmpty()) {
-                BaseEvent event = call.getEvent(eventsList.get(0).getId());
+                EventBase event = call.getEvent(eventsList.get(0).getId());
                 System.out.println("\nCall event by Id");
                 System.out.println(event);
             }

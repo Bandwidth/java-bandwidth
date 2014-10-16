@@ -190,7 +190,7 @@ public class CallTest {
         mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}]");
 
         Call call = new Call(mockRestClient, jsonObject);
-        List<BaseEvent> eventsList = call.getEventsList();
+        List<EventBase> eventsList = call.getEventsList();
 
         assertThat(eventsList.size(), equalTo(1));
         assertThat(eventsList.get(0).getId(), equalTo("ce-hsdbdbdhd"));
@@ -206,7 +206,7 @@ public class CallTest {
         mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
 
         Call call = new Call(mockRestClient, jsonObject);
-        BaseEvent event = call.getEvent("id1");
+        EventBase event = call.getEvent("id1");
 
         assertThat(event.getId(), equalTo("ce-hsdbdbdhd"));
 

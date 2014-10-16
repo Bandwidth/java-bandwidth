@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 
-public class PlaybackEvent extends BaseEvent {
+public class PlaybackEvent extends EventBase {
 
 //	public PlaybackEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {

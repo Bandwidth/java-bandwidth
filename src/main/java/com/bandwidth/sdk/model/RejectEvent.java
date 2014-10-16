@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 
-public class RejectEvent extends BaseEvent {
+public class RejectEvent extends EventBase {
 
 //	public RejectEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {

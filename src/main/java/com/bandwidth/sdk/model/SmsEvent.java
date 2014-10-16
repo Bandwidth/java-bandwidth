@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 
-public class SmsEvent extends BaseEvent {
+public class SmsEvent extends EventBase {
 
 //	public SmsEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {

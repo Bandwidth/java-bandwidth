@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 
-public class DtmfEvent extends BaseEvent {
+public class DtmfEvent extends EventBase {
 
 //	public DtmfEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {

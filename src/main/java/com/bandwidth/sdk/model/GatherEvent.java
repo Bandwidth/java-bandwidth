@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.bandwidth.sdk.BandwidthRestClient;
 
-public class GatherEvent extends BaseEvent{
+public class GatherEvent extends EventBase{
 
 //	public GatherEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {
