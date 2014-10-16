@@ -23,11 +23,11 @@ public class Example {
     	// BANDWIDTH_APPPLATFORM_API_TOKEN
     	// BANDWIDTH_APPPLATFORM_API_SECRET
 
-        printAccount();
+        //printAccount();
         
         printApplications();
         
-        printPhoneNumbers();
+       /* printPhoneNumbers();
         
         printBridges();
 
@@ -41,13 +41,14 @@ public class Example {
         
         printAvailableNumbers();
         
-        printRecordings();
+        printRecordings(); 
+        */
     }
     
     private static void printApplications() throws IOException {
         System.out.println("\nApplications:");
         
-        ResourceList<Application> applicationList = Application.getApplications(0, 9); 
+        ResourceList<Application> applicationList = Application.list(0, 9); 
         for (Application application : applicationList) {
             System.out.println(application);
         }

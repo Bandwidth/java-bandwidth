@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Created by sbarstow on 10/3/14.
  */
-public class BandwidthClient {
+public class BandwidthClient implements Client{
 
     protected static final String GET = "get";
     protected static final String POST = "post";
@@ -41,14 +41,15 @@ public class BandwidthClient {
     protected String secret;
     protected String apiVersion;
     protected String apiEndpoint;
+    protected String usersUri;
 
     protected HttpClient httpClient;
 
-    public static String BANDWIDTH_APPPLATFORM_USER_ID = "BANDWIDTH_APPPLATFORM_USER_ID";
-    public static String BANDWIDTH_APPPLATFORM_API_TOKEN = "BANDWIDTH_APPPLATFORM_API_TOKEN";
-    public static String BANDWIDTH_APPPLATFORM_API_SECRET = "BANDWIDTH_APPPLATFORM_API_SECRET";
-    public static String BANDWIDTH_APPPLATFORM_API_ENDPOINT = "BANDWIDTH_APPPLATFORM_API_ENDPOINT";
-    public static String BANDWIDTH_APPPLATFORM_API_VERSION = "BANDWIDTH_APPPLATFORM_API_VERSION";
+    public static String BANDWIDTH_USER_ID = "BANDWIDTH_USER_ID";
+    public static String BANDWIDTH_API_TOKEN = "BANDWIDTH_API_TOKEN";
+    public static String BANDWIDTH_API_SECRET = "BANDWIDTH_API_SECRET";
+    public static String BANDWIDTH_API_ENDPOINT = "BANDWIDTH_API_ENDPOINT";
+    public static String BANDWIDTH_API_VERSION = "BANDWIDTH_API_VERSION";
 
     protected static BandwidthClient INSTANCE;
 
@@ -61,20 +62,21 @@ public class BandwidthClient {
             }
 
             // TODO set these up as heroku configuration variables
-            String userId = env.get(BANDWIDTH_APPPLATFORM_USER_ID);
-            String apiToken = env.get(BANDWIDTH_APPPLATFORM_API_TOKEN);
-            String apiSecret = env.get(BANDWIDTH_APPPLATFORM_API_SECRET);
-            String apiEndpoint = env.get(BANDWIDTH_APPPLATFORM_API_ENDPOINT);
-            String apiVersion = env.get(BANDWIDTH_APPPLATFORM_API_VERSION);
+            String userId = env.get(BANDWIDTH_USER_ID);
+            String apiToken = env.get(BANDWIDTH_API_TOKEN);
+            String apiSecret = env.get(BANDWIDTH_API_SECRET);
+            String apiEndpoint = env.get(BANDWIDTH_API_ENDPOINT);
+            String apiVersion = env.get(BANDWIDTH_API_VERSION);
 
             INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
         }
         return INSTANCE;
     }
 
-    private BandwidthClient(String userId, String apiToken, String apiSecret, String apiEndpoint, String apiVersion){
-        this.token = token;
-        this.secret = secret;
+    protected BandwidthClient(String userId, String apiToken, String apiSecret, String apiEndpoint, String apiVersion){
+        usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
+        this.token = apiToken;
+        this.secret = apiSecret;
 
         this.apiEndpoint = apiEndpoint;
         this.apiVersion = apiVersion;
@@ -88,6 +90,35 @@ public class BandwidthClient {
         httpClient = new DefaultHttpClient();
 
     }
+    
+    public String getUserResourceUri(String path){
+        if(StringUtils.isEmpty(path))
+            throw new IllegalArgumentException("Path cannot be null");
+        return StringUtils.join(new String[] {getUserUri(), path}, "/");
+    }
+
+    public String getUserResourceInstanceUri(String path, String instanceId){
+        if(StringUtils.isEmpty(path) || StringUtils.isEmpty(instanceId))
+            throw new IllegalArgumentException("Path and Instance Id cannot be null");
+        return getUserResourceUri(path) + "/" + instanceId;
+    }
+
+    public String getBaseResourceUri(String path){
+        if(StringUtils.isEmpty(path))
+            throw new IllegalArgumentException("Path cannot be null");
+        return path + "/";
+    }
+    
+    /**
+     * Returns API url with userid 
+     * 
+     * @return usersUri
+     */
+    public String getUserUri() {
+    	return usersUri;
+    }
+    
+    
 
 
     public RestResponse post(String uri, Map<String, Object> params) throws IOException {
@@ -138,29 +169,8 @@ public class BandwidthClient {
         HttpResponse response;
         try {
             response = httpClient.execute(request);
-            HttpEntity entity = response.getEntity();
-
-            String responseBody = "";
-
-            if (entity != null) {
-                responseBody = EntityUtils.toString(entity);
-            }
-
-            StatusLine status = response.getStatusLine();
-            int statusCode = status.getStatusCode();
-
-            RestResponse restResponse = new RestResponse(responseBody, statusCode);
-
-            Header[] headers = response.getHeaders("Content-Type");
-            if (headers.length > 0) {
-                restResponse.setContentType(headers[0].getValue());
-            }
-
-            headers = response.getHeaders("Location");
-            if (headers.length > 0) {
-                restResponse.setLocation(headers[0].getValue());
-            }
-
+            RestResponse restResponse = RestResponse.createRestResponse(response); 
+            
             return restResponse;
 
         } catch (final ClientProtocolException e1) {

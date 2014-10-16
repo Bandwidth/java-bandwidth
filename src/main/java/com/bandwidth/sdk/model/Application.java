@@ -1,19 +1,33 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.RestResponse;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Information about one of your applications.
  *
  * @author vpotapenko
  */
-public class Application extends BaseModelObject {
+public class Application extends ResourceBase {
+	
+    /**
+     * Factory method for Application. Returns Application object from id
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    public static Application get(String id) throws Exception {
+        assert(id != null);
+
+        BandwidthClient client = BandwidthClient.getInstance();
+        return Application.get(client ,id);
+    }	
 
 	/**
 	 * Factory method for Application, returns Application object
@@ -22,37 +36,24 @@ public class Application extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-    public static Application getApplication(BandwidthRestClient client, String id) throws IOException {
+    public static Application get(BandwidthClient client, String id) throws Exception {
         assert(id != null);
         String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, id);
-        JSONObject applicationObj = client.getObject(applicationUri);
+        JSONObject applicationObj = toJSONObject( client.get(applicationUri, null) );
+        
         Application application = new Application(client, applicationObj);
         return application;
     }
-    
-    /**
-     * Factory method for Application. Returns Application object from id
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    public static Application getApplication(String id) throws IOException {
-        assert(id != null);
-
-        BandwidthRestClient client = BandwidthRestClient.getInstance();
-        return Application.getApplication(client ,id);
-    }
-
     
     /**
      * Factory method for Application list. Returns a list of Application object with default page size of 25
      * @return
      * @throws IOException
      */
-    public static ResourceList<Application> getApplications() throws IOException {
+    public static ResourceList<Application> list() throws IOException {
     	
     	// default page size is 25
-     	return getApplications(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -62,11 +63,11 @@ public class Application extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Application> getApplications(int page, int size) throws IOException {
+    public static ResourceList<Application> list(int page, int size) throws IOException {
     	
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+    	BandwidthClient client = BandwidthClient.getInstance();
         
-        return getApplications(client, page, size);
+        return list(client, page, size);
     }
     
     /**
@@ -77,7 +78,7 @@ public class Application extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Application> getApplications(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<Application> list(BandwidthClient client, int page, int size) throws IOException {
     	
         String applicationUri = client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
 
@@ -89,12 +90,56 @@ public class Application extends BaseModelObject {
         return applications;
     }
     
+    /**
+     * Convenience factory method to create an Application object with a given name
+     * @param name
+     * @return
+     * @throws Exception
+     */
+    public static Application create(String name) throws Exception{
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("name", name);
+    	
+    	return create(params);
+    }
     
-    public Application(BandwidthRestClient client, JSONObject jsonObject) {
+    /**
+     * Convenience factory method to create an Application object from a set of params
+     * @param params
+     * @return
+     * @throws Exception
+     */
+    public static Application create(Map<String, Object>params) throws Exception{
+    	
+    	return create(BandwidthClient.getInstance(), params);
+    }
+    
+    /**
+     * Convenience factory method to create an Application object from a set of params with a given client
+     * @param client
+     * @param params
+     * @return
+     * @throws Exception
+     */
+    public static Application create(BandwidthClient client, Map<String, Object>params) throws Exception {
+    	assert(client != null);
+    	
+    	RestResponse response = client.post(BandwidthConstants.APPLICATIONS_URI_PATH, params);
+    	
+    	return new Application(client, toJSONObject(response));
+    }
+    
+    
+    public Application(BandwidthClient client, JSONObject jsonObject) {
         super(client,jsonObject);
     }
-
+    
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }
+    
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, getId());
     }

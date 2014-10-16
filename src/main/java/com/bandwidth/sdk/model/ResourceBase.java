@@ -19,12 +19,17 @@ public abstract class ResourceBase extends ModelBase {
 
 	protected final BandwidthClient client;
 	protected final Map<String, Object> properties = new HashMap<String, Object>();
-
+	
 	protected ResourceBase(JSONObject jsonObject) {
 		this.client = BandwidthClient.getInstance();
 		setUp(jsonObject);
 	}
 
+	protected ResourceBase(BandwidthClient client, JSONObject jsonObject) {
+		this.client = client;
+		setUp(jsonObject);
+	}
+	
 	protected abstract void setUp(JSONObject jsonObject);
 
 	protected static JSONObject toJSONObject(RestResponse response)

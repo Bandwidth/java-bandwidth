@@ -55,7 +55,13 @@ public class RestResponse {
 	            responseText = EntityUtils.toString(entity);
 	        }
 	        
+	        // There are several error conditions here, this is just one. 
+	        if (responseText.contains("access-denied"))
+	        	restResponse.setError(true);
+	        
 	        restResponse.setResponseText(responseText);
+	        
+	        System.out.println("RestResponse.responseText:" + responseText);
 	
 	        for  (Header header : httpResponse.getHeaders("Content-Type")) {
 	        	restResponse.setContentType(header.getValue());

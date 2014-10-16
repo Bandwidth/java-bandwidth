@@ -6,6 +6,8 @@ import java.util.ListIterator;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.Client;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.Utils;
 
@@ -36,7 +38,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	protected Class<E> clazz;	
 	protected String resourceUri;
 	
-	BandwidthRestClient client;
+	Client client;
 	
 
 	public ResourceList(String resourceUri, Class <E> clazz) {
@@ -136,9 +138,19 @@ public class ResourceList<E> extends ArrayList<E> {
 	        
 	        JSONArray array = Utils.response2JSONArray(response);
 	        
-	        for (Object obj : array) {	        	
-	        	E elem = clazz.getConstructor(BandwidthRestClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
-	        	add(elem);	
+	        for (Object obj : array) {	
+	        	
+	        	// TODO temporary dirty fix to make the refactor managable
+	        	
+	        	if (client instanceof BandwidthRestClient) {
+	        		E elem = clazz.getConstructor(BandwidthRestClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
+	        		add(elem);
+	        	}
+	        	else if (client instanceof BandwidthClient) {
+	        		E elem = clazz.getConstructor(BandwidthClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
+	        		add(elem);
+	        		
+	        	}
 	        }
 	        
 	        // if anything comes back, reset the index
@@ -198,11 +210,11 @@ public class ResourceList<E> extends ArrayList<E> {
 		this.response = response;
 	}
 
-	public BandwidthRestClient getClient() {
+	public Client getClient() {
 		return client;
 	}
 
-	public void setClient(BandwidthRestClient client) {
+	public void setClient(Client client) {
 		this.client = client;
 	}
 	
