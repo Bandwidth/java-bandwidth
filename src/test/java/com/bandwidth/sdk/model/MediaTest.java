@@ -43,7 +43,7 @@ public class MediaTest extends BaseModelTest{
                 "  }\n" +
                 "]");
 
-        List<MediaFile> mediaFiles = media.getMediaFiles();
+        List<MediaFile> mediaFiles = media.getMediaFiles(mockRestClient);
         assertThat(mediaFiles.size(), equalTo(3));
         assertThat(mediaFiles.get(0).getMediaName(), equalTo("{mediaName1}"));
         assertThat(mediaFiles.get(0).getUri(), equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName1}"));

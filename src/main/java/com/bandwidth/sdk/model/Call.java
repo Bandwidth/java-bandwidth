@@ -26,13 +26,25 @@ public class Call extends BaseModelObject {
      * @throws IOException
      */
     public static Call getCall(String callId) throws IOException {
-    	
+
     	BandwidthRestClient client = BandwidthRestClient.getInstance();
+        
+        return getCall(client, callId);
+    }
+    
+    /**
+     * Convenience factory method for Call, returns a Call object given an id
+     * @param client
+     * @param callId
+     */
+    public static Call getCall(BandwidthRestClient client, String callId) throws IOException {
+    	
         String callsUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
         String eventPath = StringUtils.join(new String[]{
                 callsUri,
                 callId
         }, '/');
+        
         JSONObject jsonObject = client.getObject(eventPath);
         
         return new Call(client, jsonObject);
@@ -58,17 +70,33 @@ public class Call extends BaseModelObject {
      */
     public static ResourceList<Call> getCalls(int page, int size) throws IOException {
     	
+        return getCalls(BandwidthRestClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factor method for Call list, returns a list of Call objects with page, size preference 
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<Call> getCalls(BandwidthRestClient client, int page, int size) throws IOException {
+    	
         String callUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
 
         ResourceList<Call> calls = 
         			new ResourceList<Call>(page, size, callUri, Call.class);
+        
+        calls.setClient(client);
 
         calls.initialize();
         
         return calls;
     }
     
+    
 
+    // TODO = these methods are redundant with getCalls(). Replace this in the example with the getCalls method
 	/**
 	 * Factory method to create a call object. Takes a callId, and makes
 	 * an API call to to get the latest state and uses that for the internal
@@ -84,9 +112,23 @@ public class Call extends BaseModelObject {
     	
     	BandwidthRestClient client = BandwidthRestClient.getInstance();
     	
-    	String callParentUri = client.getUserUri() + "/calls";
+    	return createCall(client, callId);
+    }
+    
+	/**
+	 * Factory method to create a call object. Takes a callId, and makes
+	 * an API call to to get the latest state and uses that for the internal
+	 * representation
+	 * 
+	 * @param callId
+	 * @return
+	 * @throws IOException
+	 */
+    public static Call createCall(BandwidthRestClient client, String callId) throws IOException
+    {
+    	assert(client != null && callId != null);
     	
-    	String callUri = callParentUri + "/" + callId;
+        String callUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.CALLS_URI_PATH) + "/" + callId;
     	
     	JSONObject callObj = client.getObject(callUri);
     	
@@ -94,6 +136,7 @@ public class Call extends BaseModelObject {
     	
     	return call;
     }
+    
     
     /**
      * Conveniance method to dials a call from a phone number to a phone number
@@ -138,18 +181,32 @@ public class Call extends BaseModelObject {
     	
        	BandwidthRestClient client = BandwidthRestClient.getInstance();       	
     	
-    	String callParentUri = client.getUserUri() + "/calls";
+    	return makeCall(client, params);
+    }
+    
+    /**
+     * Dials a call, from a phone number to a phone number.
+     * @param params
+     * @return
+     * @throws IOException
+     */
+    public static Call makeCall(BandwidthRestClient client, Map <String, Object>params)  throws IOException
+    {
+    	assert (client != null && params != null);
+    	    	
+        String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
     	
-    	RestResponse response = client.post(callParentUri, params);
+    	RestResponse response = client.post(callUri, params);
     	    	
     	// success here, otherwise an exception is generated
     	
-    	String callId = response.getLocation().substring(client.getPath(callParentUri).length() + 1);
+    	String callId = response.getLocation().substring(client.getPath(callUri).length() + 1);
     	
-    	Call call = createCall(callId);
+    	Call call = getCall(client, callId);
     	    	    	
     	return call;
     }
+    
 
 
     public Call(BandwidthRestClient client, JSONObject jsonObject) {

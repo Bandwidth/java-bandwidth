@@ -36,6 +36,8 @@ public class ResourceList<E> extends ArrayList<E> {
 	protected Class<E> clazz;	
 	protected String resourceUri;
 	
+	BandwidthRestClient client;
+	
 
 	public ResourceList(String resourceUri, Class <E> clazz) {
 		super();
@@ -59,7 +61,6 @@ public class ResourceList<E> extends ArrayList<E> {
 	 * initializes ArrayList with first page from BW API
 	 */
 	public void initialize() {
-		System.out.println("inititalize(ENTRY)");
 		
         JSONObject params = new JSONObject();
         params.put("page", page);
@@ -72,8 +73,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	 * Customer iterator calls out to BW API when there is more data to retrieve
 	 */
 	public Iterator<E> iterator() {
-		System.out.println("ResourceList.iterator(ENTRY)");
-
+		
 		Iterator<E> it = new Iterator<E>() {
 
 			@Override
@@ -128,7 +128,8 @@ public class ResourceList<E> extends ArrayList<E> {
 	 */
 	protected void getPage(JSONObject params) {
 		
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+		if (this.client == null)
+			client = BandwidthRestClient.getInstance();
     	
         try {
 	        RestResponse response = client.get(resourceUri, params); 
@@ -156,13 +157,11 @@ public class ResourceList<E> extends ArrayList<E> {
 	
 
 	public ListIterator<E> listIterator() {
-		System.out.println("ResourceList.listIterator(ENTRY)");
 
 		return super.listIterator();
 	}
 
 	public ListIterator<E> listIterator(int index) {
-		System.out.println("ResourceList.listIterator(ENTRY):index");
 
 		return super.listIterator(index);
 	}
@@ -198,6 +197,16 @@ public class ResourceList<E> extends ArrayList<E> {
 	public void setResponse(RestResponse response) {
 		this.response = response;
 	}
+
+	public BandwidthRestClient getClient() {
+		return client;
+	}
+
+	public void setClient(BandwidthRestClient client) {
+		this.client = client;
+	}
+	
+	
 
 
 }
