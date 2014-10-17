@@ -32,10 +32,13 @@ public class OutboundCallExample {
 		// BandwidthClient.getInstance(userId, apiToken, apiSecret);
 		
 		// put your numbers in here
-		String toNumber = "";// your phone number here
-		String fromNumber = "";// this is a number that is allocated on the AppPlatform. You can do this 
+		String toNumber = "+1";// your phone number here
+		String fromNumber = "+1";// this is a number that is allocated on the AppPlatform. You can do this 
 							 // via the dev console or with the SDK (see AllocateNumberExample)
+		
 		Call call = Call.create(toNumber, fromNumber);
+		
+		System.out.println("call:" + call);
 		
 		//wait a few seconds here. Note that in a real application you'll handle the answer event
 		// in your event server. See java-bandwidth-examples for how to do this
@@ -46,7 +49,7 @@ public class OutboundCallExample {
 		}
 		
 		Map<String, Object>params = new HashMap<String, Object>();
-		params.put("sentence", "Hey there! Welcome from the App Platform!");
+		params.put("sentence", "Hey there! Welcome to the App Platform!");
 		params.put("voice", "kate"); // she's one of our favorites!
 		call.speakSentence(params);
 		
@@ -59,6 +62,7 @@ public class OutboundCallExample {
 		    Thread.currentThread().interrupt();
 		}
 		
+		System.out.println("Updated call:" + call);
 		call.hangUp();
 	}
 

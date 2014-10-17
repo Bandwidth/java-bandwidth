@@ -118,15 +118,15 @@ public class ResourceListExample {
     }
 
 
-    private static void printMessages() throws IOException {
+    private static void printMessages() throws Exception {
         System.out.println("\nMessages:");
-        List<Message> list = Message.getMessages(0, 20);
+        List<Message> list = Message.list(0, 20);
         for (Message message : list) {
             System.out.println(message);
         }
 
         if (!list.isEmpty()) {
-            Message message = Message.getMessage(list.get(0).getId());
+            Message message = Message.get(list.get(0).getId());
             System.out.println("\nMessage by Id");
             System.out.println(message);
         }

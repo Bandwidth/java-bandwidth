@@ -1,7 +1,8 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.RestResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -16,7 +17,7 @@ import java.util.HashMap;
  *
  * @author vpotapenko
  */
-public class Message extends BaseModelObject {
+public class Message extends ResourceBase {
 	
     /**
      * Gets information about a previously sent or received message.
@@ -25,9 +26,9 @@ public class Message extends BaseModelObject {
      * @return information about message
      * @throws IOException
      */
-    public static Message getMessage(String id) throws IOException {
+    public static Message get(String id) throws Exception {
     	
-        return getMessage(BandwidthRestClient.getInstance(), id);
+        return get(BandwidthClient.getInstance(), id);
     }
     
     /**
@@ -37,14 +38,11 @@ public class Message extends BaseModelObject {
      * @return information about message
      * @throws IOException
      */
-    public static Message getMessage(BandwidthRestClient client, String id) throws IOException {
+    public static Message get(BandwidthClient client, String id) throws Exception {
     	
-        String messagesUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
-        String uri = StringUtils.join(new String[]{
-                messagesUri,
-                id
-        }, '/');
-        JSONObject jsonObject = client.getObject(uri);
+        String messagesUri = client.getUserResourceInstanceUri(BandwidthConstants.MESSAGES_URI_PATH, id);
+
+        JSONObject jsonObject = toJSONObject(client.get(messagesUri, null));
         return new Message(client, jsonObject);
     }
     
@@ -54,10 +52,10 @@ public class Message extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Message> getMessages() throws IOException {
+    public static ResourceList<Message> list() throws Exception {
     	
     	// default page size is 25
-     	return getMessages(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -67,10 +65,10 @@ public class Message extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Message> getMessages(int page, int size) throws IOException {
+    public static ResourceList<Message> list(int page, int size) throws Exception {
     	
         
-        return getMessages(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -80,7 +78,7 @@ public class Message extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Message> getMessages(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<Message> list(BandwidthClient client, int page, int size) throws Exception {
     	
         String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
 
@@ -101,14 +99,14 @@ public class Message extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Message createMessage(String to, String from, String text) throws IOException{
+    public static Message create(String to, String from, String text) throws Exception{
     	
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("to", to);
     	params.put("from", from);
     	params.put("text", text);
     	
-    	return createMessage(params);
+    	return create(params);
     }
     
     /**
@@ -117,9 +115,9 @@ public class Message extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Message createMessage(Map<String, Object>params) throws IOException {
+    public static Message create(Map<String, Object>params) throws Exception {
     	
-    	return createMessage(BandwidthRestClient.getInstance(), params);
+    	return create(BandwidthClient.getInstance(), params);
     	
     }
     
@@ -130,18 +128,31 @@ public class Message extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Message createMessage(BandwidthRestClient client, Map<String, Object> params) throws IOException {
+    public static Message create(BandwidthClient client, Map<String, Object> params) throws Exception {
         String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
-        JSONObject jsonObject = client.create(messageUri, params);
-        return new Message(client, jsonObject);
+        
+        RestResponse response = client.post(messageUri, params);
+                
+    	// success here, otherwise an exception is generated
+        
+    	String messageId = response.getLocation().substring(client.getPath(messageUri).length() + 1);
+    	
+    	Message message = get(client, messageId);
+        
+        return message;
     }
 	
 
-    public Message(BandwidthRestClient client, JSONObject jsonObject) {
+    public Message(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.MESSAGES_URI_PATH, getId());
     }

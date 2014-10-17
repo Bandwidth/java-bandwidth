@@ -57,11 +57,10 @@ public class BandwidthClient implements Client{
     public static BandwidthClient getInstance() {
         if (INSTANCE == null) {
             Map<String, String> env = System.getenv();
-            for (String envName : env.keySet()) {
-                System.out.format("%s=%s%n", envName, env.get(envName));
-            }
+            //for (String envName : env.keySet()) {
+            //    System.out.format("%s=%s%n", envName, env.get(envName));
+            //}
 
-            // TODO set these up as heroku configuration variables
             String userId = env.get(BANDWIDTH_USER_ID);
             String apiToken = env.get(BANDWIDTH_API_TOKEN);
             String apiSecret = env.get(BANDWIDTH_API_SECRET);

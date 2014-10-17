@@ -12,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
 import org.apache.http.HttpEntity;
+import org.json.simple.JSONObject;
 
 /**
  * @author smitchell
@@ -55,14 +56,16 @@ public class RestResponse {
 	            responseText = EntityUtils.toString(entity);
 	        }
 	        
+	        if (responseText.length() == 0)	
+	        	responseText = "{}";
+	        
+	        
 	        // There are several error conditions here, this is just one. 
 	        if (responseText.contains("access-denied"))
 	        	restResponse.setError(true);
 	        
 	        restResponse.setResponseText(responseText);
-	        
-	        System.out.println("RestResponse.responseText:" + responseText);
-	
+	        	
 	        for  (Header header : httpResponse.getHeaders("Content-Type")) {
 	        	restResponse.setContentType(header.getValue());
 	        }
