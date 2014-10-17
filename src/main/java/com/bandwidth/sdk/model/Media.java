@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,21 +16,45 @@ import java.util.List;
  *
  * @author vpotapenko
  */
-public class Media extends BaseModelObject {
+public class Media extends ResourceBase {
 
-    public Media(BandwidthRestClient client) {
-        super(client, null);
+    /**
+     * Gets information about a previously sent or received MediaFile.
+     *
+     * @param id media file id
+     * @return information about media file
+     * @throws IOException
+     */
+    public static MediaFile get(String id) throws Exception {
+    	
+        return get(BandwidthClient.getInstance(), id);
     }
     
+    /**
+     * Gets information about a previously sent or received MediaFile.
+     *
+     * @param id MediaFile id
+     * @return information about MediaFile
+     * @throws IOException
+     */
+    public static MediaFile get(BandwidthClient client, String id) throws Exception {
+    	
+        String mediaUri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, id);
+
+        JSONObject jsonObject = toJSONObject(client.get(mediaUri, null));
+        return new MediaFile(client, jsonObject);
+    }
+	
+	
     /**
      * Factory method for MediaFile list, returns a list of MediaFile object with default page, size
      * @return
      * @throws IOException
      */
-    public static ResourceList<MediaFile> getMediaFiles() throws IOException {
+    public static ResourceList<MediaFile> list() throws IOException {
     	
     	// default page size is 25
-     	return getMediaFiles(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -40,10 +64,10 @@ public class Media extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<MediaFile> getMediaFiles(int page, int size) throws IOException {
+    public static ResourceList<MediaFile> list(int page, int size) throws IOException {
     	
         
-        return getMediaFiles(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -53,7 +77,7 @@ public class Media extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<MediaFile> getMediaFiles(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<MediaFile> list(BandwidthClient client, int page, int size) throws IOException {
     	
         String mediaUri = client.getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
 
@@ -65,30 +89,21 @@ public class Media extends BaseModelObject {
         return mediaFiles;
     }
     
-    
-    /**
-     * Gets a list of your media files.
-     * For test only
-     * 
-     * TODO - refactor tests to use static method. Must provide someway to use the mock client for the 
-     * static methods
-     * 
-     *
-     * @return list of media files.
-     * @throws IOException
-     */
-    public List<MediaFile> getMediaFiles(BandwidthRestClient client) throws IOException {
-        String uri = getUri();
-        JSONArray array = client.getArray(uri, null);
 
-        List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
-        for (Object obj : array) {
-            mediaFiles.add(new MediaFile(client, (JSONObject) obj));
-        }
-        return mediaFiles;
+    public Media(BandwidthClient client) {
+        super(client, null);
     }
-
     
+    @Override
+    protected void setUp(JSONObject jsonObject) {
+    	
+    	if (jsonObject != null) {
+    		this.id = (String) jsonObject.get("id");
+    		updateProperties(jsonObject);
+    	}
+    	// TODO handle the null case
+    }          
+        
 
     /**
      * Uploads media file.
@@ -100,14 +115,14 @@ public class Media extends BaseModelObject {
      * @throws IOException
      */
     public MediaFile upload(String mediaName, File file, String contentType) throws IOException {
+
         String uri = StringUtils.join(new String[]{
                 getUri(),
                 mediaName
-        }, '/');
-        client.uploadFile(uri, file, contentType);
+        }, '/');        
+        client.upload(uri, file, contentType);
 
-        // TODO - refactor to use the static method. Must provide a way to use singleton with tests.
-        List<MediaFile> mediaFiles = getMediaFiles(client);
+        List<MediaFile> mediaFiles = list(client, 0, 25);
         for (MediaFile mediaFile : mediaFiles) {
             if (StringUtils.equals(mediaFile.getMediaName(), mediaName)) return mediaFile;
         }
@@ -122,20 +137,15 @@ public class Media extends BaseModelObject {
      * @throws IOException
      */
     public void download(String mediaName, File file) throws IOException {
-        String uri = StringUtils.join(new String[]{
-                getUri(),
-                mediaName
-        }, '/');
-        client.downloadFileTo(uri, file);
+
+        String uri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, mediaName);        
+
+        client.download(uri, file);
     }
 
-    @Override
     protected String getUri() {
+  
         return client.getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
-//        return StringUtils.join(new String[]{
-//                parentUri,
-//                "media"
-//        }, '/');
     }
 
 

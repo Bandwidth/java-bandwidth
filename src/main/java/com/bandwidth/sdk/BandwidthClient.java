@@ -243,6 +243,46 @@ public class BandwidthClient implements Client{
 
         return put;
     }
+    
+    public void upload(String uri, File sourceFile, String contentType) throws IOException {
+        String path = getPath(uri);
+
+        HttpPut request = (HttpPut) setupRequest(path, PUT, null);
+        request.setEntity(contentType == null ? new FileEntity(sourceFile) : new FileEntity(sourceFile, ContentType.parse(contentType)));
+
+        performRequest(request);
+    }
+    
+    public void download(String uri, File destFile) throws IOException {
+        String path = getPath(uri);
+
+        HttpGet request = (HttpGet) setupRequest(path, GET, Collections.<String, Object>emptyMap());
+        HttpResponse response;
+
+        OutputStream outputStream = null;
+        try {
+            response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            StatusLine status = response.getStatusLine();
+            int statusCode = status.getStatusCode();
+            if (statusCode >= 400) throw new IOException(EntityUtils.toString(entity));
+
+            outputStream = new BufferedOutputStream(new FileOutputStream(destFile));
+            entity.writeTo(outputStream);
+        } catch (final ClientProtocolException e1) {
+            throw new IOException(e1);
+        } catch (final IOException e1) {
+            throw new IOException(e1);
+        } finally {
+            try {
+                if (outputStream != null) outputStream.close();
+            } catch (IOException ignore) {
+            }
+        }
+    }
+    
+    
 
     protected HttpDelete generateDeleteRequest(final String path) {
         URI uri = buildUri(path);

@@ -36,11 +36,12 @@ public class ResourceListExample {
         printErrors();
         
         printMessages();
+                
+        printMedia(); 
+        
         
         /* printPhoneNumbers();
         
-        
-        printMedia(); 
         
  
         printAvailableNumbers();
@@ -96,7 +97,7 @@ public class ResourceListExample {
 
     private static void printMedia() throws IOException {
         System.out.println("\nMedia:");
-        ResourceList<MediaFile> mediaList = Media.getMediaFiles();
+        ResourceList<MediaFile> mediaList = Media.list();
         for (MediaFile mediaFile : mediaList) {
             System.out.println(mediaFile);
         }

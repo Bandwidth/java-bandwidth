@@ -1,7 +1,9 @@
 package com.bandwidth.sdk;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,23 @@ public class MockClient extends BandwidthClient {
         
         return restResponse;
     }
+    
+    @Override
+    public void upload(String uri, File sourceFile, String contentType) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filePath", sourceFile.getPath());
+        if (contentType != null) params.put("contentType", contentType);
+
+        requests.add(new RestRequest("uploadFile", uri, params));
+    }
+
+    @Override
+    public void download(String uri, File destFile) throws IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filePath", destFile.getPath());
+        requests.add(new RestRequest("downloadFileTo", uri, params));
+    }
+
     
 
 
