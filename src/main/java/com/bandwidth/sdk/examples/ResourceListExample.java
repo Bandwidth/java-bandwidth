@@ -6,6 +6,7 @@ import com.bandwidth.sdk.model.Error;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -24,7 +25,11 @@ public class ResourceListExample {
     	// BANDWIDTH_APPPLATFORM_API_SECRET
 
         //printAccount();
+    	
+        printPhoneNumbers();
         
+        printAvailableNumbers(); 
+    	        
         printApplications();
 
         printBridges();
@@ -38,15 +43,8 @@ public class ResourceListExample {
         printMessages();
                 
         printMedia(); 
-        
-        
-        /* printPhoneNumbers();
-        
-        
- 
-        printAvailableNumbers();
-        
-        */
+               
+       
     }
     
     private static void printApplications() throws IOException {
@@ -62,7 +60,7 @@ public class ResourceListExample {
     private static void printPhoneNumbers() throws Exception {
         System.out.println("\nPhoneNumbers:");
         
-        ResourceList<PhoneNumber> phoneNumbers = PhoneNumber.getPhoneNumbers(0,4);
+        ResourceList<PhoneNumber> phoneNumbers = PhoneNumber.list(0,4);
         for (PhoneNumber number : phoneNumbers) {
             System.out.println(number);
         }
@@ -181,24 +179,27 @@ public class ResourceListExample {
     }
 
 
-    private static void printAvailableNumbers() throws IOException {
+    private static void printAvailableNumbers() throws Exception {
         System.out.println("\nAvailableNumbers:");
 
         System.out.println("LocalNumbers:");
         
-        HashMap<Object, String> params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "NC");
+        params.put("quantity", "2");
         
-        List<AvailableNumber> numbers = AvailableNumber.getAvailableNumbers();
+        List<AvailableNumber> numbers = AvailableNumber.searchLocal(params);
         for (AvailableNumber number : numbers) {
             System.out.println(number);
         }
 
-       /* System.out.println("\nTollFree:");
-        numbers = availableNumbers.queryTollFreeNumbersBuilder().quantity(2).list();
+        params.clear();
+        params.put("quantity", "2");
+        System.out.println("\nTollFree:");
+        numbers = AvailableNumber.searchTollFree(params);
         for (AvailableNumber number : numbers) {
             System.out.println(number);
-        }*/
+        }
     }
 
 

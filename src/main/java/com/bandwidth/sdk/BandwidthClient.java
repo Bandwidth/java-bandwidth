@@ -142,6 +142,7 @@ public class BandwidthClient implements Client{
 
     public RestResponse get(String uri, Map<String, Object> params) throws Exception {
         String path = getPath(uri);
+        
         RestResponse response = request(path, GET, params);
         if (response.isError()) throw new IOException(response.getResponseText());
 

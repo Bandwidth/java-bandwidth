@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author vpotapenko
  */
-public class PhoneNumber extends BaseModelObject {
+public class PhoneNumber extends ResourceBase {
 
 	/**
 	 * Factory method for PhoneNumber. Returns PhoneNumber object
@@ -25,10 +25,10 @@ public class PhoneNumber extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-    public static PhoneNumber getPhoneNumber(String phoneNumberId) throws IOException {
+    public static PhoneNumber get(String phoneNumberId) throws Exception {
         assert(phoneNumberId != null);
 
-        return getPhoneNumber(BandwidthRestClient.getInstance(), phoneNumberId);
+        return get(BandwidthClient.getInstance(), phoneNumberId);
     }
 	
 	/**
@@ -38,23 +38,23 @@ public class PhoneNumber extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-    public static PhoneNumber getPhoneNumber(BandwidthRestClient client, String phoneNumberId) throws IOException {
+    public static PhoneNumber get(BandwidthClient client, String phoneNumberId) throws Exception {
         assert(client != null && phoneNumberId != null);
         String phoneNumberUri = client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, phoneNumberId);
-        JSONObject phoneNumberObj = client.getObject(phoneNumberUri);
+        JSONObject phoneNumberObj = toJSONObject(client.get(phoneNumberUri, null));
         PhoneNumber number = new PhoneNumber(client, phoneNumberObj);
         return number;
     }
-    
+        
     /**
-     * Factory method for PhoneNumber, returns PhoneNumber object given a JSON map
-     * @param client
-     * @param jsonObject
+     * Factory method to allocate a phone number given a set of params. Note that this assumes that the phone number
+     * has been previously search for as an AvailableNumber
+     * @param params
      * @return
+     * @throws IOException
      */
-    protected static PhoneNumber getPhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
-        return new PhoneNumber(client, jsonObject);
-
+    public static PhoneNumber create(Map<String, Object> params) throws Exception {
+        return create(BandwidthClient.getInstance(), params);
     }
     
     /**
@@ -64,21 +64,10 @@ public class PhoneNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static PhoneNumber createPhoneNumber(Map<String, Object> params) throws IOException {
-        return createPhoneNumber(BandwidthRestClient.getInstance(), params);
-    }
-    
-    /**
-     * Factory method to allocate a phone number given a set of params. Note that this assumes that the phone number
-     * has been previously search for as an AvailableNumber
-     * @param params
-     * @return
-     * @throws IOException
-     */
-    public static PhoneNumber createPhoneNumber(BandwidthRestClient client, Map<String, Object> params) throws IOException {
+    public static PhoneNumber create(BandwidthClient client, Map<String, Object> params) throws Exception {
         String uri = client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
-        JSONObject jsonObject = client.create(uri, params);
-        return getPhoneNumber(client, jsonObject);
+        JSONObject jsonObject = toJSONObject(client.post(uri, params));
+        return new PhoneNumber(client, jsonObject);
     }
     
     
@@ -87,10 +76,10 @@ public class PhoneNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<PhoneNumber> getPhoneNumbers() throws IOException {
+    public static ResourceList<PhoneNumber> list() throws IOException {
     	
     	// default page size is 25
-     	return getPhoneNumbers(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -100,10 +89,10 @@ public class PhoneNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<PhoneNumber> getPhoneNumbers(int page, int size) throws IOException {
+    public static ResourceList<PhoneNumber> list(int page, int size) throws IOException {
     	
         
-        return getPhoneNumbers(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -113,7 +102,7 @@ public class PhoneNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<PhoneNumber> getPhoneNumbers(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<PhoneNumber> list(BandwidthClient client, int page, int size) throws IOException {
     	
         String resourceUri = client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
 
@@ -128,10 +117,17 @@ public class PhoneNumber extends BaseModelObject {
     
     
 
-    public PhoneNumber(BandwidthRestClient client, JSONObject jsonObject){
+    public PhoneNumber(BandwidthClient client, JSONObject jsonObject){
         super(client, jsonObject);
 
     }
+    
+    @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+    
 
     public String getUri(){
         return client.getUserResourceInstanceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH, getId());
@@ -143,7 +139,7 @@ public class PhoneNumber extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void commit() throws IOException {
+    public void commit() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
 
         String applicationId = getPropertyAsString("applicationId");
@@ -158,7 +154,7 @@ public class PhoneNumber extends BaseModelObject {
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject object = client.getObject(uri);
+        JSONObject object = toJSONObject(client.get(uri, null));
         updateProperties(object);
     }
 

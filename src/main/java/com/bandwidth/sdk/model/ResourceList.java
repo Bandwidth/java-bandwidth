@@ -134,23 +134,13 @@ public class ResourceList<E> extends ArrayList<E> {
 			client = BandwidthRestClient.getInstance();
     	
         try {
-	        RestResponse response = client.get(resourceUri, params); 
+	        RestResponse response = client.get(resourceUri, params);
 	        
 	        JSONArray array = Utils.response2JSONArray(response);
 	        
 	        for (Object obj : array) {	
-	        	
-	        	// TODO temporary dirty fix to make the refactor managable
-	        	
-	        	if (client instanceof BandwidthRestClient) {
-	        		E elem = clazz.getConstructor(BandwidthRestClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
-	        		add(elem);
-	        	}
-	        	else if (client instanceof BandwidthClient) {
-	        		E elem = clazz.getConstructor(BandwidthClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
-	        		add(elem);
-	        		
-	        	}
+        		E elem = clazz.getConstructor(BandwidthClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
+        		add(elem);
 	        }
 	        
 	        // if anything comes back, reset the index

@@ -26,11 +26,7 @@ public class ApplicationTest {
 
     @Before
     public void setUp(){
- //       mockRestClient = TestsHelper.getClient();
-        
-        // todo fix this to come from the TestsHelper factory
         mockClient = new MockClient();
-
     }
     
     @Test 

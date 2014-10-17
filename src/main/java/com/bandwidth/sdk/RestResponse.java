@@ -60,8 +60,10 @@ public class RestResponse {
 	        	responseText = "{}";
 	        
 	        
-	        // There are several error conditions here, this is just one. 
+	        // TODO There are several more error conditions that should be handled. 
 	        if (responseText.contains("access-denied"))
+	        	restResponse.setError(true);
+	        else if (restResponse.getStatus() >= 400)
 	        	restResponse.setError(true);
 	        
 	        restResponse.setResponseText(responseText);
