@@ -83,9 +83,9 @@ public class ResourceListExample {
         }
     }
     
-    private static void printErrors() throws IOException {
+    private static void printErrors() throws Exception {
         System.out.println("\nErrors:");
-        ResourceList<Error> errorList = Error.getErrors();
+        ResourceList<Error> errorList = Error.list();
         for (Error error : errorList) {
             System.out.println(error);
         }
@@ -132,16 +132,16 @@ public class ResourceListExample {
         }
     }
 
-    private static void printErrors(BandwidthRestClient client) throws IOException {
+    private static void printErrors(BandwidthRestClient client) throws Exception {
         System.out.println("\nErrors:");
 
-        List<Error> errorList = Error.getErrors();
+        List<Error> errorList = Error.list();
         for (Error error : errorList) {
             System.out.println(error);
         }
 
         if (!errorList.isEmpty()) {
-            Error error = Error.getError(errorList.get(0).getId());
+            Error error = Error.get(errorList.get(0).getId());
             System.out.println("\nError by Id");
             System.out.println(error);
         }

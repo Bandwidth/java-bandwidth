@@ -2,9 +2,11 @@ package com.bandwidth.sdk.model;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 
@@ -15,6 +17,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class ErrorTest extends BaseModelTest {
+    private MockClient mockClient;
+
+    @Before
+    public void setUp(){
+    	super.setUp();
+        mockClient = new MockClient();
+    }
 
     @Test
     public void shouldBeCreatedFromJson() throws Exception {
@@ -69,7 +78,7 @@ public class ErrorTest extends BaseModelTest {
     
     @Test
     public void shouldGetErrorList() throws Exception {
-        mockRestClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
+        mockClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"message\": \"The callback server took too long to respond\",\n" +
                 "    \"id\": \"ue-asvdtalmmhka2i63uzt66ma\",\n" +
@@ -205,22 +214,22 @@ public class ErrorTest extends BaseModelTest {
         
         
         restResponse.setContentType("application/json");
-        String mockUri = mockRestClient.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH) + "/id1";
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH) + "/id1";
         restResponse.setLocation(mockUri);
         restResponse.setStatus(201);
          
-        mockRestClient.setRestResponse(restResponse);
+        mockClient.setRestResponse(restResponse);
                 
-        List<Error> errorList = Error.getErrors(mockRestClient, 0, 2);
+        List<Error> errorList = Error.list(mockClient, 0, 2);
         assertThat(errorList.size(), equalTo(2));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("get"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors"));
     }
     
     @Test
     public void shouldGetErrorById() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
+        JSONObject jsonObj = (JSONObject) new JSONParser().parse("{\n" +
                 "  \"message\": \"The callback server took too long to respond\",\n" +
                 "  \"id\": \"ue-asvdtalmmhka2i63uzt66ma\",\n" +
                 "  \"category\": \"unavailable\",\n" +
@@ -254,13 +263,22 @@ public class ErrorTest extends BaseModelTest {
                 "  ],\n" +
                 "  \"code\": \"callback-server-timeout\"\n" +
                 "}");
-        Error error = Error.getError(mockRestClient, "ue-asvdtalmmhka2i63uzt66ma");
+        
+        RestResponse restResponse = new RestResponse();
+        restResponse.setContentType("application/json");
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH) + "/id1";
+        restResponse.setLocation(mockUri);
+        restResponse.setStatus(201);
+        restResponse.setResponseText(jsonObj.toString());
+        mockClient.setRestResponse(restResponse);
+        
+        Error error = Error.get(mockClient, "ue-asvdtalmmhka2i63uzt66ma");
         assertThat(error.getId(), equalTo("ue-asvdtalmmhka2i63uzt66ma"));
         assertThat(error.getCategory(), equalTo("unavailable"));
         assertThat(error.getMessage(), equalTo("The callback server took too long to respond"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors/ue-asvdtalmmhka2i63uzt66ma"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors/ue-asvdtalmmhka2i63uzt66ma"));
     }    
     
 }

@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author vpotapenko
  */
-public class Error extends BaseModelObject {
+public class Error extends ResourceBase {
 	
     /**
      * Factory method for Error. Returns Error object from id.
@@ -25,9 +25,9 @@ public class Error extends BaseModelObject {
      * @return information about one user error
      * @throws IOException
      */
-    public static Error getError(String id) throws IOException {
+    public static Error get(String id) throws Exception {
 
-    	return getError(BandwidthRestClient.getInstance(), id);
+    	return get(BandwidthClient.getInstance(), id);
     }
     
     /**
@@ -36,13 +36,10 @@ public class Error extends BaseModelObject {
      * @return information about one user error
      * @throws IOException
      */
-    public static Error getError(BandwidthRestClient client, String id) throws IOException {
-        String errorsUri = client.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH);
-        String uri = StringUtils.join(new String[]{
-                errorsUri,
-                id
-        }, '/');
-        JSONObject jsonObject = client.getObject(uri);
+    public static Error get(BandwidthClient client, String id) throws Exception {
+        String errorsUri = client.getUserResourceInstanceUri(BandwidthConstants.ERRORS_URI_PATH, id);
+
+        JSONObject jsonObject = toJSONObject(client.get(errorsUri, null));
         return new Error(client, errorsUri, jsonObject);
     }
     
@@ -52,10 +49,10 @@ public class Error extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Error> getErrors() throws IOException {
+    public static ResourceList<Error> list() throws IOException {
     	
     	// default page size is 25
-     	return getErrors(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -65,9 +62,9 @@ public class Error extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Error> getErrors(int page, int size) throws IOException {
+    public static ResourceList<Error> list(int page, int size) throws IOException {
     	        
-        return getErrors(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -77,7 +74,7 @@ public class Error extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Error> getErrors(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<Error> list(BandwidthClient client, int page, int size) throws IOException {
     	
         String resourceUri = client.getUserResourceUri(BandwidthConstants.ERRORS_URI_PATH);
 
@@ -92,15 +89,23 @@ public class Error extends BaseModelObject {
     }
     
 
-    public Error(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-        super(client, parentUri, jsonObject);
+    String parentUri;
+    public Error(BandwidthClient client, String parentUri, JSONObject jsonObject) {
+        super(client, jsonObject);
+        this.parentUri = parentUri;
     }
     
-    public Error(BandwidthRestClient client, JSONObject jsonObject) {
+    public Error(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
-
+    
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+    
+
     protected String getUri() {
         return null;
     }
