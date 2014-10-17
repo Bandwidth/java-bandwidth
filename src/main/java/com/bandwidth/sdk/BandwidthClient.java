@@ -72,6 +72,14 @@ public class BandwidthClient implements Client{
         }
         return INSTANCE;
     }
+    
+    public static BandwidthClient getInstance(String userId, String apiToken, String apiSecret) {
+    	if (INSTANCE == null) {
+    		INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, null, null);
+    	}
+    	
+    	return INSTANCE;
+    }
 
     protected BandwidthClient(String userId, String apiToken, String apiSecret, String apiEndpoint, String apiVersion){
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
@@ -130,7 +138,7 @@ public class BandwidthClient implements Client{
         
 
     public RestResponse post(String uri, Map<String, Object> params) throws IOException {
-        return request(getPath(uri), GET, params);
+        return request(getPath(uri), POST, params);
     }
 
     public RestResponse get(String uri, Map<String, Object> params) throws Exception {
@@ -157,7 +165,8 @@ public class BandwidthClient implements Client{
 
     protected RestResponse request(final String path, String method,
                                    Map<String, Object> paramList) throws IOException {
-        if (paramList == null) paramList = Collections.emptyMap();
+        if (paramList == null) 
+        	paramList = Collections.emptyMap();
 
         HttpUriRequest request = setupRequest(path, method, paramList);
         return performRequest(request);

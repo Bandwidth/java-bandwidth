@@ -89,9 +89,21 @@ public class Call extends ResourceBase {
         
         return calls;
     }
+    
+    /**
+     * Convenience factory method to make an outbound call
+     * @param to
+     * @param from
+     * @return
+     * @throws Exception
+     */
+    public static Call create(String to, String from) throws Exception {
+    	
+    	return create(to, from, "none");
+    }
         
     /**
-     * Conveniance method to dials a call from a phone number to a phone number
+     * Convenience method to dials a call from a phone number to a phone number
      * @param to
      * @param from
      * @param callbackUrl
@@ -99,23 +111,15 @@ public class Call extends ResourceBase {
      * @return
      * @throws IOException
      */
-    public static Call create(String to, String from, String callbackUrl, Map <String, Object> ... maps)  throws Exception
+    public static Call create(String to, String from, String callbackUrl)  throws Exception
     {
     	assert(to != null && from != null);
     	    	
-    	JSONObject params = new JSONObject();
+    	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("to", to);
     	params.put("from", from);
     	params.put("callbackUrl", callbackUrl);
-    	
-    	for (Map <String, Object>map : maps)
-    	{
-    		for (String key : map.keySet()) 
-    		{
-    			params.put(key, map.get(key));
-    		}
-    	}
-    	
+    	    	
     	Call call = create(params);
     	    	
     	return call;
@@ -131,9 +135,7 @@ public class Call extends ResourceBase {
     {
     	assert (params != null);
     	
-       	BandwidthClient client = BandwidthClient.getInstance();       	
-    	
-    	return create(client, params);
+    	return create(BandwidthClient.getInstance(), params);
     }
     
     /**
