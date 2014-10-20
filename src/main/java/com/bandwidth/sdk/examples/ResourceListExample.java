@@ -6,14 +6,15 @@ import com.bandwidth.sdk.model.Error;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 /**
- * Example using Bandwidth Java SDK API.
+ * This example shows how to pull resource lists using Bandwidth Java SDK API and access individual objects 
  *
  * @author vpotapenko
  */
-public class Example {
+public class ResourceListExample {
 
     public static void main(String[] args) throws Exception {
     	
@@ -24,7 +25,11 @@ public class Example {
     	// BANDWIDTH_APPPLATFORM_API_SECRET
 
         //printAccount();
+    	
+        printPhoneNumbers();
         
+        printAvailableNumbers(); 
+    	        
         printApplications();
 
         printBridges();
@@ -33,17 +38,13 @@ public class Example {
 
         printRecordings(); 
         
-        /* printPhoneNumbers();
-        
         printErrors();
         
-        printMedia(); 
-        
         printMessages();
- 
-        printAvailableNumbers();
-        
-        */
+                
+        printMedia(); 
+               
+       
     }
     
     private static void printApplications() throws IOException {
@@ -59,7 +60,7 @@ public class Example {
     private static void printPhoneNumbers() throws Exception {
         System.out.println("\nPhoneNumbers:");
         
-        ResourceList<PhoneNumber> phoneNumbers = PhoneNumber.getPhoneNumbers(0,4);
+        ResourceList<PhoneNumber> phoneNumbers = PhoneNumber.list(0,4);
         for (PhoneNumber number : phoneNumbers) {
             System.out.println(number);
         }
@@ -81,9 +82,9 @@ public class Example {
         }
     }
     
-    private static void printErrors() throws IOException {
+    private static void printErrors() throws Exception {
         System.out.println("\nErrors:");
-        ResourceList<Error> errorList = Error.getErrors();
+        ResourceList<Error> errorList = Error.list();
         for (Error error : errorList) {
             System.out.println(error);
         }
@@ -94,7 +95,7 @@ public class Example {
 
     private static void printMedia() throws IOException {
         System.out.println("\nMedia:");
-        ResourceList<MediaFile> mediaList = Media.getMediaFiles();
+        ResourceList<MediaFile> mediaList = Media.list();
         for (MediaFile mediaFile : mediaList) {
             System.out.println(mediaFile);
         }
@@ -116,30 +117,30 @@ public class Example {
     }
 
 
-    private static void printMessages() throws IOException {
+    private static void printMessages() throws Exception {
         System.out.println("\nMessages:");
-        List<Message> list = Message.getMessages(0, 20);
+        List<Message> list = Message.list(0, 20);
         for (Message message : list) {
             System.out.println(message);
         }
 
         if (!list.isEmpty()) {
-            Message message = Message.getMessage(list.get(0).getId());
+            Message message = Message.get(list.get(0).getId());
             System.out.println("\nMessage by Id");
             System.out.println(message);
         }
     }
 
-    private static void printErrors(BandwidthRestClient client) throws IOException {
+    private static void printErrors(BandwidthRestClient client) throws Exception {
         System.out.println("\nErrors:");
 
-        List<Error> errorList = Error.getErrors();
+        List<Error> errorList = Error.list();
         for (Error error : errorList) {
             System.out.println(error);
         }
 
         if (!errorList.isEmpty()) {
-            Error error = Error.getError(errorList.get(0).getId());
+            Error error = Error.get(errorList.get(0).getId());
             System.out.println("\nError by Id");
             System.out.println(error);
         }
@@ -178,24 +179,27 @@ public class Example {
     }
 
 
-    private static void printAvailableNumbers() throws IOException {
+    private static void printAvailableNumbers() throws Exception {
         System.out.println("\nAvailableNumbers:");
 
         System.out.println("LocalNumbers:");
         
-        HashMap<Object, String> params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "NC");
+        params.put("quantity", "2");
         
-        List<AvailableNumber> numbers = AvailableNumber.getAvailableNumbers();
+        List<AvailableNumber> numbers = AvailableNumber.searchLocal(params);
         for (AvailableNumber number : numbers) {
             System.out.println(number);
         }
 
-       /* System.out.println("\nTollFree:");
-        numbers = availableNumbers.queryTollFreeNumbersBuilder().quantity(2).list();
+        params.clear();
+        params.put("quantity", "2");
+        System.out.println("\nTollFree:");
+        numbers = AvailableNumber.searchTollFree(params);
         for (AvailableNumber number : numbers) {
             System.out.println(number);
-        }*/
+        }
     }
 
 

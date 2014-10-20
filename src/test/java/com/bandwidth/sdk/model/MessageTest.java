@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 
@@ -18,10 +19,16 @@ import static org.junit.Assert.assertThat;
 
 public class MessageTest extends BaseModelTest{
 
+	
+    private MockClient mockClient;
+
     @Before
     public void setUp(){
-        super.setUp();
+    	super.setUp();
+        mockClient = new MockClient();
     }
+
+
     @Test
     public void shouldBeCreatedFromJson() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
@@ -35,7 +42,7 @@ public class MessageTest extends BaseModelTest{
                 "  \"messageId\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
                 "  \"media\": []\n" +
                 "}");
-        Message message = new Message(mockRestClient, jsonObject);
+        Message message = new Message(mockClient, jsonObject);
         assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
         assertThat(message.getFrom(), equalTo("+number2"));
         assertThat(message.getMessageId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
@@ -44,7 +51,7 @@ public class MessageTest extends BaseModelTest{
     
     @Test
     public void shouldGetMessageList() throws Exception {
-        mockRestClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
+        mockClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"to\": \"+number1\",\n" +
                 "    \"id\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
@@ -96,28 +103,28 @@ public class MessageTest extends BaseModelTest{
                 "  }\n" +
                 "]");
 
-        String mockUri = mockRestClient.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH) + "/id1";
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH) + "/id1";
         restResponse.setLocation(mockUri);
         restResponse.setContentType("application/json");
         restResponse.setStatus(201);
          
-        mockRestClient.setRestResponse(restResponse);
+        mockClient.setRestResponse(restResponse);
         
         
-        List<Message> list = Message.getMessages(mockRestClient, 0, 5);
+        List<Message> list = Message.list(mockClient, 0, 5);
         
         assertThat(list.size(), equalTo(2));
         assertThat(list.get(0).getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("get"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
-        assertThat(mockRestClient.requests.get(0).params.get("page").toString(), equalTo("0"));
-        assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("5"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
+        assertThat(mockClient.requests.get(0).params.get("page").toString(), equalTo("0"));
+        assertThat(mockClient.requests.get(0).params.get("size").toString(), equalTo("5"));
     }
     
     @Test
     public void shouldGetMessageById() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
+    	JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
                 "  \"to\": \"+number1\",\n" +
                 "  \"id\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
                 "  \"time\": \"2013-10-02T12:15:41Z\",\n" +
@@ -128,17 +135,22 @@ public class MessageTest extends BaseModelTest{
                 "  \"messageId\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
                 "  \"media\": []\n" +
                 "}");
+        
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);   
+        
 
-        Message message = Message.getMessage(mockRestClient, "m-ckobmmd4fgqumyhssgd6lqy");
+        Message message = Message.get(mockClient, "m-ckobmmd4fgqumyhssgd6lqy");
         assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
         assertThat(message.getFrom(), equalTo("+number2"));
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages/m-ckobmmd4fgqumyhssgd6lqy"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages/m-ckobmmd4fgqumyhssgd6lqy"));
     }
     
     @Test
     public void shouldCreateMessage() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
                 "  \"to\": \"+number1\",\n" +
                 "  \"id\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
                 "  \"time\": \"2013-10-02T12:15:41Z\",\n" +
@@ -155,19 +167,29 @@ public class MessageTest extends BaseModelTest{
     	params.put("from", "+number2");
     	params.put("text", "Hola Mundo!");
     	params.put("tag", "MESSAGE_TAG");
+        
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        
+        String uri = mockClient.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
+        String path = mockClient.getPath(uri);
+        
+        System.out.println(path);
+        String locationLink = "http:" + path + "/m-ckobmmd4fgqumyhssgd6lqy";
+        response.setLocation(locationLink);
+        
+        mockClient.setRestResponse(response);   
 
-        
-       // Message message = messages.newMessageBuilder().from("from").to("to").tag("tag").text("hello").create();
-        
-        Message message = Message.createMessage(mockRestClient, params);
+                
+        Message message = Message.create(mockClient, params);
         
         assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
-        assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
-        assertThat(mockRestClient.requests.get(0).params.get("from").toString(), equalTo("+number2"));
-        assertThat(mockRestClient.requests.get(0).params.get("to").toString(), equalTo("+number1"));
-        assertThat(mockRestClient.requests.get(0).params.get("tag").toString(), equalTo("MESSAGE_TAG"));
-        assertThat(mockRestClient.requests.get(0).params.get("text").toString(), equalTo("Hola Mundo!"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
+        assertThat(mockClient.requests.get(0).params.get("from").toString(), equalTo("+number2"));
+        assertThat(mockClient.requests.get(0).params.get("to").toString(), equalTo("+number1"));
+        assertThat(mockClient.requests.get(0).params.get("tag").toString(), equalTo("MESSAGE_TAG"));
+        assertThat(mockClient.requests.get(0).params.get("text").toString(), equalTo("Hola Mundo!"));
     }
     
     

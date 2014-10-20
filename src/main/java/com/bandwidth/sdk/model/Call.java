@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author vpotapenko
  */
-public class Call extends BaseModelObject {
+public class Call extends ResourceBase {
 
 	/**
      * Factory method for Call, returns information about an active or completed call.
@@ -25,11 +25,11 @@ public class Call extends BaseModelObject {
      * @return information about a call
      * @throws IOException
      */
-    public static Call getCall(String callId) throws IOException {
+    public static Call get(String callId) throws Exception {
 
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
+    	BandwidthClient client = BandwidthClient.getInstance();
         
-        return getCall(client, callId);
+        return get(client, callId);
     }
     
     /**
@@ -37,15 +37,11 @@ public class Call extends BaseModelObject {
      * @param client
      * @param callId
      */
-    public static Call getCall(BandwidthRestClient client, String callId) throws IOException {
+    public static Call get(BandwidthClient client, String callId) throws Exception {
     	
-        String callsUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
-        String eventPath = StringUtils.join(new String[]{
-                callsUri,
-                callId
-        }, '/');
+        String callsUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, callId);
         
-        JSONObject jsonObject = client.getObject(eventPath);
+        JSONObject jsonObject = toJSONObject(client.get(callsUri, null));
         
         return new Call(client, jsonObject);
     }
@@ -55,10 +51,10 @@ public class Call extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Call> getCalls() throws IOException {
+    public static ResourceList<Call> list() throws IOException {
     	
     	// default page size is 25
-     	return getCalls(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -68,9 +64,9 @@ public class Call extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Call> getCalls(int page, int size) throws IOException {
+    public static ResourceList<Call> list(int page, int size) throws IOException {
     	
-        return getCalls(BandwidthRestClient.getInstance(), page, size);
+        return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
@@ -80,9 +76,9 @@ public class Call extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<Call> getCalls(BandwidthRestClient client, int page, int size) throws IOException {
+    public static ResourceList<Call> list(BandwidthClient client, int page, int size) throws IOException {
     	
-        String callUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+        String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
 
         ResourceList<Call> calls = 
         			new ResourceList<Call>(page, size, callUri, Call.class);
@@ -94,52 +90,20 @@ public class Call extends BaseModelObject {
         return calls;
     }
     
-    
-
-    // TODO = these methods are redundant with getCalls(). Replace this in the example with the getCalls method
-	/**
-	 * Factory method to create a call object. Takes a callId, and makes
-	 * an API call to to get the latest state and uses that for the internal
-	 * representation
-	 * 
-	 * @param callId
-	 * @return
-	 * @throws IOException
-	 */
-    public static Call createCall(String callId) throws IOException
-    {
-    	assert(callId != null);
-    	
-    	BandwidthRestClient client = BandwidthRestClient.getInstance();
-    	
-    	return createCall(client, callId);
-    }
-    
-	/**
-	 * Factory method to create a call object. Takes a callId, and makes
-	 * an API call to to get the latest state and uses that for the internal
-	 * representation
-	 * 
-	 * @param callId
-	 * @return
-	 * @throws IOException
-	 */
-    public static Call createCall(BandwidthRestClient client, String callId) throws IOException
-    {
-    	assert(client != null && callId != null);
-    	
-        String callUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.CALLS_URI_PATH) + "/" + callId;
-    	
-    	JSONObject callObj = client.getObject(callUri);
-    	
-    	Call call = new Call(client, callObj);
-    	
-    	return call;
-    }
-    
-    
     /**
-     * Conveniance method to dials a call from a phone number to a phone number
+     * Convenience factory method to make an outbound call
+     * @param to
+     * @param from
+     * @return
+     * @throws Exception
+     */
+    public static Call create(String to, String from) throws Exception {
+    	
+    	return create(to, from, "none", null);
+    }
+        
+    /**
+     * Convenience method to dials a call from a phone number to a phone number
      * @param to
      * @param from
      * @param callbackUrl
@@ -147,24 +111,17 @@ public class Call extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Call makeCall(String to, String from, String callbackUrl, Map <String, Object> ... maps)  throws IOException
+    public static Call create(String to, String from, String callbackUrl, String tag)  throws Exception
     {
     	assert(to != null && from != null);
     	    	
-    	JSONObject params = new JSONObject();
+    	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("to", to);
     	params.put("from", from);
     	params.put("callbackUrl", callbackUrl);
-    	
-    	for (Map <String, Object>map : maps)
-    	{
-    		for (String key : map.keySet()) 
-    		{
-    			params.put(key, map.get(key));
-    		}
-    	}
-    	
-    	Call call = makeCall(params);
+    	params.put("tag", tag);
+    	    	
+    	Call call = create(params);
     	    	
     	return call;
     }
@@ -175,13 +132,11 @@ public class Call extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Call makeCall(Map <String, Object>params)  throws IOException
+    public static Call create(Map <String, Object>params)  throws Exception
     {
     	assert (params != null);
     	
-       	BandwidthRestClient client = BandwidthRestClient.getInstance();       	
-    	
-    	return makeCall(client, params);
+    	return create(BandwidthClient.getInstance(), params);
     }
     
     /**
@@ -190,7 +145,7 @@ public class Call extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static Call makeCall(BandwidthRestClient client, Map <String, Object>params)  throws IOException
+    public static Call create(BandwidthClient client, Map <String, Object>params)  throws Exception
     {
     	assert (client != null && params != null);
     	    	
@@ -202,18 +157,23 @@ public class Call extends BaseModelObject {
     	
     	String callId = response.getLocation().substring(client.getPath(callUri).length() + 1);
     	
-    	Call call = getCall(client, callId);
+    	Call call = get(client, callId);
     	    	    	
     	return call;
     }
     
 
 
-    public Call(BandwidthRestClient client, JSONObject jsonObject) {
+    public Call(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
-
+    
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, getId());
 
@@ -224,7 +184,7 @@ public class Call extends BaseModelObject {
 	
 		String audioUrl = getUri() + "/audio";
 	
-		getClient().post(audioUrl, params);
+		client.post(audioUrl, params);
     }
 
     public void speakSentence(String sentence) throws IOException {
@@ -252,7 +212,7 @@ public class Call extends BaseModelObject {
 		JSONObject params = new JSONObject();
 		params.put("fileUrl", recordingUrl);
 	
-		getClient().post(audioUrl, params);
+		client.post(audioUrl, params);
     }
 
     public void playAudio(Map<String, Object> params) throws IOException {
@@ -260,7 +220,7 @@ public class Call extends BaseModelObject {
 	
 		String audioUrl = getUri() + "/audio";
 	
-		getClient().post(audioUrl, params);
+		client.post(audioUrl, params);
     }
 
     public void createGather(String promptSentence) throws IOException {
@@ -282,7 +242,7 @@ public class Call extends BaseModelObject {
 	
 		params.put("prompt", prompt);
 	
-		getClient().post(gatherUrl, params);
+		client.post(gatherUrl, params);
 
     }
 
@@ -348,12 +308,12 @@ public class Call extends BaseModelObject {
      * @return recordings
      * @throws IOException
      */
-    public List<Recording> getRecordings() throws IOException {
+    public List<Recording> getRecordings() throws Exception {
         String recordingsPath = StringUtils.join(new String[]{
                 getUri(),
                 "recordings"
         }, '/');
-        JSONArray array = client.getArray(recordingsPath, null);
+        JSONArray array = toJSONArray(client.get(recordingsPath, null));
 
         List<Recording> list = new ArrayList<Recording>();
         for (Object object : array) {
@@ -368,12 +328,12 @@ public class Call extends BaseModelObject {
      * @return events
      * @throws IOException
      */
-    public List<EventBase> getEventsList() throws IOException {
+    public List<EventBase> getEventsList() throws Exception {
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
-        JSONArray array = client.getArray(eventsPath, null);
+        JSONArray array = toJSONArray(client.get(eventsPath, null));
 
         List<EventBase> list = new ArrayList<EventBase>();
         for (Object object : array) {
@@ -389,13 +349,13 @@ public class Call extends BaseModelObject {
      * @return information about event
      * @throws IOException
      */
-    public EventBase getEvent(String eventId) throws IOException {
+    public EventBase getEvent(String eventId) throws Exception {
         String eventPath = StringUtils.join(new String[]{
                 getUri(),
                 "events",
                 eventId
         }, '/');
-        JSONObject jsonObject = client.getObject(eventPath);
+        JSONObject jsonObject = toJSONObject(client.get(eventPath, null));
         String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
@@ -408,14 +368,14 @@ public class Call extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void hangUp() throws IOException {
+    public void hangUp() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -424,14 +384,14 @@ public class Call extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void answerOnIncoming() throws IOException {
+    public void answerOnIncoming() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "active");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -440,14 +400,14 @@ public class Call extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void rejectIncoming() throws IOException {
+    public void rejectIncoming() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "rejected");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -456,14 +416,14 @@ public class Call extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void recordingOn() throws IOException {
+    public void recordingOn() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "true");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -472,14 +432,14 @@ public class Call extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void recordingOff() throws IOException {
+    public void recordingOff() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "false");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -559,13 +519,13 @@ public class Call extends BaseModelObject {
      * @return gather DTMF parameters and results
      * @throws IOException
      */
-    public Gather getGather(String gatherId) throws IOException {
+    public Gather getGather(String gatherId) throws Exception {
         String gatherPath = StringUtils.join(new String[]{
                 getUri(),
                 "gather",
                 gatherId
         }, '/');
-        JSONObject jsonObject = client.getObject(gatherPath);
+        JSONObject jsonObject = toJSONObject(client.get(gatherPath, null));
         String gathersPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
@@ -589,13 +549,13 @@ public class Call extends BaseModelObject {
         client.post(audioPath, params);
     }
 
-    private void transfer(Map<String, Object> params) throws IOException {
+    private void transfer(Map<String, Object> params) throws Exception {
         params.put("state", "transferring");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -656,7 +616,7 @@ public class Call extends BaseModelObject {
             return this;
         }
 
-        public void create() throws IOException {
+        public void create() throws Exception {
             if (!whisperAudio.isEmpty()) {
                 params.put("whisperAudio", whisperAudio);
             }

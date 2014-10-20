@@ -13,12 +13,17 @@ import org.junit.Test;
 
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
+import com.bandwidth.sdk.MockClient;
 
 public class RecordingTest extends BaseModelTest {
+	
+	MockClient mockClient;
 
     @Before
     public void setUp(){
         super.setUp();
+        
+        mockClient = new MockClient();
     }
 
     @Test
@@ -55,26 +60,28 @@ public class RecordingTest extends BaseModelTest {
         restResponse.setContentType("application/json");
         restResponse.setStatus(201);
          
-        mockRestClient.setRestResponse(restResponse);
+        mockClient.setRestResponse(restResponse);
 
         
-        List<Recording> list = Recording.getRecordings(mockRestClient, 0, 5);
+        List<Recording> list = Recording.list(mockClient, 0, 5);
         
         assertThat(list.size(), equalTo(3));
         assertThat(list.get(0).getId(), equalTo("{recordingId1}"));
         assertThat(list.get(1).getCall(), equalTo("https://.../v1/users/.../calls/{callId1}"));
         assertThat(list.get(2).getState(), equalTo("complete"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("get"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings"));
-        assertThat(mockRestClient.requests.get(0).params.get("page").toString(), equalTo("0"));
-        assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("5"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings"));
+        assertThat(mockClient.requests.get(0).params.get("page").toString(), equalTo("0"));
+        assertThat(mockClient.requests.get(0).params.get("size").toString(), equalTo("5"));
     }
 
     
     @Test
     public void shouldGetRecordingById() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
+        
+        RestResponse response = new RestResponse();
+        response.setResponseText("{\n" +
                 "  \"endTime\": \"2013-02-08T14:05:15Z\",\n" +
                 "  \"id\": \"{recordingId2}\",\n" +
                 "  \"media\": \"https://.../v1/users/.../media/{callId1}-2.wav\",\n" +
@@ -82,13 +89,14 @@ public class RecordingTest extends BaseModelTest {
                 "  \"startTime\": \"2013-02-08T14:03:47Z\",\n" +
                 "  \"state\": \"complete\"\n" +
                 "}");
+        mockClient.setRestResponse(response);
 
-        Recording recording = Recording.getRecording(mockRestClient, "{recordingId2}");
+        Recording recording = Recording.get(mockClient, "{recordingId2}");
         assertThat(recording.getId(), equalTo("{recordingId2}"));
         assertThat(recording.getState(), equalTo("complete"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings/{recordingId2}"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings/{recordingId2}"));
     }
     
 }

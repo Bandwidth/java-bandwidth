@@ -3,7 +3,7 @@ package com.bandwidth.sdk.model;
 import java.io.IOException;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,17 +18,17 @@ import java.util.HashMap;
  *
  * @author vpotapenko
  */
-public class AvailableNumber extends BaseModelObject {
+public class AvailableNumber extends ResourceBase {
 
 	/**
 	 * Factory method for AvailableNumber list, returns list of AvailableNumber objects with default page, size
 	 * @return
 	 * @throws IOException
 	 */
-    public static ResourceList<AvailableNumber> getAvailableNumbers() throws IOException {
+    public static ResourceList<AvailableNumber> list() throws IOException {
     	
     	// default page size is 25
-     	return getAvailableNumbers(0, 25);
+     	return list(0, 25);
     }
     
     /**
@@ -38,18 +38,32 @@ public class AvailableNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static ResourceList<AvailableNumber> getAvailableNumbers(int page, int size) throws IOException {
+    public static ResourceList<AvailableNumber> list(int page, int size) throws IOException {
+    	        
+        return list(BandwidthClient.getInstance(), page, size);
+    }
+    
+    /**
+     * Factory method for AvailableNumber list, returns list of AvailableNumber objects with page, 
+     * 		size preferences, with a given client
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public static ResourceList<AvailableNumber> list(BandwidthClient client, int page, int size) throws IOException {
     	
-        String availableNumbersUri = BandwidthRestClient.getInstance().getUserResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_URI_PATH);
+        String availableNumbersUri = client.getUserResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_URI_PATH);
 
         // TODO add new ResourceList ctor to allow arbitrary params
         ResourceList<AvailableNumber> availableNumbers = 
         			new ResourceList<AvailableNumber>(page, size, availableNumbersUri, AvailableNumber.class);
-
+        availableNumbers.setClient(client);
         availableNumbers.initialize();
         
         return availableNumbers;
     }
+    
     
     /**
      * Convenience factory method to return tollfree numbers based on the given search criteria
@@ -57,8 +71,8 @@ public class AvailableNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static List<AvailableNumber> searchTollFree(Map<String, Object>params) throws IOException {
-    	return searchTollFree(BandwidthRestClient.getInstance(), params);
+    public static List<AvailableNumber> searchTollFree(Map<String, Object>params) throws Exception {
+    	return searchTollFree(BandwidthClient.getInstance(), params);
     }
     
     /**
@@ -68,11 +82,11 @@ public class AvailableNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static List<AvailableNumber> searchTollFree(BandwidthRestClient client, Map<String, Object>params) 
-    																							throws IOException {
+    public static List<AvailableNumber> searchTollFree(BandwidthClient client, Map<String, Object>params) 
+    																							throws Exception {
     	
-        String tollFreeUri = client.getUserResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_TOLL_FREE_URI_PATH);
-        JSONArray array = client.getArray(tollFreeUri, params);
+        String tollFreeUri = BandwidthConstants.AVAILABLE_NUMBERS_TOLL_FREE_URI_PATH;
+        JSONArray array = toJSONArray(client.get(tollFreeUri, params));
 
         List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
@@ -87,8 +101,8 @@ public class AvailableNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static List<AvailableNumber> searchLocal(Map<String, Object>params) throws IOException {
-    	return searchTollFree(BandwidthRestClient.getInstance(), params);
+    public static List<AvailableNumber> searchLocal(Map<String, Object>params) throws Exception {
+    	return searchLocal(BandwidthClient.getInstance(), params);
     }
     
     /**
@@ -98,11 +112,11 @@ public class AvailableNumber extends BaseModelObject {
      * @return
      * @throws IOException
      */
-    public static List<AvailableNumber> searchLocal(BandwidthRestClient client, Map<String, Object>params) 
-    																							throws IOException {
+    public static List<AvailableNumber> searchLocal(BandwidthClient client, Map<String, Object>params) 
+    																							throws Exception {
     	
-        String tollFreeUri = client.getUserResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_LOCAL_URI_PATH);
-        JSONArray array = client.getArray(tollFreeUri, params);
+        String tollFreeUri = BandwidthConstants.AVAILABLE_NUMBERS_LOCAL_URI_PATH;
+        JSONArray array = toJSONArray(client.get(tollFreeUri, params));
 
         List<AvailableNumber> numbers = new ArrayList<AvailableNumber>();
         for (Object obj : array) {
@@ -112,11 +126,16 @@ public class AvailableNumber extends BaseModelObject {
     }
     
 	
-    public AvailableNumber(BandwidthRestClient client, JSONObject jsonObject) {
+    public AvailableNumber(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }      
+    
     protected String getUri() {
         return client.getBaseResourceUri(BandwidthConstants.AVAILABLE_NUMBERS_URI_PATH);
     }

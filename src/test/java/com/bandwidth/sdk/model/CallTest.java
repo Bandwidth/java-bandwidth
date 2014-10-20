@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.MockRestClient;
+import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONArray;
@@ -22,17 +22,17 @@ import static org.junit.Assert.assertThat;
 
 public class CallTest {
 
-    private MockRestClient mockRestClient;
+    private MockClient mockClient;
 
     @Before
     public void setUp(){
-        mockRestClient = TestsHelper.getClient();
+        mockClient = new MockClient();
     }
 
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
 
         assertThat(call.getId(), equalTo("c-11111111111111111111111"));
         assertThat(call.getState(), equalTo("completed"));
@@ -45,180 +45,211 @@ public class CallTest {
     }
 
     @Test
-    public void shouldHangUp() throws ParseException, IOException {
-        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+    public void shouldHangUp() throws ParseException, Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse
+        		("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
 
         call.hangUp();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
+        assertThat(mockClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
     }
 
     @Test
-    public void shouldAnswerOnIncoming() throws ParseException, IOException {
+    public void shouldAnswerOnIncoming() throws ParseException, IOException, Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
 
         call.answerOnIncoming();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("active"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("active"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
+        assertThat(mockClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
     }
 
     @Test
-    public void shouldRejectIncoming() throws ParseException, IOException {
+    public void shouldRejectIncoming() throws ParseException, IOException, Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
 
         call.rejectIncoming();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("rejected"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("rejected"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
+        assertThat(mockClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
     }
 
     @Test
-    public void shouldSwitchRecordingState() throws ParseException, IOException {
+    public void shouldSwitchRecordingState() throws ParseException, IOException, Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
 
         call.recordingOn();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("recordingEnabled").toString(), equalTo("true"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("recordingEnabled").toString(), equalTo("true"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
+        assertThat(mockClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
 
-        mockRestClient.requests.clear();
+        mockClient.requests.clear();
         call.recordingOff();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).params.get("recordingEnabled").toString(), equalTo("false"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).params.get("recordingEnabled").toString(), equalTo("false"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
+        assertThat(mockClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
     }
 
     @Test
-    public void shouldTransferCall() throws ParseException, IOException {
+    public void shouldTransferCall() throws ParseException, IOException, Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
 
         call.callTransferBuilder("8917727272").callbackUrl("url").create();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("transferring"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("transferring"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
 
-        mockRestClient.requests.clear();
+        mockClient.requests.clear();
         call.callTransferBuilder("8917727272").create();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("transferring"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("transferring"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
 
-        mockRestClient.requests.clear();
+        mockClient.requests.clear();
         call.callTransferBuilder("8917727272").gender(Gender.male).locale(SentenceLocale.French).sentence("Hello").transferCallerId("callerId").create();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
-        assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("transferring"));
-        assertThat(mockRestClient.requests.get(1).name, equalTo("getObject"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("transferring"));
+        assertThat(mockClient.requests.get(1).name, equalTo("get"));
     }
 
     @Test
     public void shouldCreateAudio() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        mockClient.result = jsonObject;
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
         call.newAudioBuilder().fileUrl("url").create();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
-        assertThat(mockRestClient.requests.get(0).params.get("fileUrl").toString(), equalTo("url"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
+        assertThat(mockClient.requests.get(0).params.get("fileUrl").toString(), equalTo("url"));
 
-        mockRestClient.requests.clear();
+        mockClient.requests.clear();
         call.stopSentence();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
-        assertThat(mockRestClient.requests.get(0).params.get("sentence").toString(), equalTo(""));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
+        assertThat(mockClient.requests.get(0).params.get("sentence").toString(), equalTo(""));
 
-        mockRestClient.requests.clear();
+        mockClient.requests.clear();
         call.stopAudioFilePlaying();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
-        assertThat(mockRestClient.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
+        assertThat(mockClient.requests.get(0).params.get("fileUrl").toString(), equalTo(""));
     }
 
     @Test
     public void shouldSendDtmf() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        mockClient.result = jsonObject;
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
         call.sendDtmf("1234");
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/dtmf"));
-        assertThat(mockRestClient.requests.get(0).params.get("dtmfOut").toString(), equalTo("1234"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/dtmf"));
+        assertThat(mockClient.requests.get(0).params.get("dtmfOut").toString(), equalTo("1234"));
     }
 
     @Test
     public void shouldGetEventsList() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}]");
+        JSONArray arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}]");
 
-        Call call = new Call(mockRestClient, jsonObject);
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
+        
+        Call call = new Call(mockClient, jsonObject);
+        
+        response.setResponseText(arrayResult.toString());
+        mockClient.setRestResponse(response);
+       
+        
+        
         List<EventBase> eventsList = call.getEventsList();
 
         assertThat(eventsList.size(), equalTo(1));
         assertThat(eventsList.get(0).getId(), equalTo("ce-hsdbdbdhd"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/events"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/events"));
     }
 
     @Test
     public void shouldGetEventById() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
+        JSONObject eventObj = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
 
-        Call call = new Call(mockRestClient, jsonObject);
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
+        
+        
+        Call call = new Call(mockClient, jsonObject);
+        
+        response.setResponseText(eventObj.toString());
+        mockClient.setRestResponse(response);
+        
+        
         EventBase event = call.getEvent("id1");
 
         assertThat(event.getId(), equalTo("ce-hsdbdbdhd"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/events/id1"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/events/id1"));
     }
 
     @Test
     public void shouldGetRecordingsList() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse("[\n" +
+        JSONArray arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "    \"endTime\": \"2013-02-08T12:06:55Z\",\n" +
                 "    \"id\": \"Id1\",\n" +
@@ -236,8 +267,17 @@ public class CallTest {
                 "    \"state\": \"complete\"\n" +
                 "  }\n" +
                 "]");
+        
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);       
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
+        
+        response.setResponseText(arrayResult.toString());
+        mockClient.setRestResponse(response);
+        
+        
         List<Recording> recordings = call.getRecordings();
 
         assertThat(recordings.size(), equalTo(2));
@@ -246,29 +286,29 @@ public class CallTest {
         assertThat(recordings.get(0).getState(), equalTo("complete"));
         assertThat(recordings.get(0).getCall(), equalTo("https://.../v1/users/.../calls/{callId}"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/recordings"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/recordings"));
     }
 
     @Test
     public void shouldCreateGather() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = jsonObject;
+        mockClient.result = jsonObject;
 
-        Call call = new Call(mockRestClient, jsonObject);
+        Call call = new Call(mockClient, jsonObject);
         call.callGatherBuilder().maxDigits(5).promptSentence("Hello").create();
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/gather"));
-        assertThat(mockRestClient.requests.get(0).params.get("maxDigits").toString(), equalTo("5"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/gather"));
+        assertThat(mockClient.requests.get(0).params.get("maxDigits").toString(), equalTo("5"));
     }
 
     @Test
     public void shouldGetGatherById() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
 
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\n" +
+        JSONObject gatherObj = (JSONObject) new JSONParser().parse("{\n" +
                         "  \"id\": \"gtr-kj4xloaq5vbpfxyeypndgxa\",\n" +
                         "  \"state\": \"completed\",\n" +
                         "  \"reason\": \"max-digits\",\n" +
@@ -278,17 +318,27 @@ public class CallTest {
                         "  \"digits\": \"123\"\n" +
                         "}");
 
-        Call call = new Call(mockRestClient, jsonObject);
+        
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);   
+        
+        Call call = new Call(mockClient, jsonObject);
+        
+        response.setResponseText(gatherObj.toString());
+        mockClient.setRestResponse(response);
+       
+        
         Gather gather = call.getGather("gtr-kj4xloaq5vbpfxyeypndgxa");
 
         assertThat(gather.getId(), equalTo("gtr-kj4xloaq5vbpfxyeypndgxa"));
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/gather/gtr-kj4xloaq5vbpfxyeypndgxa"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/gather/gtr-kj4xloaq5vbpfxyeypndgxa"));
     }
     
     @Test
     public void shouldGetCallsList() throws Exception {
-        mockRestClient.arrayResult = (JSONArray) new JSONParser().parse
+        mockClient.arrayResult = (JSONArray) new JSONParser().parse
         		("[{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"},{\"to\":\"+33333333333\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"out\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+44444444444\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id2\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}]");
 
         RestResponse restResponse = new RestResponse();
@@ -299,9 +349,9 @@ public class CallTest {
         restResponse.setContentType("application/json");
         restResponse.setStatus(201);
          
-        mockRestClient.setRestResponse(restResponse);
+        mockClient.setRestResponse(restResponse);
         
-        ResourceList<Call> callList = Call.getCalls(mockRestClient, 0, 5);
+        ResourceList<Call> callList = Call.list(mockClient, 0, 5);
        
         assertThat(callList.size(), equalTo(2));
         assertThat(callList.get(0).getId(), equalTo("id1"));
@@ -309,25 +359,29 @@ public class CallTest {
         assertThat(callList.get(1).getId(), equalTo("id2"));
         assertThat(callList.get(1).getFrom(), equalTo("+44444444444"));
 
-        //assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        //assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
-        //assertThat(mockRestClient.requests.get(0).params.get("size").toString(), equalTo("2"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
+        assertThat(mockClient.requests.get(0).params.get("size").toString(), equalTo("5"));
     }
     
     @Test
     public void shouldGetCallById() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
 
-        Call bandwidthCall = Call.getCall(mockRestClient, "id1");
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);   
+
+        Call bandwidthCall = Call.get(mockClient, "id1");
         assertThat(bandwidthCall, notNullValue());
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/id1"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/id1"));
     }
     
     @Test
     public void shouldCreateNewCall() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
+        mockClient.result = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
 
         //Call bandwidthCall = calls.newCallBuilder().from("from").to("to").bridgeId("bridgeId").callbackUrl("url").recordingEnabled(true).create();
         
@@ -336,11 +390,11 @@ public class CallTest {
         restResponse.setResponseText("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
         
         restResponse.setContentType("application/json");
-        String mockUri = mockRestClient.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH) + "/id1";
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH) + "/id1";
         restResponse.setLocation(mockUri);
         restResponse.setStatus(201);
          
-        mockRestClient.setRestResponse(restResponse);
+        mockClient.setRestResponse(restResponse);
         
     	HashMap params = new HashMap();
     	params.put("to", "+11111111111");
@@ -348,13 +402,13 @@ public class CallTest {
     	params.put("callbackUrl", "https:\\/\\/myapp.myendpoint.com");
         
         
-        Call bandwidthCall = Call.makeCall(mockRestClient, params);
+        Call bandwidthCall = Call.create(mockClient, params);
         assertThat(bandwidthCall, notNullValue());
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).params.get("from").toString(), equalTo("+11111111112"));
-        assertThat(mockRestClient.requests.get(0).params.get("to").toString(), equalTo("+11111111111"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).params.get("from").toString(), equalTo("+11111111112"));
+        assertThat(mockClient.requests.get(0).params.get("to").toString(), equalTo("+11111111111"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
     }
     
     

@@ -39,7 +39,7 @@ import java.util.Map;
  *
  * @author vpotapenko
  */
-public class BandwidthRestClient {
+public class BandwidthRestClient implements Client{
 
     protected static final String GET = "get";
     protected static final String POST = "post";
