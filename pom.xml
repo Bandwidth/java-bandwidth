@@ -10,6 +10,13 @@
     <description>Java SDK for use with the Catapult API.</description>
     <url>http://bandwidth.com</url>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -19,8 +26,8 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/bandwidthcom/java-bandwidth</url>
-        <connection>scm:git:https://github.com/bandwidthcom/java-bandwidth.git</connection>
+        <url>git@github.com:bandwidthcom/java-bandwidth.git</url>
+        <connection>scm:git:git@github.com:bandwidthcom/java-bandwidth.git</connection>
         <developerConnection>scm:git:git@github.com:bandwidthcom/java-bandwidth.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
@@ -160,16 +167,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
 </project>
