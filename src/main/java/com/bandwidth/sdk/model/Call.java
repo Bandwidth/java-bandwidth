@@ -99,7 +99,7 @@ public class Call extends ResourceBase {
      */
     public static Call create(String to, String from) throws Exception {
     	
-    	return create(to, from, "none");
+    	return create(to, from, "none", null);
     }
         
     /**
@@ -111,7 +111,7 @@ public class Call extends ResourceBase {
      * @return
      * @throws IOException
      */
-    public static Call create(String to, String from, String callbackUrl)  throws Exception
+    public static Call create(String to, String from, String callbackUrl, String tag)  throws Exception
     {
     	assert(to != null && from != null);
     	    	
@@ -119,6 +119,7 @@ public class Call extends ResourceBase {
     	params.put("to", to);
     	params.put("from", from);
     	params.put("callbackUrl", callbackUrl);
+    	params.put("tag", tag);
     	    	
     	Call call = create(params);
     	    	
