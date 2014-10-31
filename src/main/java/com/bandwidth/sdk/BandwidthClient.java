@@ -57,9 +57,6 @@ public class BandwidthClient implements Client{
     public static BandwidthClient getInstance() {
         if (INSTANCE == null) {
             Map<String, String> env = System.getenv();
-            //for (String envName : env.keySet()) {
-            //    System.out.format("%s=%s%n", envName, env.get(envName));
-            //}
 
             String userId = env.get(BANDWIDTH_USER_ID);
             String apiToken = env.get(BANDWIDTH_API_TOKEN);
@@ -120,9 +117,17 @@ public class BandwidthClient implements Client{
         String[] parts = new String[]{
                 apiEndpoint,
                 apiVersion,
-                uri,
+                null
         };
-        return StringUtils.join(parts, '/');
+        
+        String base = StringUtils.join(parts, "/");
+
+        if (!uri.contains(base)) {
+            parts[2] = uri;
+            return StringUtils.join(parts, "/");
+        } else {
+            return uri;
+        }
     }
     
     

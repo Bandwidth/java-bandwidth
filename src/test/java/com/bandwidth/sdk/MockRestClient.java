@@ -1,5 +1,8 @@
 package com.bandwidth.sdk;
 
+import static junit.framework.Assert.assertEquals;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -9,6 +12,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
