@@ -69,7 +69,7 @@ public class PhoneNumberTest extends BaseModelTest {
         restResponse.setResponseText(jsonObject.toString());
 
         restResponse.setContentType("application/json");
-        restResponse.setStatus(201);
+        restResponse.setStatus(200);
          
         mockClient.setRestResponse(restResponse);
         
@@ -133,7 +133,7 @@ public class PhoneNumberTest extends BaseModelTest {
                 "]");
 
         restResponse.setContentType("application/json");
-        restResponse.setStatus(201);
+        restResponse.setStatus(200);
          
         mockClient.setRestResponse(restResponse);
         
@@ -165,7 +165,7 @@ public class PhoneNumberTest extends BaseModelTest {
         restResponse.setResponseText(jsonObject.toString());
 
         restResponse.setContentType("application/json");
-        restResponse.setStatus(201);
+        restResponse.setStatus(200);
          
         mockClient.setRestResponse(restResponse);
         
@@ -197,7 +197,7 @@ public class PhoneNumberTest extends BaseModelTest {
         restResponse.setResponseText(jsonObject.toString());
 
         restResponse.setContentType("application/json");
-        restResponse.setStatus(201);
+        restResponse.setStatus(200);
          
         mockClient.setRestResponse(restResponse);
         
@@ -226,6 +226,7 @@ public class PhoneNumberTest extends BaseModelTest {
 		
         restResponse.setResponseText(jsonObject.toString());
 
+        restResponse.setLocation("https://api.com/v1/users/" + TestsHelper.TEST_USER_ID + "/phoneNumbers/+number");
         restResponse.setContentType("application/json");
         restResponse.setStatus(201);
          
@@ -236,7 +237,6 @@ public class PhoneNumberTest extends BaseModelTest {
     	params.put("number", "+number1");
     	params.put("name", "my new number");
     	params.put("applicationId", "a-bdllkjjddr5vuvglfluxdwi");
-        
         
         PhoneNumber number = PhoneNumber.create(mockClient, params);
         assertThat(number.getId(), equalTo("n-bdllkjjddr5vuvglfluxdwi"));

@@ -2,6 +2,8 @@ package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.RestResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -66,7 +68,9 @@ public class PhoneNumber extends ResourceBase {
      */
     public static PhoneNumber create(BandwidthClient client, Map<String, Object> params) throws Exception {
         String uri = client.getUserResourceUri(BandwidthConstants.PHONE_NUMBER_URI_PATH);
-        JSONObject jsonObject = toJSONObject(client.post(uri, params));
+        RestResponse createResponse = client.post(uri, params);
+        RestResponse getResponse = client.get(createResponse.getLocation(), null);
+        JSONObject jsonObject = toJSONObject(getResponse);
         return new PhoneNumber(client, jsonObject);
     }
     
