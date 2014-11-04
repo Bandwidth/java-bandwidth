@@ -17,11 +17,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.Header;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -323,14 +320,22 @@ public class BandwidthRestClient implements Client{
             }
         }
     }
-
+    
     public String getPath(String uri) {
         String[] parts = new String[]{
                 apiEndpoint,
                 apiVersion,
-                uri,
+                null
         };
-        return StringUtils.join(parts, '/');
+        
+        String base = StringUtils.join(parts, "/");
+
+        if (!uri.contains(base)) {
+            parts[2] = uri;
+            return StringUtils.join(parts, "/");
+        } else {
+            return uri;
+        }
     }
 
 
