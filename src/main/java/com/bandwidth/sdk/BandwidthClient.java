@@ -51,6 +51,13 @@ public class BandwidthClient implements Client{
     public static String BANDWIDTH_API_ENDPOINT = "BANDWIDTH_API_ENDPOINT";
     public static String BANDWIDTH_API_VERSION = "BANDWIDTH_API_VERSION";
 
+    public static String BANDWIDTH_SYSPROP_USER_ID = "com.bandwidth.userId";
+    public static String BANDWIDTH_SYSPROP_API_TOKEN = "com.bandwidth.apiToken";
+    public static String BANDWIDTH_SYSPROP_API_SECRET = "com.bandwidth.apiSecret";
+    public static String BANDWIDTH_SYSPROP_API_ENDPOINT = "com.bandwidth.apiEndpoint";
+    public static String BANDWIDTH_SYSPROP_API_VERSION = "com.bandwidth.apiSecret";
+
+
     protected static BandwidthClient INSTANCE;
 
 
@@ -64,18 +71,19 @@ public class BandwidthClient implements Client{
             String apiEndpoint = env.get(BANDWIDTH_API_ENDPOINT);
             String apiVersion = env.get(BANDWIDTH_API_VERSION);
 
+            if (userId == null || apiToken == null || apiSecret == null) {
+                userId = System.getProperty(BANDWIDTH_SYSPROP_USER_ID);
+                apiToken = System.getProperty(BANDWIDTH_SYSPROP_API_TOKEN);
+                apiSecret = System.getProperty(BANDWIDTH_SYSPROP_API_SECRET);
+                apiEndpoint = System.getProperty(BANDWIDTH_SYSPROP_API_ENDPOINT);
+                apiVersion = System.getProperty(BANDWIDTH_SYSPROP_API_VERSION);
+            }
+
             INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
         }
         return INSTANCE;
     }
     
-    public static BandwidthClient getInstance(String userId, String apiToken, String apiSecret) {
-    	if (INSTANCE == null) {
-    		INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, null, null);
-    	}
-    	
-    	return INSTANCE;
-    }
 
     protected BandwidthClient(String userId, String apiToken, String apiSecret, String apiEndpoint, String apiVersion){
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
@@ -94,7 +102,19 @@ public class BandwidthClient implements Client{
         httpClient = new DefaultHttpClient();
 
     }
-    
+
+    public void setCredentials(String userId, String apiToken, String apiSecret) {
+        usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
+        this.token = apiToken;
+        this.secret = apiSecret;
+    }
+
+    public void setEndpointandVersion(String apiEndpoint, String apiVersion) {
+        this.apiEndpoint = apiEndpoint;
+        this.apiVersion = apiVersion;
+    }
+
+
     public String getUserResourceUri(String path){
         if(StringUtils.isEmpty(path))
             throw new IllegalArgumentException("Path cannot be null");
