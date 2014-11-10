@@ -24,7 +24,7 @@ public class ResourceListExample {
     	// BANDWIDTH_APPPLATFORM_API_TOKEN
     	// BANDWIDTH_APPPLATFORM_API_SECRET
 
-        //printAccount();
+        printAccount();
     	
         printPhoneNumbers();
         
@@ -203,8 +203,8 @@ public class ResourceListExample {
     }
 
 
-    private static void printAccount() throws IOException {
-        Account account = Account.getAccount();
+    private static void printAccount() throws Exception {
+        Account account = Account.get();
         System.out.println(account.getAccountInfo());
 
         System.out.println("\nTransactions:");

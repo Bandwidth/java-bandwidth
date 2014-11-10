@@ -1,8 +1,10 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.MockClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -11,6 +13,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class AccountTransactionTest extends BaseModelTest {
+
+    private MockClient mockClient;
+
+    @Before
+    public void setUp() {
+        super.setUp();
+        mockClient = new MockClient();
+    }
 
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
@@ -23,7 +33,7 @@ public class AccountTransactionTest extends BaseModelTest {
                 "    \"productType\": \"sms-out\",\n" +
                 "    \"number\": \"1672617-17281\"\n" +
                 "  }");
-        AccountTransaction transaction = new AccountTransaction( mockRestClient, jsonObject);
+        AccountTransaction transaction = new AccountTransaction( mockClient, jsonObject);
 
         assertThat(transaction.getId(), equalTo("81782"));
         assertThat(transaction.getAmount(), equalTo(0.0075));

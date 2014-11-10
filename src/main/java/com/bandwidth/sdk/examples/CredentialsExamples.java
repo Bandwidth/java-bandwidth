@@ -90,10 +90,13 @@ public class CredentialsExamples {
         String apiToken = System.getenv().get("BANDWIDTH_API_TOKEN");
         String apiSecret = System.getenv().get("BANDWIDTH_API_SECRET");
 
-        if (userId != null && apiToken != null && apiSecret != null) {
-            Account account = Account.getAccount();
+        try {
+            Account account = Account.get();
 
             System.out.println(account);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
 
         // Then test if they are set via system props
@@ -102,10 +105,13 @@ public class CredentialsExamples {
         apiToken = System.getProperty("com.bandwidth.apiToken");
         apiSecret = System.getProperty("com.bandwidth.apiSecret");
 
-        if (userId != null && apiToken != null && apiSecret != null) {
-            Account account = Account.getAccount();
+        try {
+            Account account = Account.get();
 
             System.out.println(account);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
 
         // Finally just set them directly
@@ -113,12 +119,16 @@ public class CredentialsExamples {
         apiToken = "your API Token here";
         apiSecret = "your API Secret here";
 
-        BandwidthClient.getInstance().setCredentials(userId, apiToken, apiSecret);
+        try {
+            BandwidthClient.getInstance().setCredentials(userId, apiToken, apiSecret);
 
-        Account account = Account.getAccount();
+            Account account = Account.get();
 
-        System.out.println(account);
-
+            System.out.println(account);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
