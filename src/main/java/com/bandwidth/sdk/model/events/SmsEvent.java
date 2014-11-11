@@ -1,18 +1,16 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
 import org.json.simple.JSONObject;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+public class SmsEvent extends EventBase {
 
-public class TimeoutEvent extends EventBase {
-
-//	public TimeoutEvent(BandwidthRestClient client, String parentUri,
+//	public SmsEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {
 //		super(client, parentUri, jsonObject);
 //		// TODO Auto-generated constructor stub
 //	}
 
-	public TimeoutEvent(JSONObject json) {
+	public SmsEvent(JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub
 	}

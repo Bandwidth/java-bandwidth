@@ -1,18 +1,18 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
+import com.bandwidth.sdk.model.events.EventBase;
+import com.bandwidth.sdk.model.events.Visitor;
 import org.json.simple.JSONObject;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+public class SpeakEvent extends EventBase {
 
-public class IncomingCallEvent extends EventBase {
-
-//	public IncomingCallEvent(BandwidthRestClient client, String parentUri,
+//	public SpeakEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {
 //		super(client, parentUri, jsonObject);
 //		// TODO Auto-generated constructor stub
 //	}
 
-	public IncomingCallEvent(JSONObject json) {
+	public SpeakEvent(JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub
 	}

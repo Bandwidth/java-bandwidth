@@ -5,6 +5,7 @@ import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
 
+import com.bandwidth.sdk.model.events.EventBase;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

@@ -4,6 +4,7 @@ import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.model.*;
 import com.bandwidth.sdk.model.Error;
+import com.bandwidth.sdk.model.events.EventBase;
 
 import java.io.IOException;
 import java.util.HashMap;

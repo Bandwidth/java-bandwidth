@@ -4,6 +4,7 @@ import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
+import com.bandwidth.sdk.model.events.EventBase;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
