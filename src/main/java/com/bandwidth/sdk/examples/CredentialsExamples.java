@@ -77,6 +77,11 @@ import com.bandwidth.sdk.model.Account;
  * BandwidthClient.getInstance.setEndpointandVersion(apiEndpoint, apiVersion);
  *
  *
+ * It's useful to run this example to see the exceptions that are thrown when the credentials aren't set right. This
+ * will help debug your app it isn't working. For instance you notice that if your userId is set correctly, you'll get
+ * an authentication error. But if the userId is wrong, you get a uri exception.
+ *
+ *
  * Created by smitchell on 11/10/14.
  */
 public class CredentialsExamples {
@@ -93,7 +98,8 @@ public class CredentialsExamples {
         try {
             Account account = Account.get();
 
-            System.out.println(account);
+            System.out.println("Environment Vars:");
+            System.out.println(account.getAccountInfo());
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -108,7 +114,8 @@ public class CredentialsExamples {
         try {
             Account account = Account.get();
 
-            System.out.println(account);
+            System.out.println("System Props:");
+            System.out.println(account.getAccountInfo());
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -124,7 +131,8 @@ public class CredentialsExamples {
 
             Account account = Account.get();
 
-            System.out.println(account);
+            System.out.println("SDK api:");
+            System.out.println(account.getAccountInfo());
         }
         catch(Exception e) {
             e.printStackTrace();

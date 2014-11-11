@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.examples;
 
+import com.bandwidth.sdk.model.Account;
 import com.bandwidth.sdk.model.Message;
 
 /**
@@ -27,12 +28,12 @@ public class TextMessageExample {
 		
 		// put your numbers in here
 		String toNumber = "+1";// your phone number here
-		String fromNumber = "+1";// this is a number that is allocated on the AppPlatform. You can do this 
+		String fromNumber = "+1";// this is a number that is allocated on the AppPlatform. You can do this
 							 // via the dev console or with the SDK (see AllocateNumberExample)
 		
 		try {
-			
-			Message message = Message.create(toNumber, fromNumber, "Test, test! What up from App Platform");
+
+            Message message = Message.create(toNumber, fromNumber, "Test, test! What up from App Platform");
 			
 			System.out.println("message:" + message);
 		}

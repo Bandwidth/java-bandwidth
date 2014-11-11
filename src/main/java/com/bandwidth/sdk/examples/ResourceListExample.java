@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.examples;
 
+import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.model.*;
 import com.bandwidth.sdk.model.Error;
@@ -17,12 +18,9 @@ import java.util.List;
 public class ResourceListExample {
 
     public static void main(String[] args) throws Exception {
-    	
-        // be sure to set your Application Platform userId, api token and api secret 
-    	// as environment variables, e.g. 
-    	// BANDWIDTH_APPPLATFORM_USER_ID
-    	// BANDWIDTH_APPPLATFORM_API_TOKEN
-    	// BANDWIDTH_APPPLATFORM_API_SECRET
+        // Be sure to set your credentials (see CredentialsExample for the different ways to do this)
+
+        BandwidthClient.getInstance().setCredentials("your User Id here", "your API Token here", "your API Secret here");
 
         printAccount();
     	

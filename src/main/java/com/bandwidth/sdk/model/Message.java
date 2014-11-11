@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
@@ -133,10 +134,14 @@ public class Message extends ResourceBase {
         
         RestResponse response = client.post(messageUri, params);
                 
-    	// success here, otherwise an exception is generated
-        
+        if (response.getStatus() > 400) {
+            throw new AppPlatformException(response.getResponseText());
+        }
+        // success here, otherwise an exception is generated
+
+
     	String messageId = response.getLocation().substring(client.getPath(messageUri).length() + 1);
-    	
+
     	Message message = get(client, messageId);
         
         return message;
