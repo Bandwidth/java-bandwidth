@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <SpeakSentence gender="male" locale="en_US" voice="paul" >
+        This is a test of spoken sentence
+    </SpeakSentence>
+</Response>

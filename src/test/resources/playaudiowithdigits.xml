@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <PlayAudio digits="12345">http://dummy.audio.url</PlayAudio>
+</Response>
