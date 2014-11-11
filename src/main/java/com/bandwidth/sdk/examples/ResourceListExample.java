@@ -1,8 +1,10 @@
 package com.bandwidth.sdk.examples;
 
+import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.model.*;
 import com.bandwidth.sdk.model.Error;
+import com.bandwidth.sdk.model.events.EventBase;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,14 +19,11 @@ import java.util.List;
 public class ResourceListExample {
 
     public static void main(String[] args) throws Exception {
-    	
-        // be sure to set your Application Platform userId, api token and api secret 
-    	// as environment variables, e.g. 
-    	// BANDWIDTH_APPPLATFORM_USER_ID
-    	// BANDWIDTH_APPPLATFORM_API_TOKEN
-    	// BANDWIDTH_APPPLATFORM_API_SECRET
+        // Be sure to set your credentials (see CredentialsExample for the different ways to do this)
 
-        //printAccount();
+        BandwidthClient.getInstance().setCredentials("your User Id here", "your API Token here", "your API Secret here");
+
+        printAccount();
     	
         printPhoneNumbers();
         
@@ -203,8 +202,8 @@ public class ResourceListExample {
     }
 
 
-    private static void printAccount() throws IOException {
-        Account account = Account.getAccount();
+    private static void printAccount() throws Exception {
+        Account account = Account.get();
         System.out.println(account.getAccountInfo());
 
         System.out.println("\nTransactions:");

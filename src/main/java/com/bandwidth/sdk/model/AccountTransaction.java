@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -11,13 +11,18 @@ import java.util.Date;
  *
  * @author vpotapenko
  */
-public class AccountTransaction extends BaseModelObject {
+public class AccountTransaction extends ResourceBase {
 
-    public AccountTransaction(BandwidthRestClient client, JSONObject jsonObject) {
+    public AccountTransaction(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }
+
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.ACCOUNT_TRANSACTIONS_URI_PATH, getId());
     }

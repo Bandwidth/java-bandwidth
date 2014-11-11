@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,22 +14,26 @@ import java.util.*;
  *
  * @author vpotapenko
  */
-public class Account extends BaseModelObject {
+public class Account extends ResourceBase {
 	
 	/**
 	 * Account factory method. Returns Account object
-	 * @param client
 	 */
 	
-	public static Account getAccount() {
-		BandwidthRestClient client = BandwidthRestClient.getInstance();
+	public static Account get() {
+		BandwidthClient client = BandwidthClient.getInstance();
 		
 		return new Account(client);
 	}
 
-    public Account(BandwidthRestClient client){
+    public Account(BandwidthClient client){
         super(client, null);
     }
+
+    @Override
+    protected void setUp(JSONObject jsonObject) {
+    }
+
 
     /**
      * Gets your current account information.
@@ -37,8 +41,11 @@ public class Account extends BaseModelObject {
      * @return information account information
      * @throws IOException
      */
-    public AccountInfo getAccountInfo() throws IOException {
-        JSONObject jsonObject = client.getObject(getUri());
+    public AccountInfo getAccountInfo() throws Exception {
+
+        JSONObject jsonObject = toJSONObject(client.get(getUri(), null));
+
+
         return new AccountInfo(client, jsonObject);
     }
 
@@ -53,9 +60,9 @@ public class Account extends BaseModelObject {
         return new TransactionsQueryBuilder();
     }
 
-    private List<AccountTransaction> getTransactions(Map<String, Object> params) throws IOException {
+    private List<AccountTransaction> getTransactions(Map<String, Object> params) throws Exception {
         String transactionsUri = getAccountTransactionsUri();
-        JSONArray array = client.getArray(transactionsUri, params);
+        JSONArray array = toJSONArray(client.get(transactionsUri, params));
 
         List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
         for (Object obj : array) {
@@ -71,7 +78,6 @@ public class Account extends BaseModelObject {
         }, '/');
     }
 
-    @Override
     protected String getUri() {
         return client.getUserResourceUri(BandwidthConstants.ACCOUNT_URI_PATH);
     }
@@ -110,7 +116,7 @@ public class Account extends BaseModelObject {
             return this;
         }
 
-        public List<AccountTransaction> list() throws IOException {
+        public List<AccountTransaction> list() throws Exception {
             return getTransactions(params);
         }
     }

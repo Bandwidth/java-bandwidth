@@ -1,8 +1,6 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
 import org.json.simple.JSONObject;
-
-import com.bandwidth.sdk.BandwidthRestClient;
 
 public class RecordingEvent extends EventBase {
 

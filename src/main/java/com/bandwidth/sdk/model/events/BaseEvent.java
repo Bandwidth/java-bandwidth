@@ -1,12 +1,11 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.model.AbsModelObject;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.Date;
-import java.util.logging.Level;
 
 /**
  * Information about event.

@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.model.events.EventBase;
 import org.hamcrest.CoreMatchers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

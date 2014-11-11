@@ -1,6 +1,6 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
-public interface Visitor 
+public interface Visitor
 {
 	public void processEvent(IncomingCallEvent event );
 	public void processEvent(AnswerEvent event);

@@ -1,12 +1,11 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.model.ModelBase;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.Date;
-import java.util.logging.Level;
 
 /**
  * Information about event.
@@ -92,11 +91,7 @@ public class EventBase extends ModelBase implements Event {
     }
 
 
-//    public BaseEvent(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-//        super(client, parentUri, jsonObject);
-//    }
-//
-    protected EventBase(JSONObject json) {
+    public EventBase(JSONObject json) {
 		updateProperties(json);
         eventType = EventType.getEnum((String) json.get("eventType"));
     }

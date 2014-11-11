@@ -1,24 +1,22 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
 import org.json.simple.JSONObject;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+public class PlaybackEvent extends EventBase {
 
-public class DtmfEvent extends EventBase {
-
-//	public DtmfEvent(BandwidthRestClient client, String parentUri,
+//	public PlaybackEvent(BandwidthRestClient client, String parentUri,
 //			JSONObject jsonObject) {
 //		super(client, parentUri, jsonObject);
 //		// TODO Auto-generated constructor stub
 //	}
 
-	public DtmfEvent(JSONObject json) {
+	public PlaybackEvent(JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void execute(Visitor visitor) {
 		visitor.processEvent(this);
 	}
-	
+
 }

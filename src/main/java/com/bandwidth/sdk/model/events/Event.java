@@ -1,4 +1,4 @@
-package com.bandwidth.sdk.model;
+package com.bandwidth.sdk.model.events;
 
 /**
  * Interface for all Events. Implements the 'item' inteface of vistor pattern.

@@ -1,9 +1,11 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
 
+import com.bandwidth.sdk.model.events.EventBase;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -152,7 +154,10 @@ public class Call extends ResourceBase {
         String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
     	
     	RestResponse response = client.post(callUri, params);
-    	    	
+
+        if (response.getStatus() > 400) {
+            throw new AppPlatformException(response.getResponseText());
+        }
     	// success here, otherwise an exception is generated
     	
     	String callId = response.getLocation().substring(client.getPath(callUri).length() + 1);
@@ -162,7 +167,6 @@ public class Call extends ResourceBase {
     	return call;
     }
     
-
 
     public Call(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);

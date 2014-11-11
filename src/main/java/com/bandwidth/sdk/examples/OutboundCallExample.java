@@ -33,7 +33,7 @@ public class OutboundCallExample {
 		
 		// put your numbers in here
 		String toNumber = "+1";// your phone number here
-		String fromNumber = "+1";// this is a number that is allocated on the AppPlatform. You can do this 
+		String fromNumber = "+1";// this is a number that is allocated on the AppPlatform. You can do this
 							 // via the dev console or with the SDK (see AllocateNumberExample)
 		
 		Call call = Call.create(toNumber, fromNumber);
