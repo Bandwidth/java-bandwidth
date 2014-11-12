@@ -6,8 +6,18 @@ import com.bandwidth.sdk.exception.XMLMarshallingException;
 import com.bandwidth.sdk.xml.elements.*;
 import junit.framework.Assert;
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
 public class TestResponse {
 
@@ -16,7 +26,7 @@ public class TestResponse {
     private static final String DUMMY_REQUEST_URL = "http://dummy.request.url";
 
     @Test
-    public void testHangup() throws IOException, XMLMarshallingException {
+    public void testHangup() throws IOException, XMLMarshallingException, ParserConfigurationException, SAXException {
         Response response = new Response();
         Hangup hangup = new Hangup();
 
@@ -28,7 +38,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testPlayAudio() throws IOException, XMLMarshallingException, XMLInvalidTagContentException {
+    public void testPlayAudio() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException {
         Response response = new Response();
         PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL);
 
@@ -40,7 +50,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testPlayAudioWithDigits() throws IOException, XMLMarshallingException, XMLInvalidTagContentException {
+    public void testPlayAudioWithDigits() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException {
         Response response = new Response();
         PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL, "12345");
 
@@ -52,7 +62,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testRedirect() throws IOException, XMLMarshallingException, XMLInvalidAttributeException {
+    public void testRedirect() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         // timeout expressed in milliseconds
         Redirect redirect = new Redirect(DUMMY_REQUEST_URL, 6000);
@@ -65,7 +75,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testSpeakSentence() throws IOException, XMLMarshallingException, XMLInvalidAttributeException {
+    public void testSpeakSentence() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         SpeakSentence speakSentence = new SpeakSentence("This is a test of spoken sentence",
                                                         "paul",
@@ -80,7 +90,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException {
+    public void testTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         // timeout expressed in milliseconds
         Transfer transfer = new Transfer("+1234567890", "+0123456789");
@@ -93,7 +103,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testSpeakSentenceWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException {
+    public void testSpeakSentenceWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         SpeakSentence speakSentence = new SpeakSentence("This is a test of spoken sentence",
                 "paul",
@@ -108,7 +118,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testPlayAudio_Hangup() throws IOException, XMLMarshallingException, XMLInvalidTagContentException {
+    public void testPlayAudio_Hangup() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException {
         Response response = new Response();
         PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL);
         Hangup hangup = new Hangup();
@@ -122,7 +132,7 @@ public class TestResponse {
     }
 
     @Test
-    public void testTransfer_SpeakSentence_Redirect() throws IOException, XMLMarshallingException, XMLInvalidAttributeException {
+    public void testTransfer_SpeakSentence_Redirect() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         Transfer transfer = new Transfer("+1234567890", "+0123456789");
         SpeakSentence speakSentence = new SpeakSentence("Next command will get and run another xml from requestUrl",
@@ -260,10 +270,14 @@ public class TestResponse {
         new Transfer("+0123456789", "");
     }
 
-    private void compareXML (String expected, String current) {
-        // Ignore \n and " " (space) in the comparison
-        Assert.assertEquals(expected.replace("\n", "").replace(" ", ""),
-                            current.replace("\n", "").replace(" ", ""));
+    private void compareXML (String expected, String current) throws ParserConfigurationException, IOException, SAXException {
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+
+        DetailedDiff diff = new DetailedDiff(XMLUnit.compareXML(expected, current));
+
+        List<?> allDifferences = diff.getAllDifferences();
+        Assert.assertEquals("Differences found: "+ diff.toString(), 0, allDifferences.size());
     }
 
 }
