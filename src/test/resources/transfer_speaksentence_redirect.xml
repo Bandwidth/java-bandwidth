@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Transfer transferCallerId="+0123456789" transferTo="+1234567890" />
+    <SpeakSentence gender="male" locale="en_US" voice="paul">
+        Next command will get and run another xml from requestUrl
+    </SpeakSentence>
+    <Redirect requestUrl="http://dummy.request.url" timeout="6000" />
+</Response>
