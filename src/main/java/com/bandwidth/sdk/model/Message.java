@@ -109,6 +109,28 @@ public class Message extends ResourceBase {
     	
     	return create(params);
     }
+
+    /**
+     * Convience factory method to send MMS messages. Create a MediaFile object using the Media upload method
+     * and pass that in.
+     *
+     * @param to
+     * @param from
+     * @param text
+     * @param media
+     * @return
+     * @throws Exception
+     */
+    public static Message create(String to, String from, String text, MediaFile media) throws Exception {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("to", to);
+        params.put("from", from);
+        params.put("text", text);
+        params.put("media", media.getContent());
+
+        return create(params);
+    }
     
     /**
      * Convenience factory method to send a message, given a set of params

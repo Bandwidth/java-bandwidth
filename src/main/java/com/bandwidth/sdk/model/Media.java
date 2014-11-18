@@ -88,7 +88,15 @@ public class Media extends ResourceBase {
         
         return mediaFiles;
     }
-    
+
+    /**
+     * Factory method for a Media object. Use the returned media object to upload or download a file.
+     * @return
+     */
+    public static Media create() {
+
+        return new Media(BandwidthClient.getInstance());
+    }
 
     public Media(BandwidthClient client) {
         super(client, null);
@@ -114,13 +122,13 @@ public class Media extends ResourceBase {
      * @return new media file object
      * @throws IOException
      */
-    public MediaFile upload(String mediaName, File file, String contentType) throws IOException {
+    public MediaFile upload(String mediaName, File file, MediaMimeType contentType) throws IOException {
 
         String uri = StringUtils.join(new String[]{
                 getUri(),
                 mediaName
         }, '/');        
-        client.upload(uri, file, contentType);
+        client.upload(uri, file, contentType.toString());
 
         List<MediaFile> mediaFiles = list(client, 0, 25);
         for (MediaFile mediaFile : mediaFiles) {

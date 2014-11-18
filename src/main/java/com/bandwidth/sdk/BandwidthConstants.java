@@ -31,4 +31,6 @@ public abstract class BandwidthConstants {
     public static final String ACCOUNT_TRANSACTIONS_URI_PATH = "account/transactions";
     public static final String GATHER_URI_PATH = "gather";
 
+    public static final String CONTENT_TYPE_JPEG = "image/jpeg";
+
 }

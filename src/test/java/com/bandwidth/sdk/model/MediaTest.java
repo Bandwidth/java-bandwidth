@@ -95,7 +95,7 @@ public class MediaTest extends BaseModelTest{
         Media media = new Media(mockClient);
         
 
-        MediaFile mediaFile = media.upload("{mediaName3}", new File("path_to_file"), null);
+        MediaFile mediaFile = media.upload("{mediaName3}", new File("path_to_file"), MediaMimeType.IMAGE_JPG);
         assertThat(mediaFile.getUri(), equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName3}"));
 
         assertThat(mockClient.requests.get(0).name, equalTo("uploadFile"));
