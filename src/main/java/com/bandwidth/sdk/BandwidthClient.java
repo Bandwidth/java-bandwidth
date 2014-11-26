@@ -55,7 +55,7 @@ public class BandwidthClient implements Client{
     public static String BANDWIDTH_SYSPROP_API_TOKEN = "com.bandwidth.apiToken";
     public static String BANDWIDTH_SYSPROP_API_SECRET = "com.bandwidth.apiSecret";
     public static String BANDWIDTH_SYSPROP_API_ENDPOINT = "com.bandwidth.apiEndpoint";
-    public static String BANDWIDTH_SYSPROP_API_VERSION = "com.bandwidth.apiSecret";
+    public static String BANDWIDTH_SYSPROP_API_VERSION = "com.bandwidth.apiVersion";
 
 
     protected static BandwidthClient INSTANCE;
