@@ -32,7 +32,8 @@ public class Response {
         for (Elements verb : verbList) {
             try {
                 JAXBContext jc = JAXBContext.newInstance(Hangup.class,
-                        Transfer.class, SpeakSentence.class, PlayAudio.class, Redirect.class);
+                        Transfer.class, SpeakSentence.class, PlayAudio.class, Redirect.class,
+                        SendMessage.class);
                 Marshaller marshaller = jc.createMarshaller();
                 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
