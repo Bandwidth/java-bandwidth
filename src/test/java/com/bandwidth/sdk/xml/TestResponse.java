@@ -118,6 +118,34 @@ public class TestResponse {
     }
 
     @Test
+    public void testGather() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Response response = new Response();
+        // timeout expressed in milliseconds
+        Gather gather = new Gather("/baml/gather", 500, "#", 1, 5, "true");
+
+        response.add(gather);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/gather.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test
+    public void testSpeakSentenceWithinGather() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Response response = new Response();
+        SpeakSentence speakSentence = new SpeakSentence("This is a test of spoken sentence",
+                "paul",
+                "male",
+                "en_US");
+        Gather gather = new Gather("/baml/gather", 500, "#", 1, 5, "true", speakSentence);
+        response.add(gather);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/speaksentencewithingather.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test
     public void testPlayAudio_Hangup() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException {
         Response response = new Response();
         PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL);
