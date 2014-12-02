@@ -14,6 +14,7 @@ public class SendMessage implements Elements {
     private String text;
     private String requestUrl;
     private Integer requestUrlTimeout;
+    private String statusCallbackUrl;
 
     public SendMessage() {
     }
@@ -63,12 +64,12 @@ public class SendMessage implements Elements {
         }
     }
 
-    @XmlAttribute(name = "requestUrl", required = true)
+    @XmlAttribute(name = "requestUrl")
     public String getRequestUrl() {
         return requestUrl;
     }
 
-    @XmlAttribute(name = "requestUrlTimeout", required = true)
+    @XmlAttribute(name = "requestUrlTimeout")
     public Integer getRequestUrlTimeout() {
         return requestUrlTimeout;
     }
@@ -81,6 +82,21 @@ public class SendMessage implements Elements {
         }
 
         this.requestUrlTimeout = requestUrlTimeout;
+    }
+
+    @XmlAttribute(name = "statusCallbackUrl")
+    public String getStatusCallbackUrl() {
+        return statusCallbackUrl;
+    }
+
+    public void setStatusCallbackUrl(String statusCallbackUrl) throws XMLInvalidAttributeException {
+        if(statusCallbackUrl != null && (!statusCallbackUrl.trim().isEmpty())) {
+            this.statusCallbackUrl = statusCallbackUrl;
+        } else {
+            throw new XMLInvalidAttributeException("statusCallbackUrl must not be null");
+        }
+
+        this.statusCallbackUrl = statusCallbackUrl;
     }
 
     @Override

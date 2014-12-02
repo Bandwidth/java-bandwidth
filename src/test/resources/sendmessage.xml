@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <SendMessage from="+1234567890" to="+1987654320" requestUrl="http://localhost:8082/dummy" requestUrlTimeout="10" >
+    <SendMessage from="+1234567890" to="+1987654320" requestUrl="http://localhost:8082/dummy" requestUrlTimeout="10"
+                 statusCallbackUrl="http://localhost:8082/dummy/callback">
         This is the message text
     </SendMessage>
 </Response>

@@ -94,6 +94,7 @@ public class TestResponse {
         Response response = new Response();
         SendMessage sendMessage = new SendMessage("+1234567890", "+1987654320", "This is the message text");
         sendMessage.setRequestUrl("http://localhost:8082/dummy", 10);
+        sendMessage.setStatusCallbackUrl("http://localhost:8082/dummy/callback");
 
         response.add(sendMessage);
 
