@@ -47,9 +47,10 @@ public class PlayAudio implements Elements {
 
     @Override
     public String toString() {
-        return "PlayAudio{" +
-                "audioUrl='" + audioUrl + '\'' +
-                ", digits='" + digits + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("PlayAudio{");
+        sb.append("audioUrl='").append(audioUrl).append('\'');
+        sb.append(", digits='").append(digits).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

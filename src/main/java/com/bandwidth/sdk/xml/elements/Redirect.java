@@ -47,9 +47,10 @@ public class Redirect implements Elements {
 
     @Override
     public String toString() {
-        return "Redirect{" +
-                "requestUrl='" + requestUrl + '\'' +
-                ", timeout=" + timeout +
-                '}';
+        final StringBuilder sb = new StringBuilder("Redirect{");
+        sb.append("requestUrl='").append(requestUrl).append('\'');
+        sb.append(", timeout=").append(timeout);
+        sb.append('}');
+        return sb.toString();
     }
 }
