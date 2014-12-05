@@ -68,10 +68,11 @@ public class Transfer implements Elements {
 
     @Override
     public String toString() {
-        return "Transfer{" +
-                "transferTo='" + transferTo + '\'' +
-                ", transferCallerId='" + transferCallerId + '\'' +
-                ", speakSentence=" + speakSentence +
-                '}';
+        final StringBuilder sb = new StringBuilder("Transfer{");
+        sb.append("transferTo='").append(transferTo).append('\'');
+        sb.append(", transferCallerId='").append(transferCallerId).append('\'');
+        sb.append(", speakSentence=").append(speakSentence);
+        sb.append('}');
+        return sb.toString();
     }
 }

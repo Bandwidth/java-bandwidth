@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Record requestUrl="/baml/record" requestUrlTimeout="500" terminatingDigits="1234#" maxDuration="60" transcribe="true" transcribeCallbackUrl="/baml/callback" />
+</Response>
