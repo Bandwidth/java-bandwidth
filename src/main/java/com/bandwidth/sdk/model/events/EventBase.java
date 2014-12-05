@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Information about event.
@@ -117,8 +118,12 @@ public class EventBase extends ModelBase implements Event {
     	return eventType;
     }
 
-    
-    @Override
+	@Override
+	public Map<String, Object> toMap() {
+		return super.toMap();
+	}
+
+	@Override
     public String toString() {
         return "Event{" +
                 "id='" + getId() + '\'' +
