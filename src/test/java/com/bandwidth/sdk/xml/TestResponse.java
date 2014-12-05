@@ -90,6 +90,20 @@ public class TestResponse {
     }
 
     @Test
+    public void testSendMessage() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Response response = new Response();
+        SendMessage sendMessage = new SendMessage("+1234567890", "+1987654320", "This is the message text");
+        sendMessage.setRequestUrl("http://localhost:8082/dummy", 10);
+        sendMessage.setStatusCallbackUrl("http://localhost:8082/dummy/callback");
+
+        response.add(sendMessage);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/sendmessage.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test
     public void testTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         // timeout expressed in milliseconds
