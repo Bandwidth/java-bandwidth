@@ -44,7 +44,7 @@ public class Record implements Elements {
     }
 
     public void setRequestUrlTimeout(Integer requestUrlTimeout) throws XMLInvalidAttributeException {
-        if (requestUrlTimeout > 0) {
+        if ((requestUrlTimeout != null) && (requestUrlTimeout > 0)) {
             this.requestUrlTimeout = requestUrlTimeout;
         } else {
             throw new XMLInvalidAttributeException("requestUrlTimeout must be greater than zero");
@@ -69,8 +69,12 @@ public class Record implements Elements {
         return maxDuration;
     }
 
-    public void setMaxDuration(Integer maxDuration) {
-        this.maxDuration = maxDuration;
+    public void setMaxDuration(Integer maxDuration) throws XMLInvalidAttributeException {
+        if ((maxDuration != null) && (maxDuration > 0)) {
+            this.maxDuration = maxDuration;
+        } else {
+            throw new XMLInvalidAttributeException("maxDuration must not be null");
+        }
     }
 
     @XmlAttribute(name = "transcribe")
@@ -78,8 +82,12 @@ public class Record implements Elements {
         return transcribe;
     }
 
-    public void setTranscribe(Boolean transcribe) {
-        this.transcribe = transcribe;
+    public void setTranscribe(Boolean transcribe) throws XMLInvalidAttributeException {
+        if (transcribe != null) {
+            this.transcribe = transcribe;
+        } else {
+            throw new XMLInvalidAttributeException("transcribe must not be null");
+        }
     }
 
     @XmlAttribute(name = "transcribeCallbackUrl")
@@ -87,8 +95,12 @@ public class Record implements Elements {
         return transcribeCallbackUrl;
     }
 
-    public void setTranscribeCallbackUrl(String transcribeCallbackUrl) {
-        this.transcribeCallbackUrl = transcribeCallbackUrl;
+    public void setTranscribeCallbackUrl(String transcribeCallbackUrl) throws XMLInvalidAttributeException {
+        if ((transcribeCallbackUrl != null) && (!transcribeCallbackUrl.trim().isEmpty()))  {
+            this.transcribeCallbackUrl = transcribeCallbackUrl;
+        } else {
+            throw new XMLInvalidAttributeException("transcribeCallbackUrl must not be null");
+        }
     }
 
     @Override

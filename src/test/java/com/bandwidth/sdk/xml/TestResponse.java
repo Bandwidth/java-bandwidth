@@ -192,6 +192,38 @@ public class TestResponse {
         compareXML(xmlReference, output);
     }
 
+    @Test
+    public void testRecord() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Response response = new Response();
+        Record record = new Record();
+
+        record.setRequestUrl("/baml/record");
+        record.setRequestUrlTimeout(500);
+        record.setTerminatingDigits("1234#");
+        record.setMaxDuration(60);
+        record.setTranscribe(true);
+        record.setTranscribeCallbackUrl("/baml/callback");
+
+        response.add(record);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/record.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test
+    public void testRecord_Empty() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Response response = new Response();
+        Record record = new Record();
+
+        response.add(record);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/record_empty.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+
     @Test(expected = XMLInvalidTagContentException.class)
     public void testPlayAudio_InvalidCase_NullAudioUrl() throws XMLMarshallingException, XMLInvalidTagContentException {
         new PlayAudio(null);
@@ -310,6 +342,90 @@ public class TestResponse {
     @Test(expected = XMLInvalidAttributeException.class)
     public void testTransfer_InvalidCase_EmptyTransferCallerId() throws XMLInvalidAttributeException {
         new Transfer("+0123456789", "");
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_NullRequestUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setRequestUrl(null);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_BlankRequestUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setRequestUrl("");
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_SpaceRequestUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setRequestUrl(" ");
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_NullRequestUrlTimeout() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setRequestUrlTimeout(null);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_ZeroRequestUrlTimeout() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setRequestUrlTimeout(0);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_NullTerminatingDigits() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTerminatingDigits(null);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_BlankTerminatingDigits() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTerminatingDigits("");
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_SpaceTerminatingDigits() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTerminatingDigits(" ");
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_NullMaxDuration() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setMaxDuration(null);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_ZeroMaxDuration() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setMaxDuration(0);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_NullTranscribe() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTranscribe(null);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_NullTranscribeCallbackUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTranscribeCallbackUrl(null);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_BlankTranscribeCallbackUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTranscribeCallbackUrl("");
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testRecord_InvalidCase_SpaceTranscribeCallbackUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
+        Record record = new Record();
+        record.setTranscribeCallbackUrl(" ");
     }
 
     private void compareXML (String expected, String current) throws ParserConfigurationException, IOException, SAXException {
