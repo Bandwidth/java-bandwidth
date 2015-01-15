@@ -4,12 +4,6 @@ import org.json.simple.JSONObject;
 
 public class RejectEvent extends EventBase {
 
-//	public RejectEvent(BandwidthRestClient client, String parentUri,
-//			JSONObject jsonObject) {
-//		super(client, parentUri, jsonObject);
-//		// TODO Auto-generated constructor stub
-//	}
-
 	public RejectEvent(JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub

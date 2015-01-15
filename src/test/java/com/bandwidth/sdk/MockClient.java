@@ -7,18 +7,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bandwidth.sdk.model.NumberInfo;
+import com.bandwidth.sdk.model.ResourceBase;
+
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.bandwidth.sdk.MockRestClient.RestRequest;
-
 public class MockClient extends BandwidthClient {
+    private String userId;
+    private String token;
+    private String secret;
+    private String endpoint;
+    private String version;
 
 	public MockClient() {
 		super(TestsHelper.TEST_USER_ID, "", "", "", "");
 	}
-	
-	
+
+    public MockClient(String userId, String token, String secret, String endpoint, String version){
+        super(userId, token, secret, endpoint, version);
+        this.userId = userId;
+        this.token = token;
+        this.secret = secret;
+        this.endpoint = endpoint;
+        this.version = version;
+    }
+
     public final List<RestRequest> requests = new ArrayList<RestRequest>();
 
     public JSONObject result;
@@ -64,7 +79,23 @@ public class MockClient extends BandwidthClient {
         requests.add(new RestRequest("downloadFileTo", uri, params));
     }
 
-    
+
+    /**
+     * Returns information about this number.
+     *
+     * @param number searching number
+     * @return information about the number
+     * @throws IOException
+     */
+    public NumberInfo getNumberInfoByNumber(String number) throws Exception {
+        String uri = StringUtils.join(new String[]{
+                "phoneNumbers",
+                "numberInfo",
+                number
+        }, '/');
+        JSONObject object = ResourceBase.toJSONObject(get(uri, null));
+        return new NumberInfo(object);
+    }
 
 
 	public JSONObject getResult() {
@@ -99,6 +130,20 @@ public class MockClient extends BandwidthClient {
 
 	public List<RestRequest> getRequests() {
 		return requests;
-	}   
+	}
+
+
+    public static class RestRequest {
+
+        public final String name;
+        public final String uri;
+        public final Map<String, Object> params;
+
+        public RestRequest(String name, String uri, Map<String, Object> params) {
+            this.name = name;
+            this.uri = uri;
+            this.params = params;
+        }
+    }
     
 }

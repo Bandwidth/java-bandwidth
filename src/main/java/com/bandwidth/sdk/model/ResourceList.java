@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.Client;
 import com.bandwidth.sdk.RestResponse;
@@ -131,7 +129,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	protected void getPage(JSONObject params) {
 		
 		if (this.client == null)
-			client = BandwidthRestClient.getInstance();
+			client = BandwidthClient.getInstance();
     	
         try {
 	        RestResponse response = client.get(resourceUri, params);

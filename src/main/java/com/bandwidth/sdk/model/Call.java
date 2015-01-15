@@ -109,7 +109,6 @@ public class Call extends ResourceBase {
      * @param to
      * @param from
      * @param callbackUrl
-     * @param maps
      * @return
      * @throws IOException
      */

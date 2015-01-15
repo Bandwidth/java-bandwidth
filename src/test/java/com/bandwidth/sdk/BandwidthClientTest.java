@@ -1,11 +1,16 @@
 package com.bandwidth.sdk;
 
 
+import com.bandwidth.sdk.model.NumberInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.CoreMatchers;
+import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.json.simple.JSONObject;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class BandwidthClientTest {
 
@@ -15,6 +20,30 @@ public class BandwidthClientTest {
     public void setUp() throws Exception {
         client = new MockClient();
     }
+
+    @Test
+    public void shouldGetNumberInfo() throws Exception {
+        JSONObject jsonObject = (org.json.simple.JSONObject) new JSONParser().parse("{\n" +
+                "  \"created\": \"2013-09-23T16:31:15Z\",\n" +
+                "  \"name\": \"Name\",\n" +
+                "  \"number\": \"{number}\",\n" +
+                "  \"updated\": \"2013-09-23T16:42:18Z\"\n" +
+                "}");
+
+        client.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        client.setRestResponse(response);
+
+
+        NumberInfo number = client.getNumberInfoByNumber("number");
+        assertThat(number.getName(), CoreMatchers.equalTo("Name"));
+        assertThat(number.getNumber(), CoreMatchers.equalTo("{number}"));
+
+        assertThat(client.requests.get(0).name, CoreMatchers.equalTo("get"));
+        assertThat(client.requests.get(0).uri, CoreMatchers.equalTo("phoneNumbers/numberInfo/number"));
+    }
+
 
     @Test
     public void shouldGetProperUserResourceUri() throws Exception {

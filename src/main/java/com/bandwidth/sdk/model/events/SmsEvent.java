@@ -4,12 +4,6 @@ import org.json.simple.JSONObject;
 
 public class SmsEvent extends EventBase {
 
-//	public SmsEvent(BandwidthRestClient client, String parentUri,
-//			JSONObject jsonObject) {
-//		super(client, parentUri, jsonObject);
-//		// TODO Auto-generated constructor stub
-//	}
-
 	public SmsEvent(JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub

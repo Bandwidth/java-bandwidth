@@ -32,7 +32,7 @@ public abstract class ResourceBase extends ModelBase {
 	
 	protected abstract void setUp(JSONObject jsonObject);
 
-	protected static JSONObject toJSONObject(RestResponse response)
+	public static JSONObject toJSONObject(RestResponse response)
 			throws ParseException {
 		return (JSONObject) new JSONParser().parse(response.getResponseText());
 	}

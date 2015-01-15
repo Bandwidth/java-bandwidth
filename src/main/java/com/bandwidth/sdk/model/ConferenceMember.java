@@ -1,6 +1,6 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -10,13 +10,18 @@ import java.util.Date;
  *
  * @author vpotapenko
  */
-public class ConferenceMember extends BaseModelObject {
+public class ConferenceMember extends ResourceBase {
 
-    public ConferenceMember(BandwidthRestClient client, JSONObject jsonObject) {
+    public ConferenceMember(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }
+
     protected String getUri() {
         return null;
     }

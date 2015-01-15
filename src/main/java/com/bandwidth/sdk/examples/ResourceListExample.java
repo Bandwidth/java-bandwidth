@@ -1,7 +1,6 @@
 package com.bandwidth.sdk.examples;
 
 import com.bandwidth.sdk.BandwidthClient;
-import com.bandwidth.sdk.BandwidthRestClient;
 import com.bandwidth.sdk.model.*;
 import com.bandwidth.sdk.model.Error;
 import com.bandwidth.sdk.model.events.EventBase;
@@ -130,7 +129,7 @@ public class ResourceListExample {
         }
     }
 
-    private static void printErrors(BandwidthRestClient client) throws Exception {
+    private static void printErrors(BandwidthClient client) throws Exception {
         System.out.println("\nErrors:");
 
         List<Error> errorList = Error.list();

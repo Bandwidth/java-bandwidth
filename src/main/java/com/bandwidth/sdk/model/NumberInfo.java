@@ -1,6 +1,5 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthRestClient;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -11,10 +10,6 @@ import java.util.Date;
  * @author vpotapenko
  */
 public class NumberInfo extends ModelBase {
-
-//    public NumberInfo(BandwidthRestClient client, String parentUri, JSONObject jsonObject) {
-//        super(client, parentUri, jsonObject);
-//    }
 
     public NumberInfo(JSONObject jsonObject){
         updateProperties(jsonObject);

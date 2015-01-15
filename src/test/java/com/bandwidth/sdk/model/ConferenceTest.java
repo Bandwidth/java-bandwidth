@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.MockRestClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
@@ -26,7 +27,7 @@ public class ConferenceTest extends BaseModelTest{
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        Conference conference = new Conference(mockRestClient, jsonObject);
+        Conference conference = new Conference(mockClient, jsonObject);
         assertThat(conference.getId(), equalTo("{conferenceId}"));
         assertThat(conference.getState(), equalTo("created"));
         assertThat(conference.getFrom(), equalTo("+19703255647"));
@@ -41,14 +42,20 @@ public class ConferenceTest extends BaseModelTest{
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        mockRestClient.result = jsonObject;
+        mockClient.result = jsonObject;
 
-        Conference conference = new Conference(mockRestClient, jsonObject);
+
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
+
+
+        Conference conference = new Conference(mockClient, jsonObject);
         conference.complete();
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}"));
-                assertThat(mockRestClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}"));
+                assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
     }
 
     @Test
@@ -60,14 +67,19 @@ public class ConferenceTest extends BaseModelTest{
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        mockRestClient.result = jsonObject;
+        mockClient.result = jsonObject;
 
-        Conference conference = new Conference(mockRestClient, jsonObject);
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
+
+
+        Conference conference = new Conference(mockClient, jsonObject);
         conference.mute();
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}"));
-        assertThat(mockRestClient.requests.get(0).params.get("mute").toString(), equalTo("true"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}"));
+        assertThat(mockClient.requests.get(0).params.get("mute").toString(), equalTo("true"));
     }
 
     @Test
@@ -79,15 +91,20 @@ public class ConferenceTest extends BaseModelTest{
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        mockRestClient.result = jsonObject;
+        mockClient.result = jsonObject;
 
-        Conference conference = new Conference(mockRestClient, jsonObject);
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
+
+
+        Conference conference = new Conference(mockClient, jsonObject);
 
         conference.conferenceAudioBuilder().sentence("Hello").locale(SentenceLocale.German).create();
-        assertThat(mockRestClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}/audio"));
-        assertThat(mockRestClient.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
-        assertThat(mockRestClient.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}/audio"));
+        assertThat(mockClient.requests.get(0).params.get("sentence").toString(), equalTo("Hello"));
+        assertThat(mockClient.requests.get(0).params.get("locale").toString(), equalTo("de_DE"));
     }
 
     @Test
@@ -99,7 +116,7 @@ public class ConferenceTest extends BaseModelTest{
                 "    \"id\": \"{conferenceId}\",\n" +
                 "    \"state\": \"created\"\n" +
                 "}");
-        mockRestClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
+        mockClient.arrayResult = (org.json.simple.JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
                 "      \"addedTime\": \"2013-07-12T15:54:47Z\",\n" +
                 "      \"hold\": false,\n" +
@@ -132,45 +149,70 @@ public class ConferenceTest extends BaseModelTest{
                 "      \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId3}\"\n" +
                 "  }\n" +
                 "]");
-        Conference conference = new Conference(mockRestClient, jsonObject);
+
+
+        RestResponse response = new RestResponse();
+        response.setResponseText(mockClient.arrayResult.toString());
+        mockClient.setRestResponse(response);
+
+
+        Conference conference = new Conference(mockClient, jsonObject);
+
+
+
         List<ConferenceMember> members = conference.getMembers();
         assertThat(members.size(), equalTo(3));
         assertThat(members.get(1).getId(), equalTo("{memberId2}"));
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getArray"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}/members"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}/members"));
     }
     
     @Test
     public void shouldCreateNewConference() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"conf-id1\",\"createdTime\":\"2014-08-14T14:10:24Z\",\"state\":\"created\",\"from\":\"+number\",\"activeMembers\":0}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(
+                "{\"id\":\"conf-id1\",\"createdTime\":\"2014-08-14T14:10:24Z\",\"state\":\"created\",\"from\":\"+number\",\"activeMembers\":0}");
 
-        //Conference conference = conferences.newConferenceBuilder().from("fromNumber").callbackUrl("url").create();
-        
+        mockClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+
+        response.setContentType("application/json");
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH) + "/id";
+        response.setLocation(mockUri);
+        response.setStatus(201);
+
+
+        mockClient.setRestResponse(response);
+
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("from", "+number");
         params.put("callbackUrl", "http://my.callback.url");
         
-        Conference conference = Conference.createConference(mockRestClient, params);
+        Conference conference = Conference.createConference(mockClient, params);
         assertThat(conference.getId(), equalTo("conf-id1"));
         assertThat(conference.getFrom(), equalTo("+number"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("create"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences"));
-        assertThat(mockRestClient.requests.get(0).params.get("from").toString(), equalTo("+number"));
-        assertThat(mockRestClient.requests.get(0).params.get("callbackUrl").toString(), equalTo("http://my.callback.url"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences"));
+        assertThat(mockClient.requests.get(0).params.get("from").toString(), equalTo("+number"));
+        assertThat(mockClient.requests.get(0).params.get("callbackUrl").toString(), equalTo("http://my.callback.url"));
     }
     
 
     @Test
     public void shouldGetConferenceById() throws Exception {
-        mockRestClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"conf-id1\",\"createdTime\":\"2014-08-14T14:10:24Z\",\"state\":\"created\",\"from\":\"+number\",\"activeMembers\":0}");
+        JSONObject jsonObject =  (JSONObject) new JSONParser().parse("{\"id\":\"conf-id1\",\"createdTime\":\"2014-08-14T14:10:24Z\",\"state\":\"created\",\"from\":\"+number\",\"activeMembers\":0}");
 
-        Conference conference = Conference.getConference(mockRestClient, "conf-id1");
+        mockClient.result = jsonObject;
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        mockClient.setRestResponse(response);
+        Conference conference = Conference.getConference(mockClient, "conf-id1");
         assertThat(conference.getId(), equalTo("conf-id1"));
         assertThat(conference.getFrom(), equalTo("+number"));
 
-        assertThat(mockRestClient.requests.get(0).name, equalTo("getObject"));
-        assertThat(mockRestClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/conf-id1"));
+        assertThat(mockClient.requests.get(0).name, equalTo("get"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/conf-id1"));
     }
     
     

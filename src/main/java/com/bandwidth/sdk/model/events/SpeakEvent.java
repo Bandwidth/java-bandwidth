@@ -6,12 +6,6 @@ import org.json.simple.JSONObject;
 
 public class SpeakEvent extends EventBase {
 
-//	public SpeakEvent(BandwidthRestClient client, String parentUri,
-//			JSONObject jsonObject) {
-//		super(client, parentUri, jsonObject);
-//		// TODO Auto-generated constructor stub
-//	}
-
 	public SpeakEvent(JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub

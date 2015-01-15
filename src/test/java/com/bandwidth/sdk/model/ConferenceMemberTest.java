@@ -22,7 +22,7 @@ public class ConferenceMemberTest extends BaseModelTest {
                 "      \"leavingTone\": false,\n" +
                 "      \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId1}\"\n" +
                 "  }");
-        ConferenceMember member = new ConferenceMember(mockRestClient, jsonObject);
+        ConferenceMember member = new ConferenceMember(mockClient, jsonObject);
 
         assertThat(member.getId(), equalTo("{memberId1}"));
         assertThat(member.getCall(), equalTo("https://localhost:8444/v1/users/{userId}/calls/{callId1}"));

@@ -1,7 +1,9 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthRestClient;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.RestResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,7 +16,7 @@ import java.util.*;
  *
  * @author vpotapenko
  */
-public class Conference extends BaseModelObject {
+public class Conference extends ResourceBase {
 	
     /**
      * Retrieves the conference information.
@@ -23,8 +25,10 @@ public class Conference extends BaseModelObject {
      * @return conference information.
      * @throws IOException
      */
-    public static Conference getConference(String id) throws IOException {
-        return getConference(BandwidthRestClient.getInstance(), id);
+    public static Conference getConference(String id) throws Exception {
+        BandwidthClient client = BandwidthClient.getInstance();
+
+        return getConference(client, id);
     }
     
     /**
@@ -34,27 +38,25 @@ public class Conference extends BaseModelObject {
      * @return conference information.
      * @throws IOException
      */
-    public static Conference getConference(BandwidthRestClient client, String id) throws IOException {
+    public static Conference getConference(BandwidthClient client, String id) throws Exception {
         String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
         String conferenceUri = StringUtils.join(new String[]{
                 conferencesUri,
                 id
         }, '/');
-        JSONObject jsonObject = client.getObject(conferenceUri);
+        JSONObject jsonObject = toJSONObject(client.get(conferenceUri, null));
         return new Conference(client, jsonObject);
     }
-    
-	
-	
-	/**
+
+    /**
 	 * Factory method to create a conference given a set of params
 	 * @param params
 	 * @return
 	 * @throws IOException
 	 */
-    public static Conference createConference(Map<String, Object> params) throws IOException {
+    public static Conference createConference(Map<String, Object> params) throws Exception {
 
-    	return createConference(BandwidthRestClient.getInstance(), params);
+    	return createConference(BandwidthClient.getInstance(), params);
     }
     
 	/**
@@ -63,17 +65,34 @@ public class Conference extends BaseModelObject {
 	 * @return
 	 * @throws IOException
 	 */
-    public static Conference createConference(BandwidthRestClient client, Map<String, Object> params) throws IOException {
+    public static Conference createConference(BandwidthClient client, Map<String, Object> params) throws Exception {
         String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
-        JSONObject jsonObject = client.create(conferencesUri, params);
-        return new Conference(client, jsonObject);
+        RestResponse response = client.post(conferencesUri, params);
+
+        if (response.getStatus() > 400) {
+            throw new AppPlatformException(response.getResponseText());
+        }
+
+        String id = response.getLocation().substring(client.getPath(conferencesUri).length() + 1);
+
+        Conference conference = getConference(client, id);
+
+
+        return conference;
     }
-     
-    public Conference(BandwidthRestClient client, JSONObject jsonObject) {
+
+
+    public Conference(BandwidthClient client, JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
+    protected void setUp(JSONObject jsonObject) {
+        this.id = (String) jsonObject.get("id");
+        updateProperties(jsonObject);
+    }
+
+
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.CONFERENCES_URI_PATH, getId());
     }
@@ -115,14 +134,14 @@ public class Conference extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void complete() throws IOException {
+    public void complete() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -131,14 +150,14 @@ public class Conference extends BaseModelObject {
      *
      * @throws IOException
      */
-    public void mute() throws IOException {
+    public void mute() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("mute", String.valueOf(true));
 
         String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = client.getObject(uri);
+        JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -148,12 +167,12 @@ public class Conference extends BaseModelObject {
      * @return list of members
      * @throws IOException
      */
-    public List<ConferenceMember> getMembers() throws IOException {
+    public List<ConferenceMember> getMembers() throws Exception {
         String membersPath = StringUtils.join(new String[]{
                 getUri(),
                 "members"
         }, '/');
-        JSONArray array = client.getArray(membersPath, null);
+        JSONArray array = toJSONArray(client.get(membersPath, null));
 
         List<ConferenceMember> members = new ArrayList<ConferenceMember>();
         for (Object obj : array) {

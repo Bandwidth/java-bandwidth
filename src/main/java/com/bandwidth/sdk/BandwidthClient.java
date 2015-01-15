@@ -1,5 +1,6 @@
 package com.bandwidth.sdk;
 
+import com.bandwidth.sdk.model.NumberInfo;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
@@ -337,4 +338,5 @@ public class BandwidthClient implements Client{
 
         return uri;
     }
+
 }
