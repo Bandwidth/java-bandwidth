@@ -3,12 +3,10 @@ package com.bandwidth.sdk.model;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.bandwidth.sdk.MockRestClient;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
