@@ -31,6 +31,23 @@ public abstract class BandwidthConstants {
     public static final String ACCOUNT_TRANSACTIONS_URI_PATH = "account/transactions";
     public static final String GATHER_URI_PATH = "gather";
 
+    public static String BANDWIDTH_USER_ID = "BANDWIDTH_USER_ID";
+    public static String BANDWIDTH_API_TOKEN = "BANDWIDTH_API_TOKEN";
+    public static String BANDWIDTH_API_SECRET = "BANDWIDTH_API_SECRET";
+    public static String BANDWIDTH_API_ENDPOINT = "BANDWIDTH_API_ENDPOINT";
+    public static String BANDWIDTH_API_VERSION = "BANDWIDTH_API_VERSION";
+
+    public static String BANDWIDTH_SYSPROP_USER_ID = "com.bandwidth.userId";
+    public static String BANDWIDTH_SYSPROP_API_TOKEN = "com.bandwidth.apiToken";
+    public static String BANDWIDTH_SYSPROP_API_SECRET = "com.bandwidth.apiSecret";
+    public static String BANDWIDTH_SYSPROP_API_ENDPOINT = "com.bandwidth.apiEndpoint";
+    public static String BANDWIDTH_SYSPROP_API_VERSION = "com.bandwidth.apiSecret";
+
+    protected static final String GET = "get";
+    protected static final String POST = "post";
+    protected static final String PUT = "put";
+    protected static final String DELETE = "delete";
+
     public static final String CONTENT_TYPE_JPEG = "image/jpeg";
 
 }
