@@ -1,21 +1,20 @@
 package com.bandwidth.sdk.model;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
 
 public class PhoneNumberTest extends BaseModelTest {
 

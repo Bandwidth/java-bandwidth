@@ -1,17 +1,16 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.AppPlatformException;
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthClient;
-import com.bandwidth.sdk.RestResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
-
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
+import org.json.simple.JSONObject;
+
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.RestResponse;
 
 /**
  * Information about message.
@@ -25,33 +24,33 @@ public class Message extends ResourceBase {
      *
      * @param id message id
      * @return information about message
-     * @throws IOException
+     * @throws IOException unexpected error
      */
-    public static Message get(String id) throws Exception {
+    public static Message get(final String id) throws Exception {
     	
         return get(BandwidthClient.getInstance(), id);
     }
     
     /**
      * Gets information about a previously sent or received message.
-     *
+     * @param client the client.
      * @param id message id
      * @return information about message
-     * @throws IOException
+     * @throws IOException unexpected error
      */
-    public static Message get(BandwidthClient client, String id) throws Exception {
+    public static Message get(final BandwidthClient client, final String id) throws Exception {
     	
-        String messagesUri = client.getUserResourceInstanceUri(BandwidthConstants.MESSAGES_URI_PATH, id);
+        final String messagesUri = client.getUserResourceInstanceUri(BandwidthConstants.MESSAGES_URI_PATH, id);
 
-        JSONObject jsonObject = toJSONObject(client.get(messagesUri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(messagesUri, null));
         return new Message(client, jsonObject);
     }
     
     
     /**
      * Factory method for Message list, returns a list of Message objects with default page, size
-     * @return
-     * @throws IOException
+     * @return the list
+     * @throws IOException unexpected error
      */
     public static ResourceList<Message> list() throws Exception {
     	
@@ -61,12 +60,12 @@ public class Message extends ResourceBase {
     
     /**
      * Factory method for Message list, returns a list of Message objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error
      */
-    public static ResourceList<Message> list(int page, int size) throws Exception {
+    public static ResourceList<Message> list(final int page, final int size) throws Exception {
     	
         
         return list(BandwidthClient.getInstance(), page, size);
@@ -74,16 +73,17 @@ public class Message extends ResourceBase {
     
     /**
      * Factory method for Message list, returns a list of Message objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param client the client.
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error
      */
-    public static ResourceList<Message> list(BandwidthClient client, int page, int size) throws Exception {
+    public static ResourceList<Message> list(final BandwidthClient client, final int page, final int size) throws Exception {
     	
-        String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
+        final String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
 
-        ResourceList<Message> messages = 
+        final ResourceList<Message> messages = 
         			new ResourceList<Message>(page, size, messageUri, Message.class);
 
         messages.setClient(client);
@@ -94,15 +94,15 @@ public class Message extends ResourceBase {
     
     /**
      * Convenience factory method to send a message, given the to number, the from number and the text
-     * @param to
-     * @param from
-     * @param text
-     * @return
-     * @throws IOException
+     * @param to the from number
+     * @param from the to number
+     * @param text the text
+     * @return the message
+     * @throws IOException unexpected error
      */
-    public static Message create(String to, String from, String text) throws Exception{
+    public static Message create(final String to, final String from, final String text) throws Exception{
     	
-    	Map<String, Object> params = new HashMap<String, Object>();
+    	final Map<String, Object> params = new HashMap<String, Object>();
     	params.put("to", to);
     	params.put("from", from);
     	params.put("text", text);
@@ -114,16 +114,16 @@ public class Message extends ResourceBase {
      * Convience factory method to send MMS messages. Create a MediaFile object using the Media upload method
      * and pass that in.
      *
-     * @param to
-     * @param from
-     * @param text
-     * @param media
-     * @return
-     * @throws Exception
+     * @param to the from number
+     * @param from the to number
+     * @param text the text
+     * @param media the media
+     * @return the message
+     * @throws Exception error.
      */
-    public static Message create(String to, String from, String text, MediaFile media) throws Exception {
+    public static Message create(final String to, final String from, final String text, final MediaFile media) throws Exception {
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("to", to);
         params.put("from", from);
         params.put("text", text);
@@ -134,11 +134,11 @@ public class Message extends ResourceBase {
     
     /**
      * Convenience factory method to send a message, given a set of params
-     * @param params
-     * @return
-     * @throws IOException
+     * @param params the params
+     * @return the message
+     * @throws IOException unexpected error
      */
-    public static Message create(Map<String, Object>params) throws Exception {
+    public static Message create(final Map<String, Object>params) throws Exception {
     	
     	return create(BandwidthClient.getInstance(), params);
     	
@@ -146,15 +146,15 @@ public class Message extends ResourceBase {
     
     /**
      * Factory method to send a message from a params object, given a client instance
-     * @param client
-     * @param params
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param params the params
+     * @return the message
+     * @throws IOException unexpected error
      */
-    public static Message create(BandwidthClient client, Map<String, Object> params) throws Exception {
-        String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
+    public static Message create(final BandwidthClient client, final Map<String, Object> params) throws Exception {
+        final String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
         
-        RestResponse response = client.post(messageUri, params);
+        final RestResponse response = client.post(messageUri, params);
                 
         if (response.getStatus() > 400) {
             throw new AppPlatformException(response.getResponseText());
@@ -162,20 +162,20 @@ public class Message extends ResourceBase {
         // success here, otherwise an exception is generated
 
 
-    	String messageId = response.getLocation().substring(client.getPath(messageUri).length() + 1);
+    	final String messageId = response.getLocation().substring(client.getPath(messageUri).length() + 1);
 
-    	Message message = get(client, messageId);
+    	final Message message = get(client, messageId);
         
         return message;
     }
 	
 
-    public Message(BandwidthClient client, JSONObject jsonObject) {
+    public Message(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }      

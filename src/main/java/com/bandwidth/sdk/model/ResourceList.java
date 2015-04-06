@@ -17,11 +17,13 @@ import org.json.simple.JSONArray;
  * resource lists
  * @author smitchell
  *
- * @param <E>
+ * @param <E> The generic type.
  */
 public class ResourceList<E> extends ArrayList<E> {
 
-	protected int page;
+    private static final long serialVersionUID = -4240538084517234581L;
+    
+    protected int page;
 	protected int size;
 	protected int index = 0;
 	
@@ -39,7 +41,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	Client client;
 	
 
-	public ResourceList(String resourceUri, Class <E> clazz) {
+	public ResourceList(final String resourceUri, final Class <E> clazz) {
 		super();
 		page = 0;
 		size = 25;
@@ -48,7 +50,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		this.clazz = clazz;
 	}
 
-	public ResourceList(int page, int size, String resourceUri, Class <E> clazz) {
+	public ResourceList(final int page, final int size, final String resourceUri, final Class <E> clazz) {
 		super();
 
 		this.page = page;
@@ -62,7 +64,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	 */
 	public void initialize() {
 		
-        JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         params.put("page", page);
         params.put("size", size);
         
@@ -74,7 +76,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	 */
 	public Iterator<E> iterator() {
 		
-		Iterator<E> it = new Iterator<E>() {
+		final Iterator<E> it = new Iterator<E>() {
 
 			@Override
 			public boolean hasNext() {
@@ -84,7 +86,7 @@ public class ResourceList<E> extends ArrayList<E> {
 
 			@Override
 			public E next() {
-				E elem = get(index++);
+				final E elem = get(index++);
 				
 				if (index >= size() && nextLink != null) {
 					getNextPage();
@@ -108,7 +110,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	 */
 	protected void getNextPage() {
 		    	    	
-        JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         
         page++;
         
@@ -124,20 +126,20 @@ public class ResourceList<E> extends ArrayList<E> {
 	/**
 	 * This method makes the API call to get the list value for the specified resource. It loads the return
 	 * from the API into the arrayList, updates the index if necessary and sets the new link values
-	 * @param params
+	 * @param params the params
 	 */
-	protected void getPage(JSONObject params) {
+	protected void getPage(final JSONObject params) {
 		
 		if (this.client == null)
 			client = BandwidthClient.getInstance();
     	
         try {
-	        RestResponse response = client.get(resourceUri, params);
+	        final RestResponse response = client.get(resourceUri, params);
 	        
-	        JSONArray array = Utils.response2JSONArray(response);
+	        final JSONArray array = Utils.response2JSONArray(response);
 	        
-	        for (Object obj : array) {	
-        		E elem = clazz.getConstructor(BandwidthClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
+	        for (final Object obj : array) {	
+        		final E elem = clazz.getConstructor(BandwidthClient.class, JSONObject.class).newInstance(client, (JSONObject) obj);
         		add(elem);
 	        }
 	        
@@ -150,7 +152,7 @@ public class ResourceList<E> extends ArrayList<E> {
 	        this.setFirstLink(response.getFirstLink());
 	        this.setPreviousLink(response.getPreviousLink());
         }
-        catch(Exception e) {
+        catch(final Exception e) {
         	e.printStackTrace();
         }
 	}
@@ -161,7 +163,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		return super.listIterator();
 	}
 
-	public ListIterator<E> listIterator(int index) {
+	public ListIterator<E> listIterator(final int index) {
 
 		return super.listIterator(index);
 	}
@@ -170,7 +172,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		return previousLink;
 	}
 
-	public void setPreviousLink(String previousLink) {
+	public void setPreviousLink(final String previousLink) {
 		this.previousLink = previousLink;
 	}
 
@@ -178,7 +180,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		return nextLink;
 	}
 
-	public void setNextLink(String nextLink) {
+	public void setNextLink(final String nextLink) {
 		this.nextLink = nextLink;
 	}
 
@@ -186,7 +188,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		return firstLink;
 	}
 
-	public void setFirstLink(String firstLink) {
+	public void setFirstLink(final String firstLink) {
 		this.firstLink = firstLink;
 	}
 
@@ -194,7 +196,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		return response;
 	}
 
-	public void setResponse(RestResponse response) {
+	public void setResponse(final RestResponse response) {
 		this.response = response;
 	}
 
@@ -202,7 +204,7 @@ public class ResourceList<E> extends ArrayList<E> {
 		return client;
 	}
 
-	public void setClient(Client client) {
+	public void setClient(final Client client) {
 		this.client = client;
 	}
 	

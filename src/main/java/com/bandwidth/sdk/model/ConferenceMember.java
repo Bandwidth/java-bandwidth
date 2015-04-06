@@ -12,12 +12,12 @@ import java.util.Date;
  */
 public class ConferenceMember extends ResourceBase {
 
-    public ConferenceMember(BandwidthClient client, JSONObject jsonObject) {
+    public ConferenceMember(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }

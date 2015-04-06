@@ -4,12 +4,12 @@ import org.json.simple.JSONObject;
 
 public class DtmfEvent extends EventBase {
 
-	public DtmfEvent(JSONObject json) {
+	public DtmfEvent(final JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void execute(Visitor visitor) {
+	public void execute(final Visitor visitor) {
 		visitor.processEvent(this);
 	}
 	

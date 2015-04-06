@@ -16,7 +16,7 @@ public enum SentenceLocale {
 
     public final String restValue;
 
-    SentenceLocale(String restValue) {
+    SentenceLocale(final String restValue) {
         this.restValue = restValue;
     }
 }

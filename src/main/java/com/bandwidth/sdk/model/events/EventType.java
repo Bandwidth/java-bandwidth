@@ -21,7 +21,7 @@ public enum EventType {
 
 	private final String val;
 
-	private EventType(String val) {
+	private EventType(final String val) {
 		this.val = val;
 	}
 
@@ -29,7 +29,7 @@ public enum EventType {
 		return val;
 	}
 
-	public static EventType getEnum(String type) {
+	public static EventType getEnum(final String type) {
 		if (INCOMINGCALL.toString().equalsIgnoreCase(type))
 			return INCOMINGCALL;
 		else if (ANSWER.toString().equalsIgnoreCase(type))

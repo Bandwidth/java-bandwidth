@@ -23,10 +23,10 @@ public class Conference extends ResourceBase {
      *
      * @param id conference id
      * @return conference information.
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public static Conference getConference(String id) throws Exception {
-        BandwidthClient client = BandwidthClient.getInstance();
+    public static Conference getConference(final String id) throws Exception {
+        final BandwidthClient client = BandwidthClient.getInstance();
 
         return getConference(client, id);
     }
@@ -34,60 +34,62 @@ public class Conference extends ResourceBase {
     /**
      * Retrieves the conference information.
      *
-     * @param id conference id
-     * @return conference information.
-     * @throws IOException
+     * @param client the client
+     * @param id the conference id.
+     * @return id the conference id.
+     * @throws IOException unexpected error.
      */
-    public static Conference getConference(BandwidthClient client, String id) throws Exception {
-        String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
-        String conferenceUri = StringUtils.join(new String[]{
+    public static Conference getConference(final BandwidthClient client, final String id) throws Exception {
+        final String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
+        final String conferenceUri = StringUtils.join(new String[]{
                 conferencesUri,
                 id
         }, '/');
-        JSONObject jsonObject = toJSONObject(client.get(conferenceUri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(conferenceUri, null));
         return new Conference(client, jsonObject);
     }
 
     /**
 	 * Factory method to create a conference given a set of params
-	 * @param params
-	 * @return
-	 * @throws IOException
+	 * @param params the params
+	 * @return the conference
+	 * @throws IOException unexpected error.
 	 */
-    public static Conference createConference(Map<String, Object> params) throws Exception {
+    public static Conference createConference(final Map<String, Object> params) throws Exception {
 
     	return createConference(BandwidthClient.getInstance(), params);
     }
     
 	/**
 	 * Factory method to create a conference given a set of params and a client object
-	 * @param params
-	 * @return
-	 * @throws IOException
+	 * @param client the bandwidth client configuration.
+	 * @param params the params
+	 * @return the conference
+	 * @throws IOException unexpected error.
 	 */
-    public static Conference createConference(BandwidthClient client, Map<String, Object> params) throws Exception {
-        String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
-        RestResponse response = client.post(conferencesUri, params);
+    public static Conference createConference(final BandwidthClient client, final Map<String, Object> params) throws Exception {
+        final String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
+        final RestResponse response = client.post(conferencesUri, params);
 
         if (response.getStatus() > 400) {
             throw new AppPlatformException(response.getResponseText());
         }
 
-        String id = response.getLocation().substring(client.getPath(conferencesUri).length() + 1);
+        final String id = response.getLocation().substring(client.getPath(conferencesUri).length() + 1);
 
-        Conference conference = getConference(client, id);
+        final Conference conference = getConference(client, id);
 
 
         return conference;
     }
 
 
-    public Conference(BandwidthClient client, JSONObject jsonObject) {
+    public Conference(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }
@@ -132,32 +134,32 @@ public class Conference extends ResourceBase {
     /**
      * Terminates conference.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void complete() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
     /**
      * Prevent all members from speaking.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void mute() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("mute", String.valueOf(true));
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -165,17 +167,17 @@ public class Conference extends ResourceBase {
      * Gets list all members from a conference. If a member had already hung up or removed from conference it will be displayed as completed.
      *
      * @return list of members
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public List<ConferenceMember> getMembers() throws Exception {
-        String membersPath = StringUtils.join(new String[]{
+        final String membersPath = StringUtils.join(new String[]{
                 getUri(),
                 "members"
         }, '/');
-        JSONArray array = toJSONArray(client.get(membersPath, null));
+        final JSONArray array = toJSONArray(client.get(membersPath, null));
 
-        List<ConferenceMember> members = new ArrayList<ConferenceMember>();
-        for (Object obj : array) {
+        final List<ConferenceMember> members = new ArrayList<ConferenceMember>();
+        for (final Object obj : array) {
             members.add(new ConferenceMember(client, (JSONObject) obj));
         }
         return members;
@@ -192,8 +194,8 @@ public class Conference extends ResourceBase {
         return new ConferenceAudioBuilder();
     }
 
-    private void createConferenceAudio(Map<String, Object> params) throws IOException {
-        String audioPath = StringUtils.join(new String[]{
+    private void createConferenceAudio(final Map<String, Object> params) throws IOException {
+        final String audioPath = StringUtils.join(new String[]{
                 getUri(),
                 "audio"
         }, '/');
@@ -219,27 +221,27 @@ public class Conference extends ResourceBase {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public ConferenceAudioBuilder fileUrl(String fileUrl) {
+        public ConferenceAudioBuilder fileUrl(final String fileUrl) {
             params.put("fileUrl", fileUrl);
             return this;
         }
 
-        public ConferenceAudioBuilder sentence(String sentence) {
+        public ConferenceAudioBuilder sentence(final String sentence) {
             params.put("sentence", sentence);
             return this;
         }
 
-        public ConferenceAudioBuilder gender(Gender gender) {
+        public ConferenceAudioBuilder gender(final Gender gender) {
             params.put("gender", gender.name());
             return this;
         }
 
-        public ConferenceAudioBuilder locale(SentenceLocale locale) {
+        public ConferenceAudioBuilder locale(final SentenceLocale locale) {
             params.put("locale", locale.restValue);
             return this;
         }
 
-        public ConferenceAudioBuilder voice(String voice) {
+        public ConferenceAudioBuilder voice(final String voice) {
             params.put("voice", voice);
             return this;
         }

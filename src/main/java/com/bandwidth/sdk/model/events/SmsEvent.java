@@ -4,12 +4,12 @@ import org.json.simple.JSONObject;
 
 public class SmsEvent extends EventBase {
 
-	public SmsEvent(JSONObject json) {
+	public SmsEvent(final JSONObject json) {
 		super(json);
 		// TODO Auto-generated constructor stub
 	}
 
-	public void execute(Visitor visitor) {
+	public void execute(final Visitor visitor) {
 		visitor.processEvent(this);
 	}
 

@@ -4,6 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Hangup")
 public class Hangup implements Elements {
+    
+    
     public Hangup() {}
 
     @Override

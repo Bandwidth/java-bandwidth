@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class NumberInfo extends ModelBase {
 
-    public NumberInfo(JSONObject jsonObject){
+    public NumberInfo(final JSONObject jsonObject){
         updateProperties(jsonObject);
     }
 

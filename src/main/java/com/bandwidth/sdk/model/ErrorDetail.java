@@ -9,14 +9,14 @@ import org.json.simple.JSONObject;
 public class ErrorDetail extends ResourceBase {
 
 	String parentUri;
-    public ErrorDetail(BandwidthClient client, String parentUri, JSONObject jsonObject) {
+    public ErrorDetail(final BandwidthClient client, final String parentUri, final JSONObject jsonObject) {
         super(client, jsonObject);
         
         this.parentUri = parentUri;
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }      

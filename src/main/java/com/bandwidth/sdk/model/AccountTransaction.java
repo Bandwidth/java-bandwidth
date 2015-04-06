@@ -13,12 +13,12 @@ import java.util.Date;
  */
 public class AccountTransaction extends ResourceBase {
 
-    public AccountTransaction(BandwidthClient client, JSONObject jsonObject) {
+    public AccountTransaction(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }

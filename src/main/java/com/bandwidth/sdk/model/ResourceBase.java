@@ -20,24 +20,24 @@ public abstract class ResourceBase extends ModelBase {
 	protected final BandwidthClient client;
 	protected final Map<String, Object> properties = new HashMap<String, Object>();
 	
-	protected ResourceBase(JSONObject jsonObject) {
+	protected ResourceBase(final JSONObject jsonObject) {
 		this.client = BandwidthClient.getInstance();
 		setUp(jsonObject);
 	}
 
-	protected ResourceBase(BandwidthClient client, JSONObject jsonObject) {
+	protected ResourceBase(final BandwidthClient client, final JSONObject jsonObject) {
 		this.client = client;
 		setUp(jsonObject);
 	}
 	
 	protected abstract void setUp(JSONObject jsonObject);
 
-	public static JSONObject toJSONObject(RestResponse response)
+	public static JSONObject toJSONObject(final RestResponse response)
 			throws ParseException {
 		return (JSONObject) new JSONParser().parse(response.getResponseText());
 	}
 
-	protected static JSONArray toJSONArray(RestResponse response)
+	protected static JSONArray toJSONArray(final RestResponse response)
 			throws ParseException {
 		return (JSONArray) new JSONParser().parse(response.getResponseText());
 	}
@@ -46,7 +46,7 @@ public abstract class ResourceBase extends ModelBase {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

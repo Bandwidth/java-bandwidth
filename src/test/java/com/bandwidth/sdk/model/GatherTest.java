@@ -1,16 +1,16 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import org.hamcrest.CoreMatchers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
 
 public class GatherTest extends BaseModelTest {
 

@@ -110,7 +110,6 @@ public class ApplicationTest {
         
         ResourceList<Application> applicationList = Application.list(mockClient, 0, 5);
                 
-        Application application = applicationList.get(0);
         assertThat(applicationList.size(), equalTo(2));
         assertThat(applicationList.get(0).getId(), equalTo("id1"));
         assertThat(applicationList.get(0).isAutoAnswer(), equalTo(false));

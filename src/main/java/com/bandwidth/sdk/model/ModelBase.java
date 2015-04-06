@@ -18,9 +18,9 @@ public abstract class ModelBase {
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
     protected final Map<String, Object> properties = new HashMap<String, Object>();
 
-    protected void updateProperties(JSONObject jsonObject) {
+    protected void updateProperties(final JSONObject jsonObject) {
         if (jsonObject != null) {
-            for (Object key : jsonObject.keySet()) {
+            for (final Object key : jsonObject.keySet()) {
                 properties.put(key.toString(), jsonObject.get(key));
             }
         }
@@ -31,18 +31,19 @@ public abstract class ModelBase {
     }
 
 
-    protected String getPropertyAsString(String key) {
+    protected String getPropertyAsString(final String key) {
         return (String) properties.get(key);
     }
 
-    protected String[] getPropertyAsStringArray(String key) {
+    protected String[] getPropertyAsStringArray(final String key) {
         if (properties.containsKey(key)) {
             @SuppressWarnings("unchecked")
+            final
             List<Object> list = (List<Object>) properties.get(key);
 
-            String[] arr = new String[list.size()];
+            final String[] arr = new String[list.size()];
             for (int i = 0; i < list.size(); i++) {
-                Object obj = list.get(i);
+                final Object obj = list.get(i);
                 arr[i] = obj.toString();
             }
             return arr;
@@ -51,46 +52,46 @@ public abstract class ModelBase {
         }
     }
 
-    protected Object getProperty(String key) {
+    protected Object getProperty(final String key) {
         return properties.get(key);
     }
 
-    protected Boolean getPropertyAsBoolean(String key) {
-        Object o = properties.get(key);
+    protected Boolean getPropertyAsBoolean(final String key) {
+        final Object o = properties.get(key);
         if (o == null) return null;
 
         return o instanceof Boolean ? (Boolean) o : "true".equals(o.toString());
     }
 
-    protected Long getPropertyAsLong(String key) {
+    protected Long getPropertyAsLong(final String key) {
         return (Long) properties.get(key);
     }
 
-    protected Double getPropertyAsDouble(String key) {
-        Object o = properties.get(key);
+    protected Double getPropertyAsDouble(final String key) {
+        final Object o = properties.get(key);
         return (o instanceof Double) ? (Double) o : Double.parseDouble(o.toString());
     }
 
-    protected Date getPropertyAsDate(String key) {
-        Object o = properties.get(key);
+    protected Date getPropertyAsDate(final String key) {
+        final Object o = properties.get(key);
         if (o == null) return null;
         if (o instanceof Long) return new Date((Long) o);
 
         try {
             return dateFormat.parse(o.toString());
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected void putProperty(String key, Object value) {
+    protected void putProperty(final String key, final Object value) {
         properties.put(key, value);
     }
 
     protected Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
-        for (String key : properties.keySet()) {
+        for (final String key : properties.keySet()) {
             map.put(key, properties.get(key));
         }
 

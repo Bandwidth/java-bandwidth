@@ -1,12 +1,11 @@
 package com.bandwidth.sdk.model;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.junit.Test;
 
 public class ConferenceMemberTest extends BaseModelTest {
 

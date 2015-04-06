@@ -23,7 +23,7 @@ public class BandwidthClientTest {
 
     @Test
     public void shouldGetNumberInfo() throws Exception {
-        JSONObject jsonObject = (org.json.simple.JSONObject) new JSONParser().parse("{\n" +
+        final JSONObject jsonObject = (org.json.simple.JSONObject) new JSONParser().parse("{\n" +
                 "  \"created\": \"2013-09-23T16:31:15Z\",\n" +
                 "  \"name\": \"Name\",\n" +
                 "  \"number\": \"{number}\",\n" +
@@ -31,12 +31,12 @@ public class BandwidthClientTest {
                 "}");
 
         client.result = jsonObject;
-        RestResponse response = new RestResponse();
+        final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
         client.setRestResponse(response);
 
 
-        NumberInfo number = client.getNumberInfoByNumber("number");
+        final NumberInfo number = client.getNumberInfoByNumber("number");
         assertThat(number.getName(), CoreMatchers.equalTo("Name"));
         assertThat(number.getNumber(), CoreMatchers.equalTo("{number}"));
 
@@ -47,13 +47,13 @@ public class BandwidthClientTest {
 
     @Test
     public void shouldGetProperUserResourceUri() throws Exception {
-        String resourceUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+        final String resourceUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
         assertEquals("users/userId/calls", resourceUri);
     }
 
     @Test
     public void shouldGetProperResourceInstanceUri() throws Exception {
-        String resourceInstanceUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, "myId");
+        final String resourceInstanceUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, "myId");
         assertEquals("users/userId/calls/myId", resourceInstanceUri);
     }
 
@@ -84,14 +84,14 @@ public class BandwidthClientTest {
     
     @Test
     public void getPathForPartial() throws Exception{
-        String partial = "users";
-        String[] parts = new String[]{
+        final String partial = "users";
+        final String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
                 partial
         };
-        String uri = StringUtils.join(parts, "/");
-        String path = client.getPath(uri);
+        final String uri = StringUtils.join(parts, "/");
+        final String path = client.getPath(uri);
 
         // a full uri should be returned
         assertEquals(path, uri);
@@ -99,13 +99,13 @@ public class BandwidthClientTest {
     
     @Test
     public void getPathForFullUri() throws Exception{
-        String[] parts = new String[]{
+        final String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
                 "users"
         };
-        String uri = StringUtils.join(parts, "/");
-        String path = client.getPath(uri);
+        final String uri = StringUtils.join(parts, "/");
+        final String path = client.getPath(uri);
 
         // uri is already a full uri, so it should be returned
         assertEquals(path, uri);

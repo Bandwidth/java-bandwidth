@@ -87,8 +87,11 @@ import com.bandwidth.sdk.model.Account;
 public class CredentialsExamples {
 
 
-
-    public static void main(String[]args) {
+    /**
+     * 
+     * @param args the args.
+     */
+    public static void main(final String[]args) {
 
         // First test if the creds are set via environment args
         String userId = System.getenv().get("BANDWIDTH_USER_ID");
@@ -96,12 +99,12 @@ public class CredentialsExamples {
         String apiSecret = System.getenv().get("BANDWIDTH_API_SECRET");
 
         try {
-            Account account = Account.get();
+            final Account account = Account.get();
 
             System.out.println("Environment Vars:");
             System.out.println(account.getAccountInfo());
         }
-        catch(Exception e) {
+        catch(final Exception e) {
             e.printStackTrace();
         }
 
@@ -112,12 +115,12 @@ public class CredentialsExamples {
         apiSecret = System.getProperty("com.bandwidth.apiSecret");
 
         try {
-            Account account = Account.get();
+            final Account account = Account.get();
 
             System.out.println("System Props:");
             System.out.println(account.getAccountInfo());
         }
-        catch(Exception e) {
+        catch(final Exception e) {
             e.printStackTrace();
         }
 
@@ -129,12 +132,12 @@ public class CredentialsExamples {
         try {
             BandwidthClient.getInstance().setCredentials(userId, apiToken, apiSecret);
 
-            Account account = Account.get();
+            final Account account = Account.get();
 
             System.out.println("SDK api:");
             System.out.println(account.getAccountInfo());
         }
-        catch(Exception e) {
+        catch(final Exception e) {
             e.printStackTrace();
         }
     }

@@ -18,8 +18,8 @@ public class Recording extends ResourceBase {
 	
 	/**
 	 * Factory method for Recording list, returns list of Recording objects with default page, size
-	 * @return
-	 * @throws IOException
+	 * @return the list
+	 * @throws IOException unexpected error
 	 */
     public static ResourceList<Recording> list() throws IOException {
     	
@@ -29,28 +29,29 @@ public class Recording extends ResourceBase {
     
     /**
      * Factory method for Recording list, returns list of Recording objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error
      */
-    public static ResourceList<Recording> list(int page, int size) throws IOException {
+    public static ResourceList<Recording> list(final int page, final int size) throws IOException {
     	        
         return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
      * Factory method for Recording list, returns list of Recording objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error
      */
-    public static ResourceList<Recording> list(BandwidthClient client, int page, int size) throws IOException {
+    public static ResourceList<Recording> list(final BandwidthClient client, final int page, final int size) throws IOException {
     	
-        String recordingUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
+        final String recordingUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
 
-        ResourceList<Recording> recordings = 
+        final ResourceList<Recording> recordings = 
         			new ResourceList<Recording>(page, size, recordingUri, Recording.class);
         recordings.setClient(client);
         recordings.initialize();
@@ -61,47 +62,43 @@ public class Recording extends ResourceBase {
     
     /**
      * Recording factory method. Returns recording object from id
-     * @param id
-     * @return
-     * @throws IOException
+     * @param id the recording id
+     * @return the recording
+     * @throws IOException unexpected error
      */
-    public static Recording get(String id) throws Exception {
-    	
+    public static Recording get(final String id) throws Exception {
         return get(BandwidthClient.getInstance(), id);
     }
     
     /**
      * Recording factory method. Returns recording object from id
-     * @param id
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param id the recording id
+     * @return the recording
+     * @throws IOException unexpected error
      */
-    public static Recording get(BandwidthClient client, String id) throws Exception {
+    public static Recording get(final BandwidthClient client, final String id) throws Exception {
     	
-        String recordingsUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
-        String uri = StringUtils.join(new String[]{
+        final String recordingsUri = client.getUserResourceUri(BandwidthConstants.RECORDINGS_URI_PATH);
+        final String uri = StringUtils.join(new String[]{
                 recordingsUri,
                 id
         }, '/');
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         return new Recording(client, recordingsUri, jsonObject);
     }
     
-    
 
-	String parentUri;
-
-    public Recording(BandwidthClient client, String parentUri, JSONObject jsonObject) {
+    public Recording(final BandwidthClient client, final String parentUri, final JSONObject jsonObject) {
         super(client, jsonObject);
-        this.parentUri = parentUri;
     }
     
-    public Recording(BandwidthClient client, JSONObject jsonObject) {
+    public Recording(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }      

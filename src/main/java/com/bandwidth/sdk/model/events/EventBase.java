@@ -18,19 +18,20 @@ public class EventBase extends ModelBase implements Event {
 	/**
 	 * This method creates an event from a json string. Given an event from the App Plotform 
 	 * API, the whole body can be passed in and the appropriate Event subclass will be returned.
-	 * @param in
-	 * @return
+	 * @param in the json representation
+	 * @return the event
+	 * @throws AppPlatformException API Exception
 	 */
-    public static Event createEventFromString(String in) throws AppPlatformException {
+    public static Event createEventFromString(final String in) throws AppPlatformException {
 
 		JSONObject jsonObj = null;
 		try {
 		    jsonObj = (JSONObject) new JSONParser().parse(in);
-		} catch (org.json.simple.parser.ParseException e) {
+		} catch (final org.json.simple.parser.ParseException e) {
 		    throw new AppPlatformException(e);
 		}
 	
-		EventType eventType = EventType.getEnum((String) jsonObj
+		final EventType eventType = EventType.getEnum((String) jsonObj
 			.get("eventType"));
 	
 		Event event = null;
@@ -86,18 +87,18 @@ public class EventBase extends ModelBase implements Event {
 	return event;
     }
 
-    public void execute(Visitor visitor) {
+    public void execute(final Visitor visitor) {
     	visitor.processEvent(this);
     }
 
 
-    public EventBase(JSONObject json) {
+    public EventBase(final JSONObject json) {
 		updateProperties(json);
         eventType = EventType.getEnum((String) json.get("eventType"));
     }
     
     public Date getTime() {
-        Long time = getPropertyAsLong("time");
+        final Long time = getPropertyAsLong("time");
         return new Date(time);
     }
 
@@ -105,11 +106,11 @@ public class EventBase extends ModelBase implements Event {
         return getProperty("data");
     }
     
-    public String getProperty(String property) {
+    public String getProperty(final String property) {
     	return getPropertyAsString(property);
     }
 
-    public void setProperty(String name, String value) {
+    public void setProperty(final String name, final String value) {
     	putProperty(name, value);
     }
     

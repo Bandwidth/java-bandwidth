@@ -20,8 +20,13 @@ import java.io.File;
  * Created by smitchell on 11/17/14.
  */
 public class MMSExample {
-    public static void main(String []args){
-        for (String arg : args) {
+    
+    /**
+     * 
+     * @param args the args.
+     */
+    public static void main(final String []args){
+        for (final String arg : args) {
             System.out.println("arg:" + arg);
         }
 
@@ -31,28 +36,28 @@ public class MMSExample {
             System.exit(0);
         }
 
-        String fileName = args[0];
+        final String fileName = args[0];
         System.out.println("fileName:" + fileName);
 
-        File file = new File(fileName);
+        final File file = new File(fileName);
 
-        String toNumber = "+1"; // populate this with the number you want to send the mms text to
-        String fromNumber = "+1"; // populate this with your Application Platform number
-        String text = "test, test, check out this great catapult!";
+        final String toNumber = "+1"; // populate this with the number you want to send the mms text to
+        final String fromNumber = "+1"; // populate this with your Application Platform number
+        final String text = "test, test, check out this great catapult!";
 
 
         try {
-            Media media = Media.create();
+            final Media media = Media.create();
 
-            MediaFile mediaFile = media.upload(file.getName(), file, MediaMimeType.IMAGE_JPG);
+            final MediaFile mediaFile = media.upload(file.getName(), file, MediaMimeType.IMAGE_JPG);
 
             System.out.println("mediaFile:" + mediaFile);
 
-            Message message = Message.create(toNumber, fromNumber, text, mediaFile);
+            final Message message = Message.create(toNumber, fromNumber, text, mediaFile);
 
             System.out.println(message);
         }
-        catch(Exception e) {
+        catch(final Exception e) {
             e.printStackTrace();
         }
     }

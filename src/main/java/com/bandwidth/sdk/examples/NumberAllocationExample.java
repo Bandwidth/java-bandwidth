@@ -13,16 +13,21 @@ import com.bandwidth.sdk.model.PhoneNumber;
 
 public class NumberAllocationExample {
 
-    public static void main(String[] args) throws Exception {
-        String city = promptCitySelection();
-        Integer quantity = promptQuantityInput();
-        List<PhoneNumber> numbers = orderNumbers(city, quantity);
+    /**
+     * 
+     * @param args the args.
+     * @throws Exception error
+     */
+    public static void main(final String[] args) throws Exception {
+        final String city = promptCitySelection();
+        final Integer quantity = promptQuantityInput();
+        final List<PhoneNumber> numbers = orderNumbers(city, quantity);
 
         if (numbers.size() > 0) {
             System.out.println("Ordered numbers:");
         }
 
-        for (PhoneNumber number : numbers) {
+        for (final PhoneNumber number : numbers) {
             System.out.println(number.getNumber());
         }
     }
@@ -31,13 +36,13 @@ public class NumberAllocationExample {
         System.out.println("Would you like to search for phone numbers in Denver or Raleigh");
         System.out.println("Type the city name you would like and press enter.");
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String city = null;
 
         try {
             city = br.readLine();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             System.err.println("There was an error trying to read city.");
             System.exit(1);
         }
@@ -52,26 +57,26 @@ public class NumberAllocationExample {
     private static Integer promptQuantityInput() {
         System.out.println("How many phone numbers would you like to order?");
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String input = null;
 
         try {
             input = br.readLine();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             System.err.println("There was an error trying to read quantity.");
             System.exit(1);
         }
 
         try {
             return Integer.parseInt(input);
-        } catch (NumberFormatException ex) {
+        } catch (final NumberFormatException ex) {
             System.out.println("Invalid quantity: " + input);
             return promptQuantityInput();
         }
     }
 
-    public static List<PhoneNumber> orderNumbers(String city, Integer quantity) throws Exception {
+    public static List<PhoneNumber> orderNumbers(final String city, final Integer quantity) throws Exception {
         String state = null;
         if (city.equals("Denver")) {
             state = "CO";
@@ -82,16 +87,16 @@ public class NumberAllocationExample {
             System.exit(1);
         }
 
-        Map<String, Object> searchParams = new HashMap<String, Object>();
+        final Map<String, Object> searchParams = new HashMap<String, Object>();
         searchParams.put("city", city);
         searchParams.put("quantity", quantity);
         searchParams.put("state", state);
 
-        List<AvailableNumber> availableNumbers = AvailableNumber.searchLocal(searchParams);
-        List<PhoneNumber> orderedNumbers = new ArrayList<PhoneNumber>();
+        final List<AvailableNumber> availableNumbers = AvailableNumber.searchLocal(searchParams);
+        final List<PhoneNumber> orderedNumbers = new ArrayList<PhoneNumber>();
 
-        for (AvailableNumber availableNumber : availableNumbers) {
-            Map<String, Object> orderParams = new HashMap<String, Object>();
+        for (final AvailableNumber availableNumber : availableNumbers) {
+            final Map<String, Object> orderParams = new HashMap<String, Object>();
             orderParams.put("number", availableNumber.getNumber());
 
             orderedNumbers.add(PhoneNumber.create(orderParams));

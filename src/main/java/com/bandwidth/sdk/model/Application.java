@@ -18,37 +18,37 @@ public class Application extends ResourceBase {
 	
     /**
      * Factory method for Application. Returns Application object from id
-     * @param id
-     * @return
-     * @throws IOException
+     * @param id the application id
+     * @return the application
+     * @throws IOException unexpected error.
      */
-    public static Application get(String id) throws Exception {
+    public static Application get(final String id) throws Exception {
         assert(id != null);
 
-        BandwidthClient client = BandwidthClient.getInstance();
+        final BandwidthClient client = BandwidthClient.getInstance();
         return Application.get(client ,id);
     }	
 
 	/**
 	 * Factory method for Application, returns Application object
-	 * @param client
-	 * @param id
-	 * @return
-	 * @throws IOException
+	 * @param client the client
+	 * @param id the application id
+	 * @return the application
+	 * @throws IOException unexpected error.
 	 */
-    public static Application get(BandwidthClient client, String id) throws Exception {
+    public static Application get(final BandwidthClient client, final String id) throws Exception {
         assert(id != null);
-        String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, id);
-        JSONObject applicationObj = toJSONObject( client.get(applicationUri, null) );
+        final String applicationUri = client.getUserResourceInstanceUri(BandwidthConstants.APPLICATIONS_URI_PATH, id);
+        final JSONObject applicationObj = toJSONObject( client.get(applicationUri, null) );
         
-        Application application = new Application(client, applicationObj);
+        final Application application = new Application(client, applicationObj);
         return application;
     }
     
     /**
      * Factory method for Application list. Returns a list of Application object with default page size of 25
-     * @return
-     * @throws IOException
+     * @return the list
+     * @throws IOException unexpected error.
      */
     public static ResourceList<Application> list() throws IOException {
     	
@@ -58,14 +58,14 @@ public class Application extends ResourceBase {
     
     /**
      * Factory method for Application list. Returns a list of Application object with page and size preferences
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<Application> list(int page, int size) throws IOException {
+    public static ResourceList<Application> list(final int page, final int size) throws IOException {
     	
-    	BandwidthClient client = BandwidthClient.getInstance();
+    	final BandwidthClient client = BandwidthClient.getInstance();
         
         return list(client, page, size);
     }
@@ -73,16 +73,17 @@ public class Application extends ResourceBase {
     /**
      * Factory method for Application list. Returns a list of Application object with page and size preferences
      * Allow different Client implementaitons
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<Application> list(BandwidthClient client, int page, int size) throws IOException {
+    public static ResourceList<Application> list(final BandwidthClient client, final int page, final int size) throws IOException {
     	
-        String applicationUri = client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
+        final String applicationUri = client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
 
-        ResourceList<Application> applications = 
+        final ResourceList<Application> applications = 
         			new ResourceList<Application>(page, size, applicationUri, Application.class);
         applications.setClient(client);
         applications.initialize();
@@ -92,12 +93,12 @@ public class Application extends ResourceBase {
     
     /**
      * Convenience factory method to create an Application object with a given name
-     * @param name
-     * @return
-     * @throws Exception
+     * @param name the name
+     * @return the application
+     * @throws Exception error
      */
-    public static Application create(String name) throws Exception{
-    	Map<String, Object> params = new HashMap<String, Object>();
+    public static Application create(final String name) throws Exception{
+    	final Map<String, Object> params = new HashMap<String, Object>();
     	params.put("name", name);
     	
     	return create(params);
@@ -105,37 +106,37 @@ public class Application extends ResourceBase {
     
     /**
      * Convenience factory method to create an Application object from a set of params
-     * @param params
-     * @return
-     * @throws Exception
+     * @param params the params
+     * @return the application
+     * @throws Exception error
      */
-    public static Application create(Map<String, Object>params) throws Exception{
+    public static Application create(final Map<String, Object>params) throws Exception{
     	
     	return create(BandwidthClient.getInstance(), params);
     }
     
     /**
      * Convenience factory method to create an Application object from a set of params with a given client
-     * @param client
-     * @param params
-     * @return
-     * @throws Exception
+     * @param client the client
+     * @param params the params
+     * @return the application
+     * @throws Exception error
      */
-    public static Application create(BandwidthClient client, Map<String, Object>params) throws Exception {
+    public static Application create(final BandwidthClient client, final Map<String, Object>params) throws Exception {
     	assert(client != null);
     	
-    	RestResponse response = client.post(BandwidthConstants.APPLICATIONS_URI_PATH, params);
+    	final RestResponse response = client.post(BandwidthConstants.APPLICATIONS_URI_PATH, params);
     	
     	return new Application(client, toJSONObject(response));
     }
     
     
-    public Application(BandwidthClient client, JSONObject jsonObject) {
+    public Application(final BandwidthClient client, final JSONObject jsonObject) {
         super(client,jsonObject);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }
@@ -176,47 +177,47 @@ public class Application extends ResourceBase {
         return getPropertyAsBoolean("autoAnswer");
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         if (name == null) throw new IllegalArgumentException();
 
         putProperty("name", name);
     }
 
-    public void setIncomingCallUrl(String incomingCallUrl) {
+    public void setIncomingCallUrl(final String incomingCallUrl) {
         putProperty("incomingCallUrl", incomingCallUrl);
     }
 
-    public void setIncomingSmsUrl(String incomingSmsUrl) {
+    public void setIncomingSmsUrl(final String incomingSmsUrl) {
         putProperty("incomingSmsUrl", incomingSmsUrl);
     }
 
-    public void setAutoAnswer(boolean autoAnswer) {
+    public void setAutoAnswer(final boolean autoAnswer) {
         putProperty("autoAnswer", autoAnswer);
     }
 
-    public void setIncomingCallFallbackUrl(String incomingCallFallbackUrl) {
+    public void setIncomingCallFallbackUrl(final String incomingCallFallbackUrl) {
         putProperty("incomingCallFallbackUrl", incomingCallFallbackUrl);
     }
 
-    public void setIncomingCallUrlCallbackTimeout(Long incomingCallUrlCallbackTimeout) {
+    public void setIncomingCallUrlCallbackTimeout(final Long incomingCallUrlCallbackTimeout) {
         putProperty("incomingCallUrlCallbackTimeout", incomingCallUrlCallbackTimeout);
     }
 
-    public void setIncomingSmsUrlCallbackTimeout(Long incomingSmsUrlCallbackTimeout) {
+    public void setIncomingSmsUrlCallbackTimeout(final Long incomingSmsUrlCallbackTimeout) {
         putProperty("incomingSmsUrlCallbackTimeout", incomingSmsUrlCallbackTimeout);
     }
 
-    public void setCallbackHttpMethod(String callbackHttpMethod) {
+    public void setCallbackHttpMethod(final String callbackHttpMethod) {
         putProperty("callbackHttpMethod", callbackHttpMethod);
     }
 
     /**
      * Makes changes of the application.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void commit() throws IOException {
-        Map<String, Object> params = toMap();
+        final Map<String, Object> params = toMap();
         params.remove("id");
 
         client.post(getUri(), params);
@@ -225,7 +226,7 @@ public class Application extends ResourceBase {
     /**
      * Permanently deletes application.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void delete() throws IOException {
         client.delete(getUri());

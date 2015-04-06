@@ -1,6 +1,7 @@
 package com.bandwidth.sdk;
 
 import java.io.IOException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -8,23 +9,24 @@ import org.json.simple.parser.JSONParser;
 
 public class Utils {
 
-	public static JSONArray response2JSONArray(RestResponse response) throws IOException {
+	public static JSONArray response2JSONArray(final RestResponse response) throws IOException {
 		if (response != null && response.isJson() && response.getResponseText() != null) {
-						
-			// TODO this will throw an exception if there is only one object in the JSON.
-			// need to refactor to generate an array of one if there is a single object.
 			try {
-				return (JSONArray) new JSONParser().parse(response
-						.getResponseText());
+			    final Object parsedContent = new JSONParser().parse(response.getResponseText());
+				if(parsedContent instanceof JSONObject) {
+				    final JSONArray jsonArray = new JSONArray();
+				    jsonArray.add(parsedContent);
+				    return jsonArray;
+				} else {
+				    return (JSONArray) new JSONParser().parse(response.getResponseText());
+				}
 			} 
-			catch (org.json.simple.parser.ParseException e) {
+			catch (final org.json.simple.parser.ParseException e) {
 				throw new IOException(e);
 			}
 		} 
 		else {
 			throw new IOException("Response is not a JSON format.");
 		}
-
 	}
-
 }

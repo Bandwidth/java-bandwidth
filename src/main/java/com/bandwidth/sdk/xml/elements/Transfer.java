@@ -9,9 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Transfer implements Elements {
 
     protected String transferTo;
-
     protected String transferCallerId;
-
     protected SpeakSentence speakSentence = null;
 
     public Transfer() {
@@ -37,11 +35,10 @@ public class Transfer implements Elements {
     }
 
     public void setTransferCallerId(final String transferCallerId) throws XMLInvalidAttributeException {
-        if ((transferCallerId != null) && (!transferCallerId.trim().isEmpty())) {
-            this.transferCallerId = transferCallerId;
-        } else {
+        if ((transferCallerId == null) || (transferCallerId.trim().isEmpty())) {
             throw new XMLInvalidAttributeException("transferCallerId mustn't not be empty or null");
         }
+        this.transferCallerId = transferCallerId;
     }
 
     @XmlAttribute(name = "transferTo", required = true)
@@ -50,11 +47,10 @@ public class Transfer implements Elements {
     }
 
     public void setTransferTo(final String transferTo) throws XMLInvalidAttributeException {
-        if ((transferTo != null) && (!transferTo.trim().isEmpty())) {
-            this.transferTo = transferTo;
-        } else {
+        if ((transferTo == null) || (transferTo.trim().isEmpty())) {
             throw new XMLInvalidAttributeException("transferTo mustn't not be empty or null");
         }
+        this.transferTo = transferTo;
     }
 
     @XmlElement(name = "SpeakSentence")
