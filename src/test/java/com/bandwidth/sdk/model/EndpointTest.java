@@ -52,6 +52,7 @@ public class EndpointTest {
     @Test
     public void shouldCreateAndDeleteEndpoint() throws Exception {
         final Endpoint createdEndpoint = Endpoint.create(domain.getId(), "endpointname", "123456");
+        createdEndpoint.getCredentials();
         assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
         Endpoint.delete(domain.getId(), createdEndpoint.getId());
     }

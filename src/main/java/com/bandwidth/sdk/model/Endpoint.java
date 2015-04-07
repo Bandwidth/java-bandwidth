@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -421,14 +422,23 @@ public class Endpoint extends ResourceBase {
         return getPropertyAsString("description");
     }
     
+    public Credentials getCredentials() {
+        try {
+            return new ObjectMapper().readValue(getProperty("credentials").toString(), Credentials.class);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+    
     @Override
     public String toString() {
-        return "Domain{" +
+        return "Endpoint{" +
                 "id='" + getId() + '\'' +
                 ", name=" + getName() +
                 ", domainId='" + getDomainId() + '\'' +
                 ", enabled='" + isEnabled() + '\'' +
                 ", sipUri='" + getSipUri() + '\'' +
-                '}';
+                ", credentials= {" + getCredentials() + '}' +
+                "}";
     }
 }
