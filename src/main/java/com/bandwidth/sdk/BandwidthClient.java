@@ -87,7 +87,7 @@ public class BandwidthClient implements Client{
      * @param apiEndpoint the API Endpoint.
      * @param apiVersion the API version.
      */
-    public BandwidthClient(final String userId, final String apiToken, final String apiSecret, final String apiEndpoint, final String apiVersion){
+    protected BandwidthClient(final String userId, final String apiToken, final String apiSecret, final String apiEndpoint, final String apiVersion){
         this.usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
         this.token = apiToken;
         this.secret = apiSecret;

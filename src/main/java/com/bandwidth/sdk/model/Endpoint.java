@@ -56,6 +56,23 @@ public class Endpoint extends ResourceBase {
      * @param domainId the domain id.
      * @param name the endpoint name.
      * @param password the endpoint password
+     * @param isEnabled if the endpoint should be enabled.
+     * @return the created endpoint.
+     * @throws AppPlatformException API Exception
+     * @throws ParseException Error parsing data
+     * @throws Exception error
+     */
+    public static Endpoint create(final BandwidthClient client, final String domainId, final String name, 
+            final String password, final boolean isEnabled) throws AppPlatformException, ParseException, Exception {
+        return create(client, domainId, name, password, null, isEnabled);
+    }
+    
+    /**
+     * Convenience factory method for Endpoint, returns a created Endpoint object from a name
+     * @param client the bandwidth client configuration.
+     * @param domainId the domain id.
+     * @param name the endpoint name.
+     * @param password the endpoint password
      * @param description the endpoint description.
      * @return the created endpoint.
      * @throws AppPlatformException API Exception
@@ -239,11 +256,34 @@ public class Endpoint extends ResourceBase {
      */
     public static Endpoint get(final String domainId, final String endpointId) throws ParseException, Exception {
         final BandwidthClient client = BandwidthClient.getInstance();
+        return get(client, domainId, endpointId);
+    }
+    
+    /**
+     * Convenience method to get information about a specific Endpoint. Returns a Endpoint object given its id.
+     * @param client the user client.
+     * @param domainId the domain id.
+     * @param endpointId the Endpoint id.
+     * @return information about a specific Endpoint
+     * @throws ParseException Error parsing data
+     * @throws Exception error
+     */
+    public static Endpoint get(final BandwidthClient client, final String domainId, final String endpointId) throws ParseException, Exception {
         assert(domainId != null);
         assert(endpointId != null);
         final String endpointsUri =  String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId)+ "/"+endpointId;
         final JSONObject jsonObject = toJSONObject(client.get(endpointsUri, null));
         return new Endpoint(client, jsonObject);
+    }
+    
+    /**
+     * Factory method for Endpoint list
+     * @param client the user client.
+     * @param domainId the domain id.
+     * @return the Endpoint list.
+     */
+    public static ResourceList<Endpoint> list(final BandwidthClient client, final String domainId) {
+        return list(client, domainId, 0, 20);
     }
     
     /**
@@ -263,10 +303,22 @@ public class Endpoint extends ResourceBase {
      * @return the Endpoint list.
      */
     public static ResourceList<Endpoint> list(final String domainId, final int page, final int size) {
+        final BandwidthClient client = BandwidthClient.getInstance();
+        return list(client, domainId, page, size);
+    }
+    
+    /**
+     * Factory method for Endpoint list
+     * @param client the user client
+     * @param domainId the domain id.
+     * @param page the starting page.
+     * @param size the page size.
+     * @return the Endpoint list.
+     */
+    public static ResourceList<Endpoint> list(final BandwidthClient client, final String domainId, final int page, final int size) {
         assert(domainId != null);
         assert(page  >= 0);
         assert(size > 0);
-        final BandwidthClient client = BandwidthClient.getInstance();
         final String resourceUri = String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId);
         final ResourceList<Endpoint> endpoints = new ResourceList<Endpoint>(page, size, resourceUri, Endpoint.class);
         endpoints.setClient(client);
