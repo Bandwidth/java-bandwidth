@@ -122,6 +122,49 @@ public class TestResponse {
     }
 
     @Test
+    public void testPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException, JAXBException {
+        final Response response = new Response();
+        final SpeakSentence speakSentence = new SpeakSentence("This call has been forwarded.",
+                "paul",
+                "male",
+                "en_US");
+        final Transfer transfer = new Transfer("+0123456789");
+        transfer.addPhoneNumber("+1234567891");
+        transfer.addPhoneNumber("+1234567892");
+        transfer.addPhoneNumber("+1234567893");
+        transfer.addPhoneNumber("+1234567894");
+        transfer.addPhoneNumber("+1234567895");
+        transfer.setSpeakSentence(speakSentence);
+        response.add(transfer);
+
+        final String output = response.toXml();
+        final String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/transfer_phonenumbers.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testMaxedOutPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException, JAXBException {
+        final Response response = new Response();
+        final SpeakSentence speakSentence = new SpeakSentence("This call has been forwarded.",
+                "paul",
+                "male",
+                "en_US");
+        final Transfer transfer = new Transfer("+0123456789");
+        transfer.addPhoneNumber("+1234567891");
+        transfer.addPhoneNumber("+1234567892");
+        transfer.addPhoneNumber("+1234567893");
+        transfer.addPhoneNumber("+1234567894");
+        transfer.addPhoneNumber("+1234567895");
+        transfer.addPhoneNumber("+1234567896");
+        transfer.setSpeakSentence(speakSentence);
+        response.add(transfer);
+
+        final String output = response.toXml();
+        final String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/transfer_phonenumbers.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test
     public void testPlayAudio_Hangup() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException, JAXBException {
         final Response response = new Response();
         final PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL);

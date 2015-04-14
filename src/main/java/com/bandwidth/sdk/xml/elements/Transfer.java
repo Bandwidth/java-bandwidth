@@ -4,16 +4,26 @@ import com.bandwidth.sdk.exception.XMLInvalidAttributeException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @XmlRootElement(name = "Transfer")
 public class Transfer implements Elements {
 
+    private static final int MAX_PHONE_NUMBERS = 5;
+
     protected String transferTo;
     protected String transferCallerId;
     protected SpeakSentence speakSentence = null;
+    protected List<PhoneNumber> phoneNumberList;
 
     public Transfer() {
         super();
+    }
+
+    public Transfer(final String transferCallerId) throws XMLInvalidAttributeException {
+        setTransferCallerId(transferCallerId);
     }
 
     public Transfer(final String transferTo, final String transferCallerId) throws XMLInvalidAttributeException {
@@ -47,8 +57,11 @@ public class Transfer implements Elements {
     }
 
     public void setTransferTo(final String transferTo) throws XMLInvalidAttributeException {
-        if ((transferTo == null) || (transferTo.trim().isEmpty())) {
-            throw new XMLInvalidAttributeException("transferTo mustn't not be empty or null");
+        if(phoneNumberList == null || phoneNumberList.isEmpty()) {
+            // transferTo is mandatory if no phone numbers were passed
+            if ((transferTo == null) || (transferTo.trim().isEmpty())) {
+                throw new XMLInvalidAttributeException("transferTo mustn't not be empty or null");
+            }
         }
         this.transferTo = transferTo;
     }
@@ -62,12 +75,38 @@ public class Transfer implements Elements {
         this.speakSentence = speakSentence;
     }
 
+    @XmlElement(name = "PhoneNumber")
+    public List<PhoneNumber> getPhoneNumberList() {
+        if(phoneNumberList == null || phoneNumberList.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        return phoneNumberList;
+    }
+
+    public void setPhoneNumberList(List<PhoneNumber> phoneNumberList) throws XMLInvalidAttributeException {
+        if(phoneNumberList != null && phoneNumberList.size() > MAX_PHONE_NUMBERS) {
+            throw new XMLInvalidAttributeException(String.format("Transfer can only hold %s phone numbers", MAX_PHONE_NUMBERS));
+        }
+        this.phoneNumberList = phoneNumberList;
+    }
+
+    public void addPhoneNumber(String phoneNumber) throws XMLInvalidAttributeException {
+        if(this.phoneNumberList == null) {
+            this.phoneNumberList = new ArrayList<PhoneNumber>();
+        }
+        if(phoneNumberList.size() == MAX_PHONE_NUMBERS) {
+            throw new XMLInvalidAttributeException(String.format("Transfer can only hold %s phone numbers", MAX_PHONE_NUMBERS));
+        }
+        this.phoneNumberList.add(new PhoneNumber(phoneNumber));
+    }
+
     @Override
     public String toString() {
         return "Transfer{" +
                 "transferTo='" + transferTo + '\'' +
                 ", transferCallerId='" + transferCallerId + '\'' +
                 ", speakSentence=" + speakSentence +
+                ", phoneNumbers=" + phoneNumberList +
                 '}';
     }
 }
