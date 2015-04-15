@@ -124,10 +124,15 @@ public class Application extends ResourceBase {
      */
     public static Application create(final BandwidthClient client, final Map<String, Object>params) throws Exception {
     	assert(client != null);
-    	
-    	final RestResponse response = client.post(BandwidthConstants.APPLICATIONS_URI_PATH, params);
-    	
-    	return new Application(client, toJSONObject(response));
+
+        String uri = client.getUserResourceUri(BandwidthConstants.APPLICATIONS_URI_PATH);
+
+        RestResponse response = client.post(uri, params);
+
+
+        RestResponse getResponse = client.get(response.getLocation(), null);
+
+        return new Application(client, toJSONObject(getResponse));
     }
     
     
