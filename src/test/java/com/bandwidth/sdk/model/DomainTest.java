@@ -13,7 +13,6 @@ import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
@@ -36,11 +35,6 @@ public class DomainTest {
 
         final Domain domain = new Domain(mockClient, jsonObject);
         assertThat(domain.getName(), equalTo("domainName"));
-    }
-    
-    @Test(expected = AppPlatformException.class)
-    public void deleteEndpointByInvalidId() throws Exception {
-        Domain.delete("1111");
     }
     
     @Test
@@ -105,57 +99,28 @@ public class DomainTest {
     }
     
     @Test
-    public void shouldDoDomainCycle() throws Exception {
-        
-        final String domainName = RandomStringUtils.randomAlphabetic(12);
-        final String domainDescription = "Domain Description";
-        
-        final Domain createdDomain = Domain.create(domainName, domainDescription);
-        
-        //Get the Domain
-        final Domain domainGet = Domain.get(createdDomain.getId());
-        assertThat(createdDomain.getId(), equalTo(domainGet.getId()));
-        
-        //Update the domain
-        final Domain domainUpdate = Domain.update(domainGet.getId(), "New Domain Description");
-        assertThat(createdDomain.getId(), equalTo(domainUpdate.getId()));
-        assertThat("New Domain Description", equalTo(domainUpdate.getDescription()));
-        
-        ResourceList<Domain> domainList = Domain.list();
-        System.out.println("Listing Domains.");
-        for(final Domain currentDomain : domainList) {
-            System.out.println(currentDomain.toString());
-        }
-        
-        Domain.delete(createdDomain.getId());
-        domainList = Domain.list();
-        System.out.println("Listing Domains.");
-        for(final Domain currentDomain : domainList) {
-            assertThat(createdDomain.getId(), not(currentDomain.getId()));
-        }
-    }
-    
-    @Test
     public void shouldCleanDescription() throws Exception {
         final String domainName = RandomStringUtils.randomAlphabetic(12);
         final String domainDescription = "Domain Description";
         
-        final Domain createdDomain = Domain.create(domainName, domainDescription);
+        final RestResponse restResponse = new RestResponse();
+        restResponse.setResponseText("{\"id\":\"id1\",\"name\":\"domainName\",\"description\":\"description of the domain\"}");        
+        restResponse.setContentType("application/json");
+        restResponse.setStatus(201);
+         
+        mockClient.setRestResponse(restResponse);
+        
+        final Domain createdDomain = Domain.create(mockClient, domainName, domainDescription);
         
         //Get the Domain
-        final Domain domainGet = Domain.get(createdDomain.getId());
+        final Domain domainGet = Domain.get(mockClient, createdDomain.getId());
         assertThat(createdDomain.getId(), equalTo(domainGet.getId()));
         
         //Update the domain
-        final Domain domainUpdate = Domain.update(domainGet.getId(), "");
+        restResponse.setResponseText("{\"id\":\"id1\",\"name\":\"domainName\",\"description\":\"\"}");
+        mockClient.setRestResponse(restResponse);
+        final Domain domainUpdate = Domain.update(mockClient, domainGet.getId(), "");
         assertThat(createdDomain.getId(), equalTo(domainUpdate.getId()));
         assertThat("", equalTo(domainUpdate.getDescription()));
-        
-        Domain.delete(createdDomain.getId());
-        final ResourceList<Domain> domainList = Domain.list();
-        System.out.println("Listing Domains.");
-        for(final Domain currentDomain : domainList) {
-            assertThat(createdDomain.getId(), not(currentDomain.getId()));
-        }
     }
 }

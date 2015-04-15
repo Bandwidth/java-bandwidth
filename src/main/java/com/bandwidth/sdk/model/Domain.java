@@ -137,6 +137,15 @@ public class Domain extends ResourceBase {
     
     /**
      * Factory method to list the Domains.
+     * @param client the user client.
+     * @return the Domain list.
+     */
+    public static ResourceList<Domain> list(final BandwidthClient client) {
+        return list(client, 0, 20);
+    }
+    
+    /**
+     * Factory method to list the Domains.
      * @param client The Bandwidth client
      * @param page the starting page.
      * @param size the page size.
@@ -175,6 +184,25 @@ public class Domain extends ResourceBase {
      */
     public static Domain update(final String id, final String description) throws AppPlatformException, ParseException, IOException, Exception {
         final BandwidthClient client = BandwidthClient.getInstance();
+        final Map<String, Object> params = new HashMap<String, Object>();
+        if(description != null) {
+            params.put("description", description);
+        }
+        return update(client, id, params); 
+    }
+    
+    /**
+     * Convenience method to get information about a specific Domain.
+     * @param client the user client.
+     * @param id the domain id.
+     * @param description the description
+     * @return information about a specific Domain
+     * @throws AppPlatformException API Exception
+     * @throws ParseException Error parsing data
+     * @throws IOException unexpected error
+     * @throws Exception error
+     */
+    public static Domain update(final BandwidthClient client, final String id, final String description) throws AppPlatformException, ParseException, IOException, Exception {
         final Map<String, Object> params = new HashMap<String, Object>();
         if(description != null) {
             params.put("description", description);

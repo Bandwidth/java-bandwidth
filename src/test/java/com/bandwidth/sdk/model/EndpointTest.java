@@ -7,12 +7,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
 
 public class EndpointTest {
 
@@ -25,12 +25,12 @@ public class EndpointTest {
     public void setUp() throws Exception {
         mockClient = new MockClient();
         domainName = RandomStringUtils.randomAlphabetic(12);
-        domain = Domain.create(domainName, "Domain Description");
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-        Domain.delete(domain.getId());
+        
+        final RestResponse response = new RestResponse();
+        response.setResponseText("{\"id\":\"id1\", \"name\":\"domainName\", \"name\":\"domainName\"}");
+        response.setStatus(201);
+        mockClient.setRestResponse(response);
+        domain = Domain.create(mockClient, domainName, "Domain Description");
     }
     
     @Test
@@ -41,7 +41,11 @@ public class EndpointTest {
     
     @Test(expected = AppPlatformException.class)
     public void deleteEndpointByInvalidIds() throws Exception {
-        Endpoint.delete("111111", "23323");
+        final RestResponse response = new RestResponse();
+        mockClient.setRestResponse(response);
+        response.setStatus(404);
+        
+        Endpoint.delete(mockClient, "111111", "23323");
     }
     
     @Test(expected = AppPlatformException.class)
@@ -50,52 +54,43 @@ public class EndpointTest {
     }
     
     @Test
-    public void shouldCreateAndDeleteEndpoint() throws Exception {
-        final Endpoint createdEndpoint = Endpoint.create(domain.getId(), "endpointname", "123456");
+    public void shouldCreateEndpoint() throws Exception {
+        
+        final RestResponse response = new RestResponse();
+        response.setResponseText("{\"id\":\"id2\", \"domainId\":\"id1\",\"name\":\"endpointname\", \"password\":\"123456\", \"credentials\": { \"realm\": \"abc\", \"username\": \"xxx\"}}");
+        response.setStatus(201);
+        mockClient.setRestResponse(response);
+        
+        final Endpoint createdEndpoint = Endpoint.create(mockClient, domain.getId(), "endpointname", "123456");
         createdEndpoint.getCredentials();
         assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
-        Endpoint.delete(domain.getId(), createdEndpoint.getId());
     }
     
     @Test
-    public void shouldCreateAndDeleteActiveEndpoint() throws Exception {
-        final Endpoint createdEndpoint = Endpoint.create(domain.getId(), "endpointname", "123456", true);
+    public void shouldCreateGetEndpoint() throws Exception {
+        final RestResponse response = new RestResponse();
+        response.setResponseText("{\"id\":\"id2\", \"domainId\":\"id1\",\"name\":\"endpointname\", \"password\":\"123456\", \"credentials\": { \"realm\": \"abc\", \"username\": \"xxx\"}}");
+        response.setStatus(201);
+        mockClient.setRestResponse(response);
+        final Endpoint createdEndpoint = Endpoint.create(mockClient, domain.getId(), "endpointname", "123456");
+        
         assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
-        Endpoint.delete(domain.getId(), createdEndpoint.getId());
-    }
-    
-    @Test
-    public void shouldCreateGetAndDeleteEndpoint() throws Exception {
-        final Endpoint createdEndpoint = Endpoint.create(domain.getId(), "endpointname", "123456");
-        assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
-        final Endpoint getEndpoint = Endpoint.get(domain.getId(), createdEndpoint.getId());
+        final Endpoint getEndpoint = Endpoint.get(mockClient, domain.getId(), createdEndpoint.getId());
         assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
         assertThat(createdEndpoint.getId(), equalTo(getEndpoint.getId()));
-        Endpoint.delete(domain.getId(), createdEndpoint.getId());
     }
     
     @Test
-    public void shouldCreateListDeleteAndListEndpoints() throws Exception {
-        final Endpoint createdEndpoint = Endpoint.create(domain.getId(), "endpointname", "123456");
-        assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
-        ResourceList<Endpoint> endpointList = Endpoint.list(domain.getId());
-        assertThat(endpointList.size(), equalTo(1));
-        Endpoint.delete(domain.getId(), createdEndpoint.getId());
-        endpointList = Endpoint.list(domain.getId());
-        assertThat(endpointList.size(), equalTo(0));
-    }
-    
-    @Test
-    public void shouldCreateUpdateAndDeleteEndpoints() throws Exception {
-        final Endpoint createdEndpoint = Endpoint.create(domain.getId(), "endpointname", "123456");
-        assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
-        Endpoint.update(domain.getId(), createdEndpoint.getId(), "123456", true);
+    public void shouldCreateListEndpoints() throws Exception {
+        final RestResponse response = new RestResponse();
+        response.setResponseText("{\"id\":\"id2\", \"domainId\":\"id1\",\"name\":\"endpointname\", \"password\":\"123456\", \"credentials\": { \"realm\": \"abc\", \"username\": \"xxx\"}}");
+        response.setStatus(201);
+        mockClient.setRestResponse(response);
+        final Endpoint createdEndpoint = Endpoint.create(mockClient, domain.getId(), "endpointname", "123456");
         
-        final Endpoint updateEndpoint = Endpoint.get(domain.getId(), createdEndpoint.getId());
-        assertThat(updateEndpoint.getId(), equalTo(createdEndpoint.getId()));
-        assertThat(updateEndpoint.getDomainId(), equalTo(createdEndpoint.getDomainId()));
-        assertThat(updateEndpoint.isEnabled(), equalTo(true));
-
-        Endpoint.delete(domain.getId(), createdEndpoint.getId());
+        assertThat(createdEndpoint.getDomainId(), equalTo(domain.getId()));
+        response.setResponseText("{\"id\":\"id2\", \"domainId\":\"id1\",\"name\":\"endpointname\", \"password\":\"123456\", \"credentials\": { \"realm\": \"abc\", \"username\": \"xxx\"}}");
+        response.setStatus(201);
+        mockClient.setRestResponse(response);
     }
 }
