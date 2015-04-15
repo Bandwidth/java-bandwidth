@@ -474,6 +474,10 @@ public class Endpoint extends ResourceBase {
         return getPropertyAsString("description");
     }
     
+    public String getApplicationId() {
+        return getPropertyAsString("applicationId");
+    }
+    
     public Credentials getCredentials() {
         try {
             return new ObjectMapper().readValue(getProperty("credentials").toString(), Credentials.class);

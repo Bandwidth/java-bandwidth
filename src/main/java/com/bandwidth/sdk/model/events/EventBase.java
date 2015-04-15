@@ -1,11 +1,10 @@
 package com.bandwidth.sdk.model.events;
 
-import com.bandwidth.sdk.AppPlatformException;
-import com.bandwidth.sdk.model.ModelBase;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.util.Date;
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.model.ModelBase;
 
 /**
  * Information about event.
@@ -91,15 +90,13 @@ public class EventBase extends ModelBase implements Event {
     	visitor.processEvent(this);
     }
 
-
     public EventBase(final JSONObject json) {
 		updateProperties(json);
         eventType = EventType.getEnum((String) json.get("eventType"));
     }
     
-    public Date getTime() {
-        final Long time = getPropertyAsLong("time");
-        return new Date(time);
+    public String getTime() {
+        return getProperty("time");
     }
 
     public Object getData() {
@@ -113,7 +110,7 @@ public class EventBase extends ModelBase implements Event {
     public void setProperty(final String name, final String value) {
     	putProperty(name, value);
     }
-    
+
     public EventType getEventType() {
     	return eventType;
     }
