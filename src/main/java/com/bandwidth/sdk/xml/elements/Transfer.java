@@ -11,7 +11,7 @@ import java.util.List;
 @XmlRootElement(name = "Transfer")
 public class Transfer implements Elements {
 
-    private static final int MAX_PHONE_NUMBERS = 5;
+    private static final int MAX_PHONE_NUMBERS = 7;
 
     protected String transferTo;
     protected String transferCallerId;
