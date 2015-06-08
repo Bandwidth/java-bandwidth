@@ -1,11 +1,20 @@
 package com.bandwidth.sdk;
 
+import com.bandwidth.sdk.exception.MissingCredentialsException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
@@ -16,7 +25,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -346,13 +359,18 @@ public class BandwidthClient implements Client{
      * @throws IOException unexpected exception.
      */
     protected RestResponse performRequest(final HttpUriRequest request) throws IOException {
-        try {
-            return RestResponse.createRestResponse(httpClient.execute(request)); 
-        } catch (final ClientProtocolException e1) {
-            throw new IOException(e1);
-        } catch (final IOException e1) {
-            throw new IOException(e1);
+        RestResponse restResponse = RestResponse.createRestResponse(httpClient.execute(request));
+
+        if (restResponse.status == HttpStatus.SC_UNAUTHORIZED){
+            if (this.usersUri == null || this.usersUri.isEmpty()
+                    || this.token == null || this.token.isEmpty()
+                    || this.secret == null || this.secret.isEmpty()){
+
+                throw new MissingCredentialsException();
+            }
         }
+
+        return restResponse;
     }
 
     /**

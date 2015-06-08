@@ -1,8 +1,8 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,9 +10,8 @@ import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.AppPlatformException;
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class EndpointTest {
 
@@ -50,7 +49,10 @@ public class EndpointTest {
     
     @Test(expected = AppPlatformException.class)
     public void deleteEndpointByInvalidEndpointId() throws Exception {
-        Endpoint.delete(domain.getId(), "111111");
+        final RestResponse response = new RestResponse();
+        mockClient.setRestResponse(response);
+        response.setStatus(404);
+        Endpoint.delete(mockClient, domain.getId(), "111111");
     }
     
     @Test
