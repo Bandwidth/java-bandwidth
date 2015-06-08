@@ -5,7 +5,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -359,18 +358,15 @@ public class BandwidthClient implements Client{
      * @throws IOException unexpected exception.
      */
     protected RestResponse performRequest(final HttpUriRequest request) throws IOException {
-        RestResponse restResponse = RestResponse.createRestResponse(httpClient.execute(request));
 
-        if (restResponse.status == HttpStatus.SC_UNAUTHORIZED){
-            if (this.usersUri == null || this.usersUri.isEmpty()
-                    || this.token == null || this.token.isEmpty()
-                    || this.secret == null || this.secret.isEmpty()){
+        if (this.usersUri == null || this.usersUri.isEmpty()
+                || this.token == null || this.token.isEmpty()
+                || this.secret == null || this.secret.isEmpty()) {
 
-                throw new MissingCredentialsException();
-            }
+            throw new MissingCredentialsException();
         }
 
-        return restResponse;
+        return RestResponse.createRestResponse(httpClient.execute(request));
     }
 
     /**
