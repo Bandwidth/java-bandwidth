@@ -1,14 +1,14 @@
 package com.bandwidth.sdk.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.BandwidthConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
-import com.bandwidth.sdk.BandwidthClient;
-import com.bandwidth.sdk.BandwidthConstants;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Point for <code>/v1/users/{userId}/media</code>
@@ -122,7 +122,8 @@ public class Media extends ResourceBase {
      * @return new media file object
      * @throws IOException unexpected error.
      */
-    public MediaFile upload(final String mediaName, final File file, final MediaMimeType contentType) throws IOException {
+    public MediaFile upload(final String mediaName, final File file, final MediaMimeType contentType)
+            throws IOException, AppPlatformException {
 
         final String uri = StringUtils.join(new String[]{
                 getUri(),

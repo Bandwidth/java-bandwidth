@@ -1,16 +1,17 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import org.apache.http.HttpStatus;
 import org.hamcrest.CoreMatchers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class GatherTest extends BaseModelTest {
 
@@ -68,5 +69,25 @@ public class GatherTest extends BaseModelTest {
         assertThat(mockClient.requests.get(0).name, equalTo("post"));
         //assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/ gtr - kj4xloaq5vbpfxyeypndgxa"));
         assertThat(mockClient.requests.get(0).params.get("state").toString(), equalTo("completed"));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailUpdateGather() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
+                "  \"id\": \"gtr-kj4xloaq5vbpfxyeypndgxa\",\n" +
+                "  \"state\": \"completed\",\n" +
+                "  \"reason\": \"max-digits\",\n" +
+                "  \"createdTime\": \"2014-02-12T19:33:56Z\",\n" +
+                "  \"completedTime\": \"2014-02-12T19:33:59Z\",\n" +
+                "  \"call\": \"https://api.catapult.inetwork.com/v1/users/u-xa2n3oxk6it4efbglisna6a/calls/c-isw3qup6gvr3ywcsentygnq\",\n" +
+                "  \"digits\": \"123\"\n" +
+                "}");
+
+        RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Gather gather = new Gather(mockClient, jsonObject);
+        gather.complete();
     }
 }

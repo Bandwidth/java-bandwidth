@@ -1,18 +1,17 @@
 package com.bandwidth.sdk.model;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.RestResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.bandwidth.sdk.AppPlatformException;
-import com.bandwidth.sdk.BandwidthClient;
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.RestResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Information about domain.
@@ -92,9 +91,6 @@ public class Domain extends ResourceBase {
         assert (client!= null && params != null);
         final String domainsUri =  client.getUserResourceUri(BandwidthConstants.DOMAINS_URI_PATH);
         final RestResponse response = client.post(domainsUri, params);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
         final JSONObject callObj = toJSONObject(client.get(response.getLocation(), null));
         return new Domain(client, callObj);
     }
@@ -225,9 +221,6 @@ public class Domain extends ResourceBase {
         assert(client != null && id != null);
         final String domainsUri =  client.getUserResourceInstanceUri(BandwidthConstants.DOMAINS_URI_PATH, id);
         final RestResponse response = client.post(domainsUri, params);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
         final JSONObject jsonObject = toJSONObject(client.get(domainsUri, null));
         return new Domain(client, jsonObject);
     }
@@ -241,10 +234,7 @@ public class Domain extends ResourceBase {
     public static void delete(final String id) throws AppPlatformException, IOException {
         assert(id != null);
         final BandwidthClient client = BandwidthClient.getInstance();
-        final RestResponse response = client.delete(client.getUserResourceInstanceUri(BandwidthConstants.DOMAINS_URI_PATH, id));
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
+        client.delete(client.getUserResourceInstanceUri(BandwidthConstants.DOMAINS_URI_PATH, id));
     }
     
     /**
@@ -256,10 +246,7 @@ public class Domain extends ResourceBase {
      */
     public static void delete(final BandwidthClient client, final String id) throws AppPlatformException, IOException {
         assert(id != null);
-        final RestResponse response = client.delete(client.getUserResourceInstanceUri(BandwidthConstants.DOMAINS_URI_PATH, id));
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
+        client.delete(client.getUserResourceInstanceUri(BandwidthConstants.DOMAINS_URI_PATH, id));
     }
     
     public String getName() {

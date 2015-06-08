@@ -1,18 +1,19 @@
 package com.bandwidth.sdk.model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -191,7 +192,14 @@ public class MessageTest extends BaseModelTest{
         assertThat(mockClient.requests.get(0).params.get("tag").toString(), equalTo("MESSAGE_TAG"));
         assertThat(mockClient.requests.get(0).params.get("text").toString(), equalTo("Hola Mundo!"));
     }
-    
-    
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetMessageById() throws Exception {
+        RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Message.get(mockClient, "m-ckobmmd4fgqumyhssgd6lqy");
+    }
     
 }

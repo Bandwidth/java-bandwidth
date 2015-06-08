@@ -155,14 +155,11 @@ public class Call extends ResourceBase {
     	assert (client != null && params != null);
         final String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
     	final RestResponse response = client.post(callUri, params);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
 
         // success here, otherwise an exception is generated
     	final String callId = response.getLocation().substring(client.getPath(callUri).length() + 1);
-    	final Call call = get(client, callId);
-    	return call;
+
+        return get(client, callId);
     }
 
     public Call(final BandwidthClient client, final JSONObject jsonObject) {
@@ -179,17 +176,17 @@ public class Call extends ResourceBase {
         return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, getId());
     }
 
-    public void speakSentence(final Map<String, Object> params) throws IOException {
+    public void speakSentence(final Map<String, Object> params) throws IOException, AppPlatformException {
 		assert (params != null);
 		final String audioUrl = getUri() + "/audio";
 		client.post(audioUrl, params);
     }
 
-    public void speakSentence(final String sentence) throws IOException {
+    public void speakSentence(final String sentence) throws IOException, AppPlatformException {
     	speakSentence(sentence, null);
     }
 
-    public void speakSentence(final String sentence, final String tag) throws IOException {
+    public void speakSentence(final String sentence, final String tag) throws IOException, AppPlatformException {
 		final JSONObject params = new JSONObject();
 		params.put("sentence", sentence);
 		params.put("voice", "kate");
@@ -202,7 +199,7 @@ public class Call extends ResourceBase {
 		speakSentence(params);
     }
 
-    public void playRecording(final String recordingUrl) throws IOException {
+    public void playRecording(final String recordingUrl) throws IOException, AppPlatformException {
 		assert (recordingUrl != null);
 	
 		final String audioUrl = getUri() + "/audio";
@@ -213,7 +210,7 @@ public class Call extends ResourceBase {
 		client.post(audioUrl, params);
     }
 
-    public void playAudio(final Map<String, Object> params) throws IOException {
+    public void playAudio(final Map<String, Object> params) throws IOException, AppPlatformException {
 		assert (params != null);
 	
 		final String audioUrl = getUri() + "/audio";
@@ -221,7 +218,7 @@ public class Call extends ResourceBase {
 		client.post(audioUrl, params);
     }
 
-    public void createGather(final String promptSentence) throws IOException {
+    public void createGather(final String promptSentence) throws IOException, AppPlatformException {
 		
         assert (promptSentence != null);
 		final String gatherUrl = getUri() + "/gather";
@@ -243,7 +240,7 @@ public class Call extends ResourceBase {
     }
 
     public void createGather(final Map<String, Object> gatherParams,
-	    final Map<String, Object> promptParams) throws IOException {
+	    final Map<String, Object> promptParams) throws IOException, AppPlatformException {
 		
         final String gatherUrl = getUri() + "/gather";
 		assert (gatherParams != null);
@@ -463,7 +460,7 @@ public class Call extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void stopAudioFilePlaying() throws IOException {
+    public void stopAudioFilePlaying() throws IOException, AppPlatformException {
         new CallAudioBuilder().fileUrl(StringUtils.EMPTY).create();
     }
 
@@ -472,7 +469,7 @@ public class Call extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void stopSentence() throws IOException {
+    public void stopSentence() throws IOException, AppPlatformException {
         new CallAudioBuilder().sentence(StringUtils.EMPTY).create();
     }
 
@@ -482,7 +479,7 @@ public class Call extends ResourceBase {
      * @param dtmf DTMF value
      * @throws IOException unexpected error.
      */
-    public void sendDtmf(final String dtmf) throws IOException {
+    public void sendDtmf(final String dtmf) throws IOException, AppPlatformException {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("dtmfOut", dtmf);
 
@@ -521,7 +518,7 @@ public class Call extends ResourceBase {
         return new Gather(client,jsonObject);
     }
 
-    private void createGather(final Map<String, Object> params) throws IOException {
+    private void createGather(final Map<String, Object> params) throws IOException, AppPlatformException {
         final String uri = StringUtils.join(new String[]{
                 getUri(),
                 "gather"
@@ -529,7 +526,7 @@ public class Call extends ResourceBase {
         client.post(uri, params);
     }
 
-    private void createCallAudio(final Map<String, Object> params) throws IOException {
+    private void createCallAudio(final Map<String, Object> params) throws IOException, AppPlatformException {
         final String audioPath = StringUtils.join(new String[]{
                 getUri(),
                 "audio"
@@ -646,7 +643,7 @@ public class Call extends ResourceBase {
             return this;
         }
 
-        public void create() throws IOException {
+        public void create() throws IOException, AppPlatformException {
             createCallAudio(params);
         }
     }
@@ -656,7 +653,7 @@ public class Call extends ResourceBase {
         private final Map<String, Object> params = new HashMap<String, Object>();
         private final Map<String, Object> prompt = new HashMap<String, Object>();
 
-        public void create() throws IOException {
+        public void create() throws IOException, AppPlatformException {
             if (!prompt.isEmpty()) params.put("prompt", prompt);
 
             createGather(params);

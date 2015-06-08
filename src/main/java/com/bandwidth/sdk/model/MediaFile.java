@@ -1,12 +1,12 @@
 package com.bandwidth.sdk.model;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.json.simple.JSONObject;
-
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthConstants;
+import org.json.simple.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Information about media file.
@@ -53,7 +53,7 @@ public class MediaFile extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void delete() throws IOException {
+    public void delete() throws IOException, AppPlatformException {
         client.delete(getUri());
     }
 

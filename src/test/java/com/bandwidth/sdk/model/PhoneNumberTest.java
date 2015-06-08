@@ -1,20 +1,21 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class PhoneNumberTest extends BaseModelTest {
 
@@ -243,8 +244,16 @@ public class PhoneNumberTest extends BaseModelTest {
         assertThat(mockClient.requests.get(0).name, equalTo("post"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/phoneNumbers"));
     }
-    
-    
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetNumberByNumber() throws Exception {
+        RestResponse restResponse = new RestResponse();
+        restResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+
+        mockClient.setRestResponse(restResponse);
+
+        PhoneNumber.get(mockClient, "+number");
+    }
     
     
 }

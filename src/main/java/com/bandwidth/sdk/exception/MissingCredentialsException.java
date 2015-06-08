@@ -7,10 +7,17 @@ public class MissingCredentialsException extends IOException {
     private static final long serialVersionUID = 8463765824822860908L;
 
     public MissingCredentialsException() {
-        super("Missing credentials. There are 3 ways to set these credentials:\n" +
-                " *\n" +
-                " * 1. Via environment variables\n" +
-                " * 2. Via Java VM System Properties, set as -D arguments on the VM command line.\n" +
-                " * 3. Directly by way of a method call on the BandwidthClient object");
+        super("Missing credentials. \n" +
+                "\tThere are 3 ways to set these credentials:\n\n" +
+                "\t1. Via environment variables:\n" +
+                "\t\texport BANDWIDTH_USER_ID=<myUserId>\n" +
+                "\t\texport BANDWIDTH_API_TOKEN=<myApiToken>\n" +
+                "\t\texport BANDWIDTH_API_SECRET=<myApiSecret>\n" +
+                "\t2. Via Java VM System Properties, set as -D arguments on the VM command line:\n" +
+                "\t\t-Dcom.bandwidth.userId=<myUserId>\n" +
+                "\t\t-Dcom.bandwidth.apiToken=<myApiToken>\n" +
+                "\t\t-Dcom.bandwidth.apiSecret=<myApiSecret>\n" +
+                "\t3. Directly by way of a method call on the BandwidthClient object\n" +
+                "\t\tBandwidthClient.getInstance().setCredentials(<myUserId>, <myApiToken>, <myApiSecret>)\n");
     }
 }
