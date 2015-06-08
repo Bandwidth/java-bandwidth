@@ -69,20 +69,20 @@ public class BandwidthClient implements Client{
      */
     public synchronized static BandwidthClient getInstance() {
         if (INSTANCE == null) {
-            final Map<String, String> env = System.getenv();
-
-            String userId = env.get(BandwidthConstants.BANDWIDTH_USER_ID);
-            String apiToken = env.get(BandwidthConstants.BANDWIDTH_API_TOKEN);
-            String apiSecret = env.get(BandwidthConstants.BANDWIDTH_API_SECRET);
-            String apiEndpoint = env.get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
-            String apiVersion = env.get(BandwidthConstants.BANDWIDTH_API_VERSION);
+            String userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
+            String apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
+            String apiSecret = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_SECRET);
+            String apiEndpoint = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_ENDPOINT);
+            String apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
 
             if (userId == null || apiToken == null || apiSecret == null || apiEndpoint == null || apiVersion == null) {
-                userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
-                apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
-                apiSecret = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_SECRET);
-                apiEndpoint = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_ENDPOINT);
-                apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
+                final Map<String, String> env = System.getenv();
+
+                userId = env.get(BandwidthConstants.BANDWIDTH_USER_ID);
+                apiToken = env.get(BandwidthConstants.BANDWIDTH_API_TOKEN);
+                apiSecret = env.get(BandwidthConstants.BANDWIDTH_API_SECRET);
+                apiEndpoint = env.get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
+                apiVersion = env.get(BandwidthConstants.BANDWIDTH_API_VERSION);
             }
 
             INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);

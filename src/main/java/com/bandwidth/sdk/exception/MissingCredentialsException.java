@@ -18,6 +18,9 @@ public class MissingCredentialsException extends IOException {
                 "\t\t-Dcom.bandwidth.apiToken=<myApiToken>\n" +
                 "\t\t-Dcom.bandwidth.apiSecret=<myApiSecret>\n" +
                 "\t3. Directly by way of a method call on the BandwidthClient object\n" +
-                "\t\tBandwidthClient.getInstance().setCredentials(<myUserId>, <myApiToken>, <myApiSecret>)\n");
+                "\t\tBandwidthClient.getInstance().setCredentials(<myUserId>, <myApiToken>, <myApiSecret>)\n\n" +
+                "\tNotice: if credentials are not set explicitly, the sdk will first look for VM properties. " +
+                "If those are not present, it will look for environments vars." +
+                "\n\tTo override VM properties and env vars, use client's method as described on 3th option.\n");
     }
 }
