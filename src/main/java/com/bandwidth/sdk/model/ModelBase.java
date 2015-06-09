@@ -1,6 +1,9 @@
 package com.bandwidth.sdk.model;
 
 import com.bandwidth.sdk.BandwidthConstants;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.simple.JSONObject;
 
 import java.text.ParseException;
@@ -14,8 +17,8 @@ import java.util.Map;
  * Created by sbarstow on 9/30/14.
  */
 public abstract class ModelBase {
+    protected static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-    protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
     protected final Map<String, Object> properties = new HashMap<String, Object>();
 
     protected void updateProperties(final JSONObject jsonObject) {
@@ -78,8 +81,8 @@ public abstract class ModelBase {
         if (o instanceof Long) return new Date((Long) o);
 
         try {
-            return dateFormat.parse(o.toString());
-        } catch (final ParseException e) {
+            return dateFormat.parseDateTime(o.toString()).toDate();
+        } catch (final IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
     }

@@ -7,12 +7,19 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.AIMDBackoffManager;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicHeaderElementIterator;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 
@@ -23,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Helper class to abstract the HTTP interface. This class wraps the HttpClient and the HTTP methods POST, GET, PUT
@@ -48,6 +58,9 @@ public class BandwidthClient implements Client{
 
     protected static BandwidthClient INSTANCE;
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private IdleConnectionMonitorThread idleConnectionMonitorThread;
 
     /**
      * getInstance() method returns a singleton instance of the BandwidthClient. Looks for user-id, api-token and
@@ -65,6 +78,11 @@ public class BandwidthClient implements Client{
             String apiEndpoint = env.get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
             String apiVersion = env.get(BandwidthConstants.BANDWIDTH_API_VERSION);
 
+            // http connection settings
+            String maxTotal = env.get(BandwidthConstants.BANDWIDTH_HTTP_MAX_TOTAL_CONNECTIONS);
+            String defaultMaxPerRoute = env.get(BandwidthConstants.BANDWIDTH_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
+
+
             if (userId == null || apiToken == null || apiSecret == null || apiEndpoint == null || apiVersion == null) {
                 userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
                 apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
@@ -73,7 +91,17 @@ public class BandwidthClient implements Client{
                 apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
             }
 
-            INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
+            if (maxTotal == null) {
+                maxTotal = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_HTTP_MAX_TOTAL_CONNECTIONS,
+                                              BandwidthConstants.HTTP_MAX_TOTAL_CONNECTIONS);
+            }
+
+            if (defaultMaxPerRoute == null) {
+                defaultMaxPerRoute = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE,
+                                                        BandwidthConstants.HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
+            }
+
+            INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion, maxTotal, defaultMaxPerRoute);
         }
         return INSTANCE;
     }
@@ -86,8 +114,16 @@ public class BandwidthClient implements Client{
      * @param apiSecret the user API secret.
      * @param apiEndpoint the API Endpoint.
      * @param apiVersion the API version.
+     * @param maxTotal the API Endpoint.
+     * @param defaultMaxPerRoute the API version.
      */
-    protected BandwidthClient(final String userId, final String apiToken, final String apiSecret, final String apiEndpoint, final String apiVersion){
+    protected BandwidthClient(final String userId,
+                              final String apiToken,
+                              final String apiSecret,
+                              final String apiEndpoint,
+                              final String apiVersion,
+                              final String maxTotal,
+                              final String defaultMaxPerRoute) {
         this.usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
         this.token = apiToken;
         this.secret = apiSecret;
@@ -100,7 +136,7 @@ public class BandwidthClient implements Client{
             this.apiVersion = BandwidthConstants.API_VERSION;
         }
 
-        this.httpClient = new DefaultHttpClient();
+        this.httpClient = createHttpClient(maxTotal, defaultMaxPerRoute);
     }
 
     /**
@@ -307,8 +343,6 @@ public class BandwidthClient implements Client{
         }
     }
 
-
-
     /**
      * Helper method to build the request to the server.
      *
@@ -476,6 +510,94 @@ public class BandwidthClient implements Client{
             return new URI(sb.toString());
         } catch (final URISyntaxException e) {
             throw new IllegalStateException("Invalid uri", e);
+        }
+    }
+
+    private HttpClient createHttpClient( final String maxTotal,
+                                         final String defaultMaxPerRoute) {
+        // Following recommendations from
+        // https://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+
+        cm.setMaxTotal(Integer.parseInt(maxTotal));
+        cm.setDefaultMaxPerRoute(Integer.parseInt(defaultMaxPerRoute));
+
+        HttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(cm)
+                .setKeepAliveStrategy(getStrategy())
+                .setBackoffManager(new AIMDBackoffManager(cm))
+                .build();
+        this.idleConnectionMonitorThread = new IdleConnectionMonitorThread(cm);
+        this.executorService.execute(this.idleConnectionMonitorThread);
+
+        return httpClient;
+    }
+
+    private ConnectionKeepAliveStrategy getStrategy() {
+        return new ConnectionKeepAliveStrategy() {
+            @Override
+            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+                HeaderElementIterator it = new BasicHeaderElementIterator
+                        (response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+                while (it.hasNext()) {
+                    HeaderElement he = it.nextElement();
+                    String param = he.getName();
+                    String value = he.getValue();
+                    if (value != null && param.equalsIgnoreCase
+                            ("timeout")) {
+                        return Long.parseLong(value) * 1000;
+                    }
+                }
+                return 5 * 1000;
+            }
+        };
+    }
+
+    public static class IdleConnectionMonitorThread implements Runnable {
+
+        private final HttpClientConnectionManager connMgr;
+        private volatile boolean shutdown;
+
+        public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
+            super();
+            this.connMgr = connMgr;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!shutdown) {
+                    synchronized (this) {
+                        wait(5000);
+                        // Close expired connections
+                        connMgr.closeExpiredConnections();
+                        // Optionally, close connections
+                        // that have been idle longer than 30 sec
+                        connMgr.closeIdleConnections(30, TimeUnit.SECONDS);
+                    }
+                }
+            } catch (InterruptedException ex) {
+                // terminate
+            }
+        }
+
+        public void shutdown() {
+            shutdown = true;
+            synchronized (this) {
+                notifyAll();
+            }
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        try{
+            this.idleConnectionMonitorThread.shutdown();
+        }catch(Throwable t){
+            throw t;
+        }finally{
+            super.finalize();
         }
     }
 }

@@ -22,11 +22,17 @@ public class MockClient extends BandwidthClient {
     private String version;
 
 	public MockClient() {
-		super(TestsHelper.TEST_USER_ID, "", "", "", "");
+		super(TestsHelper.TEST_USER_ID, "", "", "", "", "200", "20");
 	}
 
-    public MockClient(final String userId, final String token, final String secret, final String endpoint, final String version){
-        super(userId, token, secret, endpoint, version);
+    public MockClient(final String userId,
+                      final String token,
+                      final String secret,
+                      final String endpoint,
+                      final String version,
+                      final String maxConnections,
+                      final String defaultMaxPerRoute){
+        super(userId, token, secret, endpoint, version, maxConnections, defaultMaxPerRoute);
         this.userId = userId;
         this.token = token;
         this.secret = secret;

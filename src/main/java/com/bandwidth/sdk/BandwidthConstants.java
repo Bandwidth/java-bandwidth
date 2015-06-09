@@ -31,6 +31,10 @@ public interface BandwidthConstants {
     String ACCOUNT_TRANSACTIONS_URI_PATH = "account/transactions";
     String GATHER_URI_PATH = "gather";
 
+    // Http connection constants
+    String HTTP_MAX_TOTAL_CONNECTIONS = "200";
+    String HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE = "20";
+
     String BANDWIDTH_USER_ID = "BANDWIDTH_USER_ID";
     String BANDWIDTH_API_TOKEN = "BANDWIDTH_API_TOKEN";
     String BANDWIDTH_API_SECRET = "BANDWIDTH_API_SECRET";
@@ -44,5 +48,11 @@ public interface BandwidthConstants {
     String BANDWIDTH_SYSPROP_API_VERSION = "com.bandwidth.apiVersion";
 
     String CONTENT_TYPE_JPEG = "image/jpeg";
+
+    String BANDWIDTH_HTTP_MAX_TOTAL_CONNECTIONS = "BANDWIDTH_MAX_TOTAL_CONNECTIONS";
+    String BANDWIDTH_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE = "BANDWIDTH_MAX_DEFAULT_CONNECTIONS_PER_ROUTE";
+
+    String BANDWIDTH_SYSPROP_HTTP_MAX_TOTAL_CONNECTIONS = "com.bandwidth.http.maxtotalconnections";
+    String BANDWIDTH_SYSPROP_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE = "com.bandwidth.http.maxdefaultconnectionsperroute";
 
 }

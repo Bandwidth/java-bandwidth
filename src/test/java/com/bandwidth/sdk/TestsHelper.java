@@ -8,6 +8,6 @@ public class TestsHelper {
     public static String TEST_USER_ID = "userId";
 
     public static MockClient getClient(){
-        return new MockClient(TEST_USER_ID, "", "", "", "");
+        return new MockClient(TEST_USER_ID, "", "", "", "", "200", "20");
     }
 }

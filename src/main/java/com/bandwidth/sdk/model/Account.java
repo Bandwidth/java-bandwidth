@@ -3,6 +3,7 @@ package com.bandwidth.sdk.model;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -94,12 +95,12 @@ public class Account extends ResourceBase {
         }
 
         public TransactionsQueryBuilder fromDate(final Date fromDate) {
-            params.put("fromDate", dateFormat.format(fromDate));
+            params.put("fromDate", dateFormat.print(new DateTime(fromDate)));
             return this;
         }
 
         public TransactionsQueryBuilder toDate(final Date toDate) {
-            params.put("toDate", dateFormat.format(toDate));
+            params.put("toDate", dateFormat.print(new DateTime(toDate)));
             return this;
         }
 
