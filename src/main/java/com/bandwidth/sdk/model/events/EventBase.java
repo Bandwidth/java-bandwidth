@@ -138,4 +138,11 @@ public class EventBase extends ModelBase implements Event {
     public void setProperty(final String name, final String value) {
         putProperty(name, value);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Event");
+        sb.append(properties);
+        return sb.toString();
+    }
 }
