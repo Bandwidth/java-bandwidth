@@ -5,12 +5,14 @@ import com.bandwidth.sdk.exception.XMLInvalidTagContentException;
 import com.bandwidth.sdk.exception.XMLMarshallingException;
 import com.bandwidth.sdk.xml.elements.*;
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
@@ -124,6 +126,51 @@ public class TestResponse {
 
         String output = response.toXml();
         String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/speaksentencewithintransfer.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test
+    public void testPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException,
+                ParserConfigurationException, SAXException, JAXBException {
+        final Response response = new Response();
+        final SpeakSentence speakSentence = new SpeakSentence("This call has been forwarded.",
+                "paul",
+                "male",
+                "en_US");
+        final Transfer transfer = new Transfer("+0123456789");
+        transfer.addPhoneNumber("+1234567891");
+        transfer.addPhoneNumber("+1234567892");
+        transfer.addPhoneNumber("+1234567893");
+        transfer.addPhoneNumber("+1234567894");
+        transfer.addPhoneNumber("+1234567895");
+        transfer.setSpeakSentence(speakSentence);
+        response.add(transfer);
+
+        final String output = response.toXml();
+        final String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/transfer_phonenumbers.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test(expected = AssertionFailedError.class)
+    public void testMaxedOutPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException,
+                ParserConfigurationException, SAXException, JAXBException {
+        final Response response = new Response();
+        final SpeakSentence speakSentence = new SpeakSentence("This call has been forwarded.",
+                "paul",
+                "male",
+                "en_US");
+        final Transfer transfer = new Transfer("+0123456789");
+        transfer.addPhoneNumber("+1234567891");
+        transfer.addPhoneNumber("+1234567892");
+        transfer.addPhoneNumber("+1234567893");
+        transfer.addPhoneNumber("+1234567894");
+        transfer.addPhoneNumber("+1234567895");
+        transfer.addPhoneNumber("+1234567896");
+        transfer.setSpeakSentence(speakSentence);
+        response.add(transfer);
+
+        final String output = response.toXml();
+        final String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/transfer_phonenumbers.xml"), "UTF-8");
         compareXML(xmlReference, output);
     }
 

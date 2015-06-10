@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Transfer transferCallerId="+0123456789">
+        <PhoneNumber>+1234567891</PhoneNumber>
+        <PhoneNumber>+1234567892</PhoneNumber>
+        <PhoneNumber>+1234567893</PhoneNumber>
+        <PhoneNumber>+1234567894</PhoneNumber>
+        <PhoneNumber>+1234567895</PhoneNumber>
+        <SpeakSentence gender="male" locale="en_US" voice="paul">This call has been forwarded.</SpeakSentence>
+    </Transfer>
+</Response>
