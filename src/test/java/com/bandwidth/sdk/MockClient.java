@@ -1,18 +1,18 @@
 package com.bandwidth.sdk;
 
+import com.bandwidth.sdk.exception.MissingCredentialsException;
+import com.bandwidth.sdk.model.NumberInfo;
+import com.bandwidth.sdk.model.ResourceBase;
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.bandwidth.sdk.model.NumberInfo;
-import com.bandwidth.sdk.model.ResourceBase;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class MockClient extends BandwidthClient {
     private String userId;
@@ -22,11 +22,17 @@ public class MockClient extends BandwidthClient {
     private String version;
 
 	public MockClient() {
-		super(TestsHelper.TEST_USER_ID, "", "", "", "");
+		super(TestsHelper.TEST_USER_ID, "", "", "", "", 200, 20);
 	}
 
-    public MockClient(final String userId, final String token, final String secret, final String endpoint, final String version){
-        super(userId, token, secret, endpoint, version);
+    public MockClient(final String userId,
+                      final String token,
+                      final String secret,
+                      final String endpoint,
+                      final String version,
+                      final int maxConnections,
+                      final int defaultMaxPerRoute){
+        super(userId, token, secret, endpoint, version, maxConnections, defaultMaxPerRoute);
         this.userId = userId;
         this.token = token;
         this.secret = secret;
@@ -43,24 +49,26 @@ public class MockClient extends BandwidthClient {
 
     
     @Override
-    public RestResponse get(final String uri, final Map<String, Object> params) throws IOException {
+    public RestResponse get(final String uri, final Map<String, Object> params) throws IOException,
+            AppPlatformException {
         requests.add(new RestRequest("get", uri, params));
    	
         return getRestResponse();
     }    
     
     @Override
-    public RestResponse post(final String uri, final Map<String, Object> params) throws IOException {
+    public RestResponse post(final String uri, final Map<String, Object> params)
+            throws IOException, AppPlatformException {
     	 requests.add(new RestRequest("post", uri, params));        
     	 
-    	 return restResponse;
+    	 return getRestResponse();
     }
     
     @Override
-    public RestResponse delete(final String uri) throws IOException {
+    public RestResponse delete(final String uri) throws IOException, AppPlatformException {
         requests.add(new RestRequest("delete", uri, null));
         
-        return restResponse;
+        return getRestResponse();
     }
     
     @Override
@@ -118,7 +126,20 @@ public class MockClient extends BandwidthClient {
 	}
 
 
-	public RestResponse getRestResponse() {
+	public RestResponse getRestResponse() throws AppPlatformException, MissingCredentialsException {
+        if (restResponse != null) {
+            if (restResponse.getStatus() == 401) {
+                if (this.usersUri == null || this.usersUri.isEmpty()
+                        || this.token == null || this.token.isEmpty()
+                        || this.secret == null || this.secret.isEmpty()) {
+
+                    throw new MissingCredentialsException();
+                }
+            } else if (restResponse.getStatus() >= 400) {
+                throw new AppPlatformException(restResponse.getResponseText());
+            }
+        }
+
 		return restResponse;
 	}
 

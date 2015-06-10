@@ -6,6 +6,8 @@ import org.json.simple.parser.JSONParser;
 import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.model.ModelBase;
 
+import java.util.Map;
+
 /**
  * Information about event.
  *
@@ -129,6 +131,11 @@ public class EventBase extends ModelBase implements Event {
 
     public String getTag() {
         return getPropertyAsString("tag");
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        return super.toMap();
     }
 
     public String getProperty(final String property) {

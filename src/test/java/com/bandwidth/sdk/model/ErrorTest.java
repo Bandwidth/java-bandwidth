@@ -1,19 +1,20 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class ErrorTest extends BaseModelTest {
     private MockClient mockClient;
@@ -278,6 +279,15 @@ public class ErrorTest extends BaseModelTest {
 
         assertThat(mockClient.requests.get(0).name, equalTo("get"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/errors/ue-asvdtalmmhka2i63uzt66ma"));
-    }    
-    
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetErrorById() throws Exception {
+        RestResponse restResponse = new RestResponse();
+        restResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(restResponse);
+
+        Error.get(mockClient, "ue-asvdtalmmhka2i63uzt66ma");
+    }
+
 }
