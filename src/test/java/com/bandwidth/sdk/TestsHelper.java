@@ -7,7 +7,7 @@ public class TestsHelper {
 
     public static String TEST_USER_ID = "userId";
 
-    public static MockRestClient getClient(){
-        return new MockRestClient(TEST_USER_ID, "", "", "", "");
+    public static MockClient getClient(){
+        return new MockClient(TEST_USER_ID, "", "", "", "");
     }
 }

@@ -26,7 +26,7 @@ public enum MediaMimeType {
 
     private final String val;
 
-    private MediaMimeType(String val) {
+    private MediaMimeType(final String val) {
         this.val = val;
     }
 
@@ -34,7 +34,7 @@ public enum MediaMimeType {
         return val;
     }
 
-    public static MediaMimeType getEnum(String type) {
+    public static MediaMimeType getEnum(final String type) {
         if (IMAGE_JPG.toString().equalsIgnoreCase(type))
             return IMAGE_JPG;
         else if (IMAGE_JPEG.toString().equalsIgnoreCase(type))

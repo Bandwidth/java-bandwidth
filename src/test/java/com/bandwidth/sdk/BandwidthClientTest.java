@@ -1,11 +1,16 @@
 package com.bandwidth.sdk;
 
 
+import com.bandwidth.sdk.model.NumberInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.CoreMatchers;
+import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.json.simple.JSONObject;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class BandwidthClientTest {
 
@@ -17,14 +22,38 @@ public class BandwidthClientTest {
     }
 
     @Test
+    public void shouldGetNumberInfo() throws Exception {
+        final JSONObject jsonObject = (org.json.simple.JSONObject) new JSONParser().parse("{\n" +
+                "  \"created\": \"2013-09-23T16:31:15Z\",\n" +
+                "  \"name\": \"Name\",\n" +
+                "  \"number\": \"{number}\",\n" +
+                "  \"updated\": \"2013-09-23T16:42:18Z\"\n" +
+                "}");
+
+        client.result = jsonObject;
+        final RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+        client.setRestResponse(response);
+
+
+        final NumberInfo number = client.getNumberInfoByNumber("number");
+        assertThat(number.getName(), CoreMatchers.equalTo("Name"));
+        assertThat(number.getNumber(), CoreMatchers.equalTo("{number}"));
+
+        assertThat(client.requests.get(0).name, CoreMatchers.equalTo("get"));
+        assertThat(client.requests.get(0).uri, CoreMatchers.equalTo("phoneNumbers/numberInfo/number"));
+    }
+
+
+    @Test
     public void shouldGetProperUserResourceUri() throws Exception {
-        String resourceUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+        final String resourceUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
         assertEquals("users/userId/calls", resourceUri);
     }
 
     @Test
     public void shouldGetProperResourceInstanceUri() throws Exception {
-        String resourceInstanceUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, "myId");
+        final String resourceInstanceUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, "myId");
         assertEquals("users/userId/calls/myId", resourceInstanceUri);
     }
 
@@ -55,14 +84,14 @@ public class BandwidthClientTest {
     
     @Test
     public void getPathForPartial() throws Exception{
-        String partial = "users";
-        String[] parts = new String[]{
+        final String partial = "users";
+        final String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
                 partial
         };
-        String uri = StringUtils.join(parts, "/");
-        String path = client.getPath(uri);
+        final String uri = StringUtils.join(parts, "/");
+        final String path = client.getPath(uri);
 
         // a full uri should be returned
         assertEquals(path, uri);
@@ -70,13 +99,13 @@ public class BandwidthClientTest {
     
     @Test
     public void getPathForFullUri() throws Exception{
-        String[] parts = new String[]{
+        final String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
                 "users"
         };
-        String uri = StringUtils.join(parts, "/");
-        String path = client.getPath(uri);
+        final String uri = StringUtils.join(parts, "/");
+        final String path = client.getPath(uri);
 
         // uri is already a full uri, so it should be returned
         assertEquals(path, uri);

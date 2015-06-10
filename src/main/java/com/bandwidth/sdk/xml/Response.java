@@ -14,14 +14,25 @@ import java.util.List;
 @XmlRootElement(name = "Response")
 public class Response {
 
-    private List<Elements> verbList = new ArrayList<Elements>();
+    private final List<Elements> verbList = new ArrayList<Elements>();
+    
+    private final JAXBContext jc;
+    private final Marshaller marshaller;
+    
+    public Response() throws JAXBException {
+        this.jc = JAXBContext.newInstance(Hangup.class, Transfer.class, 
+                SpeakSentence.class, PlayAudio.class, Redirect.class);
+        this.marshaller = jc.createMarshaller();
+        this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        this.marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+    }
 
-    public void add(Elements verb) {
+    public void add(final Elements verb) {
         verbList.add(verb);
     }
 
     public String toXml() throws XMLMarshallingException {
-        StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         stringBuilder.append("<Response>");
 
@@ -29,8 +40,10 @@ public class Response {
             throw new XMLMarshallingException("Error marshalling xml, at least one tag within <Response> is required");
         }
 
-        for (Elements verb : verbList) {
+        Writer writer;
+        for (final Elements verb : verbList) {
             try {
+<<<<<<< HEAD
                 JAXBContext jc = JAXBContext.newInstance(Hangup.class,
                         Transfer.class, SpeakSentence.class, PlayAudio.class, Redirect.class,
                         SendMessage.class, Gather.class, Record.class);
@@ -41,8 +54,12 @@ public class Response {
                 Writer writer = new StringWriter();
                 marshaller.marshal(verb, writer);
                 writer.toString();
+=======
+                writer = new StringWriter();
+                this.marshaller.marshal(verb, writer);
+>>>>>>> master
                 stringBuilder.append(writer.toString());
-            } catch (JAXBException ex) {
+            } catch (final JAXBException ex) {
                 throw new XMLMarshallingException("Error marshalling " + verb.toString(), ex);
             }
         }

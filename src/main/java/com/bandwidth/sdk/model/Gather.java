@@ -16,12 +16,12 @@ import java.util.Map;
  */
 public class Gather extends ResourceBase {
 
-    public Gather(BandwidthClient client, JSONObject jsonObject) {
+    public Gather(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }      
@@ -34,14 +34,14 @@ public class Gather extends ResourceBase {
     /**
      * Changes state to completed.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void complete() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
         client.post(getUri(), params);
 
-        JSONObject jsonObject = toJSONObject(client.get(getUri(), null));
+        final JSONObject jsonObject = toJSONObject(client.get(getUri(), null));
         updateProperties(jsonObject);
     }
 

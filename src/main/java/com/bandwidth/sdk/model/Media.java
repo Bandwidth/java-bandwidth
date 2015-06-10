@@ -1,15 +1,14 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthClient;
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
+
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.BandwidthConstants;
 
 /**
  * Point for <code>/v1/users/{userId}/media</code>
@@ -23,33 +22,33 @@ public class Media extends ResourceBase {
      *
      * @param id media file id
      * @return information about media file
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public static MediaFile get(String id) throws Exception {
+    public static MediaFile get(final String id) throws Exception {
     	
         return get(BandwidthClient.getInstance(), id);
     }
     
     /**
      * Gets information about a previously sent or received MediaFile.
-     *
+     * @param client the client.
      * @param id MediaFile id
      * @return information about MediaFile
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public static MediaFile get(BandwidthClient client, String id) throws Exception {
+    public static MediaFile get(final BandwidthClient client, final String id) throws Exception {
     	
-        String mediaUri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, id);
+        final String mediaUri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, id);
 
-        JSONObject jsonObject = toJSONObject(client.get(mediaUri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(mediaUri, null));
         return new MediaFile(client, jsonObject);
     }
 	
 	
     /**
      * Factory method for MediaFile list, returns a list of MediaFile object with default page, size
-     * @return
-     * @throws IOException
+     * @return the list
+     * @throws IOException unexpected error.
      */
     public static ResourceList<MediaFile> list() throws IOException {
     	
@@ -59,12 +58,12 @@ public class Media extends ResourceBase {
     
     /**
      * Factory method for MediaFile list, returns a list of MediaFile objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<MediaFile> list(int page, int size) throws IOException {
+    public static ResourceList<MediaFile> list(final int page, final int size) throws IOException {
     	
         
         return list(BandwidthClient.getInstance(), page, size);
@@ -72,16 +71,17 @@ public class Media extends ResourceBase {
     
     /**
      * Factory method for MediaFile list, returns a list of MediaFile objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param client the client.
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<MediaFile> list(BandwidthClient client, int page, int size) throws IOException {
+    public static ResourceList<MediaFile> list(final BandwidthClient client, final int page, final int size) throws IOException {
     	
-        String mediaUri = client.getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
+        final String mediaUri = client.getUserResourceUri(BandwidthConstants.MEDIA_URI_PATH);
 
-        ResourceList<MediaFile> mediaFiles = 
+        final ResourceList<MediaFile> mediaFiles = 
         			new ResourceList<MediaFile>(page, size, mediaUri, MediaFile.class);
         mediaFiles.setClient(client);
         mediaFiles.initialize();
@@ -91,19 +91,19 @@ public class Media extends ResourceBase {
 
     /**
      * Factory method for a Media object. Use the returned media object to upload or download a file.
-     * @return
+     * @return the Media
      */
     public static Media create() {
 
         return new Media(BandwidthClient.getInstance());
     }
 
-    public Media(BandwidthClient client) {
+    public Media(final BandwidthClient client) {
         super(client, null);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
     	
     	if (jsonObject != null) {
     		this.id = (String) jsonObject.get("id");
@@ -120,18 +120,18 @@ public class Media extends ResourceBase {
      * @param file source file for uploading
      * @param contentType MIME type of file or <code>null</code>
      * @return new media file object
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public MediaFile upload(String mediaName, File file, MediaMimeType contentType) throws IOException {
+    public MediaFile upload(final String mediaName, final File file, final MediaMimeType contentType) throws IOException {
 
-        String uri = StringUtils.join(new String[]{
+        final String uri = StringUtils.join(new String[]{
                 getUri(),
                 mediaName
         }, '/');        
         client.upload(uri, file, contentType.toString());
 
-        List<MediaFile> mediaFiles = list(client, 0, 25);
-        for (MediaFile mediaFile : mediaFiles) {
+        final List<MediaFile> mediaFiles = list(client, 0, 25);
+        for (final MediaFile mediaFile : mediaFiles) {
             if (StringUtils.equals(mediaFile.getMediaName(), mediaName)) return mediaFile;
         }
         return null;
@@ -142,11 +142,11 @@ public class Media extends ResourceBase {
      *
      * @param mediaName name of media
      * @param file file for putting content. Will be overridden.
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public void download(String mediaName, File file) throws IOException {
+    public void download(final String mediaName, final File file) throws IOException {
 
-        String uri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, mediaName);        
+        final String uri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, mediaName);        
 
         client.download(uri, file);
     }

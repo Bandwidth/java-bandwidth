@@ -191,7 +191,54 @@ public class MessageTest extends BaseModelTest{
         assertThat(mockClient.requests.get(0).params.get("tag").toString(), equalTo("MESSAGE_TAG"));
         assertThat(mockClient.requests.get(0).params.get("text").toString(), equalTo("Hola Mundo!"));
     }
-    
-    
-    
+
+    @Test
+    public void shouldCreateMessageWithReceipt() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
+                "  \"to\": \"+number1\",\n" +
+                "  \"id\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
+                "  \"time\": \"2013-10-02T12:15:41Z\",\n" +
+                "  \"text\": \"Hello judith\",\n" +
+                "  \"direction\": \"in\",\n" +
+                "  \"state\": \"received\",\n" +
+                "  \"from\": \"+number2\",\n" +
+                "  \"messageId\": \"m-ckobmmd4fgqumyhssgd6lqy\",\n" +
+                "  \"deliveryState\": \"delivered\",\n" +
+                "  \"deliveryCode\": \"0\",\n" +
+                "  \"deliveryDescription\": \"Message delivered to carrier\",\n" +
+                "  \"media\": []\n" +
+                "}");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("to", "+number1");
+        params.put("from", "+number2");
+        params.put("text", "Hola Mundo!");
+        params.put("tag", "MESSAGE_TAG");
+        params.put("receiptRequested", ReceiptRequest.ALL);
+
+        RestResponse response = new RestResponse();
+        response.setResponseText(jsonObject.toString());
+
+        String uri = mockClient.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
+        String path = mockClient.getPath(uri);
+
+        System.out.println(path);
+        String locationLink = "http:" + path + "/m-ckobmmd4fgqumyhssgd6lqy";
+        response.setLocation(locationLink);
+
+        mockClient.setRestResponse(response);
+
+        Message message = Message.create(mockClient, params);
+
+        assertThat(message.getId(), equalTo("m-ckobmmd4fgqumyhssgd6lqy"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/messages"));
+        assertThat(mockClient.requests.get(0).params.get("from").toString(), equalTo("+number2"));
+        assertThat(mockClient.requests.get(0).params.get("to").toString(), equalTo("+number1"));
+        assertThat(mockClient.requests.get(0).params.get("tag").toString(), equalTo("MESSAGE_TAG"));
+        assertThat(mockClient.requests.get(0).params.get("text").toString(), equalTo("Hola Mundo!"));
+        assertThat(mockClient.requests.get(0).params.get("receiptRequested").toString(),
+                equalTo(ReceiptRequest.ALL.toString()));
+    }
+
 }

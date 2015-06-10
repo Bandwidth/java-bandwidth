@@ -1,12 +1,12 @@
 package com.bandwidth.sdk.model;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.BandwidthClient;
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
+
+import org.json.simple.JSONObject;
+
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.BandwidthConstants;
 
 /**
  * Information about media file.
@@ -15,12 +15,12 @@ import java.io.IOException;
  */
 public class MediaFile extends ResourceBase {
 
-    public MediaFile(BandwidthClient client, JSONObject jsonObject) {
+    public MediaFile(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }          
@@ -42,16 +42,16 @@ public class MediaFile extends ResourceBase {
      * Downloads existing media file from server.
      *
      * @param destFile file for putting content. Will be overridden.
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public void downloadTo(File destFile) throws IOException {
+    public void downloadTo(final File destFile) throws IOException {
         client.download(getUri(), destFile);
     }
 
     /**
      * Deletes media file permanently.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void delete() throws IOException {
         client.delete(getUri());

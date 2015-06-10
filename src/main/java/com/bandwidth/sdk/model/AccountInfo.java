@@ -11,12 +11,12 @@ import org.json.simple.JSONObject;
  */
 public class AccountInfo extends ResourceBase {
 
-    public AccountInfo(BandwidthClient client, JSONObject jsonObject) {
+    public AccountInfo(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }

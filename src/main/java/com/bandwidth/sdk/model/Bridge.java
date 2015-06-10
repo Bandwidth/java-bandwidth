@@ -24,29 +24,26 @@ public class Bridge extends ResourceBase {
      *
      * @param id bridge id
      * @return information about a specific bridge
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public static Bridge get(String id) throws Exception {
+    public static Bridge get(final String id) throws Exception {
         
-        BandwidthClient client = BandwidthClient.getInstance();
+        final BandwidthClient client = BandwidthClient.getInstance();
         return get(client, id); 
     }
     
     
     /**
      * Convenience method to return a bridge object given a client and an id
-     * @param client
-     * @param id
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param id the call id
+     * @return the Bridge
+     * @throws IOException unexpected error.
      */
-    public static Bridge get(BandwidthClient client, String id) throws Exception {
+    public static Bridge get(final BandwidthClient client, final String id) throws Exception {
         assert(client != null);
-        
-    	String bridgesUri =  client.getUserResourceInstanceUri(BandwidthConstants.BRIDGES_URI_PATH, id);
-
-
-        JSONObject jsonObject = toJSONObject(client.get(bridgesUri, null));
+    	final String bridgesUri =  client.getUserResourceInstanceUri(BandwidthConstants.BRIDGES_URI_PATH, id);
+        final JSONObject jsonObject = toJSONObject(client.get(bridgesUri, null));
         return new Bridge(client, jsonObject);
         
     }
@@ -55,67 +52,60 @@ public class Bridge extends ResourceBase {
 	
 	/**
 	 * Convenience factory method for Bridge, returns Bridge object from an id
-	 * @param callId
-	 * @return
-	 * @throws IOException
+	 * @param id the call id
+     * @return the Bridge
+	 * @throws IOException unexpected error.
 	 */
-	public static Bridge create(String id) throws Exception {
-		
+	public static Bridge create(final String id) throws Exception {
 		return Bridge.create(id, null);
 	}
 	
 	/**
 	 * Convenience factory method to create a Bridge object from two Call objects
-	 * @param call1
-	 * @param call2
-	 * @return
-	 * @throws IOException
+	 * @param call1 the call id
+     * @param call2 the call id
+     * @return the Bridge
+	 * @throws IOException unexpected error.
 	 */
-    public static Bridge create(Call call1, Call call2)
-    	    throws Exception 
-    {
-    	assert (call1 != null);
-
-    	String callId1 = call1.getId();
-
-    	String callId2 = call2.getId();
-
+    public static Bridge create(final Call call1, final Call call2)
+    	    throws Exception {
+        assert (call1 != null);
+    	final String callId1 = call1.getId();
+    	final String callId2 = call2.getId();
     	return Bridge.create(callId1, callId2);
     }
 
     /**
      * Convenience factory method to create a Bridge object from two call ids
-     * @param callId1
-     * @param callId2
-     * @return
-     * @throws IOException
+     * @param callId1 the call id
+     * @param callId2 the call id
+     * @return the Bridge
+     * @throws IOException unexpected error.
      */
-    public static Bridge create(String callId1, String callId2)
-    	    throws Exception 
-    {
+    public static Bridge create(final String callId1, final String callId2)
+    	    throws Exception {
     	assert (callId1 != null);
-
-    	BandwidthClient client = BandwidthClient.getInstance();
-
+    	final BandwidthClient client = BandwidthClient.getInstance();
     	return create(client, callId1, callId2);
 	}
     
     /**
      * Convenience method to create a Bridge object from two call ids
-     * @param callId1
-     * @param callId2
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param callId1 the call id
+     * @param callId2 the call id
+     * @return the Bridge
+     * @throws IOException unexpected error.
      */
-    public static Bridge create(BandwidthClient client, String callId1, String callId2)
+    public static Bridge create(final BandwidthClient client, final String callId1, final String callId2)
     	    throws Exception 
     {
     	assert (callId1 != null);
 
-    	HashMap<String, Object> params = new HashMap<String, Object>();
+    	final HashMap<String, Object> params = new HashMap<String, Object>();
 
     	params.put("bridgeAudio", "true");
-    	String[] callIds = new String[] { callId1, callId2 };
+    	final String[] callIds = new String[] { callId1, callId2 };
     	params.put("callIds", callIds == null ? Collections.emptyList()
     		: Arrays.asList(callIds));
 
@@ -124,31 +114,27 @@ public class Bridge extends ResourceBase {
     
     /**
      * Convenience factory method to create a Bridge object from a params maps
-     * @param callId1
-     * @param callId2
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param params the params
+     * @return the Bridge
+     * @throws IOException unexpected error.
      */
-    public static Bridge create(BandwidthClient client, Map<String, Object>params)
+    public static Bridge create(final BandwidthClient client, final Map<String, Object>params)
     	    throws Exception {
-    	assert (client!= null && params != null);
-
-    	String bridgesUri =  client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
-
-    	RestResponse response = client.post(bridgesUri, params);
-
-    	JSONObject callObj = toJSONObject(client.get(response.getLocation(), null));
-
-    	Bridge bridge = new Bridge(client, callObj);
-
+    	
+        assert (client!= null && params != null);
+    	final String bridgesUri =  client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+    	final RestResponse response = client.post(bridgesUri, params);
+    	final JSONObject callObj = toJSONObject(client.get(response.getLocation(), null));
+    	final Bridge bridge = new Bridge(client, callObj);
     	return bridge;
 	}
     
     
     /**
      * Factory method for Bridge list, returns list of Bridge objects with default page setting
-     * @return
-     * @throws IOException
+     * @return the list
+     * @throws IOException unexpected error.
      */
     public static ResourceList<Bridge> list() throws IOException {
     	
@@ -158,12 +144,12 @@ public class Bridge extends ResourceBase {
     
     /**
      * Factory method for Bridge list, returns list of Bridge objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<Bridge> list(int page, int size) throws IOException {
+    public static ResourceList<Bridge> list(final int page, final int size) throws IOException {
     	
     	
         return list(BandwidthClient.getInstance(), page, size);
@@ -171,16 +157,17 @@ public class Bridge extends ResourceBase {
     
     /**
      * Factory method for Bridge list, returns list of Bridge objects with page, size preference
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<Bridge> list(BandwidthClient client, int page, int size) throws IOException {
+    public static ResourceList<Bridge> list(final BandwidthClient client, final int page, final int size) throws IOException {
     	
-        String resourceUri = client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
+        final String resourceUri = client.getUserResourceUri(BandwidthConstants.BRIDGES_URI_PATH);
 
-        ResourceList<Bridge> bridges = 
+        final ResourceList<Bridge> bridges = 
         			new ResourceList<Bridge>(page, size, resourceUri, Bridge.class);
 
         bridges.setClient(client);
@@ -191,12 +178,12 @@ public class Bridge extends ResourceBase {
     
     
 
-    public Bridge(BandwidthClient client, JSONObject jsonObject) {
+    public Bridge(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }    
@@ -210,17 +197,17 @@ public class Bridge extends ResourceBase {
      * Gets list of calls that are on the bridge
      *
      * @return list of calls
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public List<Call> getBridgeCalls() throws Exception {
-        String callsPath = StringUtils.join(new String[]{
+        final String callsPath = StringUtils.join(new String[]{
                 getUri(),
                 "calls"
         }, '/');
-        JSONArray jsonArray = toJSONArray(client.get(callsPath, null));
+        final JSONArray jsonArray = toJSONArray(client.get(callsPath, null));
 
-        List<Call> callList = new ArrayList<Call>();
-        for (Object obj : jsonArray) {
+        final List<Call> callList = new ArrayList<Call>();
+        for (final Object obj : jsonArray) {
             callList.add(new Call(client, (JSONObject) obj));
         }
         return callList;
@@ -231,7 +218,7 @@ public class Bridge extends ResourceBase {
      *
      * @param callIds new value
      */
-    public void setCallIds(String[] callIds) {
+    public void setCallIds(final String[] callIds) {
         putProperty("callIds", Arrays.asList(callIds));
     }
 
@@ -239,20 +226,20 @@ public class Bridge extends ResourceBase {
      * Sets bridge audio
      * @param bridgeAudio new value
      */
-    public void setBridgeAudio(boolean bridgeAudio) {
+    public void setBridgeAudio(final boolean bridgeAudio) {
         putProperty("bridgeAudio", bridgeAudio);
     }
 
     /**
      * Makes changes ob the bridge.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void commit() throws IOException {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
 
         params.put("bridgeAudio", isBridgeAudio());
-        String[] callIds = getCallIds();
+        final String[] callIds = getCallIds();
         params.put("callIds", callIds == null ? Collections.emptyList() : Arrays.asList(callIds));
 
         client.post(getUri(), params);
@@ -300,7 +287,7 @@ public class Bridge extends ResourceBase {
     /**
      * Stop an audio file playing.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void stopAudioFilePlaying() throws IOException {
         new NewBridgeAudioBuilder().fileUrl(StringUtils.EMPTY).create();
@@ -309,14 +296,14 @@ public class Bridge extends ResourceBase {
     /**
      * Stop an audio sentence.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void stopSentence() throws IOException {
         new NewBridgeAudioBuilder().sentence(StringUtils.EMPTY).create();
     }
 
-    private void createAudio(Map<String, Object> params) throws IOException {
-        String audioPath = StringUtils.join(new String[]{
+    private void createAudio(final Map<String, Object> params) throws IOException {
+        final String audioPath = StringUtils.join(new String[]{
                 getUri(),
                 "audio"
         }, '/');
@@ -341,32 +328,32 @@ public class Bridge extends ResourceBase {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public NewBridgeAudioBuilder fileUrl(String fileUrl) {
+        public NewBridgeAudioBuilder fileUrl(final String fileUrl) {
             params.put("fileUrl", fileUrl);
             return this;
         }
 
-        public NewBridgeAudioBuilder sentence(String sentence) {
+        public NewBridgeAudioBuilder sentence(final String sentence) {
             params.put("sentence", sentence);
             return this;
         }
 
-        public NewBridgeAudioBuilder gender(Gender gender) {
+        public NewBridgeAudioBuilder gender(final Gender gender) {
             params.put("gender", gender.name());
             return this;
         }
 
-        public NewBridgeAudioBuilder locale(SentenceLocale locale) {
+        public NewBridgeAudioBuilder locale(final SentenceLocale locale) {
             params.put("locale", locale.restValue);
             return this;
         }
 
-        public NewBridgeAudioBuilder voice(String voice) {
+        public NewBridgeAudioBuilder voice(final String voice) {
             params.put("voice", voice);
             return this;
         }
 
-        public NewBridgeAudioBuilder loopEnabled(boolean loopEnabled) {
+        public NewBridgeAudioBuilder loopEnabled(final boolean loopEnabled) {
             params.put("loopEnabled", String.valueOf(loopEnabled));
             return this;
         }

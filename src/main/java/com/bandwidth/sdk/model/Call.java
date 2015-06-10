@@ -24,34 +24,36 @@ public class Call extends ResourceBase {
      * Factory method for Call, returns information about an active or completed call.
      *
      * @param callId call id
-     * @return information about a call
-     * @throws IOException
+     * @return the call
+     * @throws IOException unexpected error.
      */
-    public static Call get(String callId) throws Exception {
+    public static Call get(final String callId) throws Exception {
 
-    	BandwidthClient client = BandwidthClient.getInstance();
+    	final BandwidthClient client = BandwidthClient.getInstance();
         
         return get(client, callId);
     }
     
     /**
      * Convenience factory method for Call, returns a Call object given an id
-     * @param client
-     * @param callId
+     * @param client the client
+     * @param callId the call id
+     * @return the call
+     * @throws Exception error.
      */
-    public static Call get(BandwidthClient client, String callId) throws Exception {
+    public static Call get(final BandwidthClient client, final String callId) throws Exception {
     	
-        String callsUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, callId);
+        final String callsUri = client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, callId);
         
-        JSONObject jsonObject = toJSONObject(client.get(callsUri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(callsUri, null));
         
         return new Call(client, jsonObject);
     }
 
     /**
      * Factory method for Call list, returns a list of Call objects with default page, size
-     * @return
-     * @throws IOException
+     * @return the list of calls
+     * @throws IOException unexpected error.
      */
     public static ResourceList<Call> list() throws IOException {
     	
@@ -61,28 +63,29 @@ public class Call extends ResourceBase {
     
     /**
      * Factor method for Call list, returns a list of Call objects with page, size preference 
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<Call> list(int page, int size) throws IOException {
+    public static ResourceList<Call> list(final int page, final int size) throws IOException {
     	
         return list(BandwidthClient.getInstance(), page, size);
     }
     
     /**
      * Factor method for Call list, returns a list of Call objects with page, size preference 
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param page the page
+     * @param size the page size
+     * @return the list
+     * @throws IOException unexpected error.
      */
-    public static ResourceList<Call> list(BandwidthClient client, int page, int size) throws IOException {
+    public static ResourceList<Call> list(final BandwidthClient client, final int page, final int size) throws IOException {
     	
-        String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+        final String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
 
-        ResourceList<Call> calls = 
+        final ResourceList<Call> calls = 
         			new ResourceList<Call>(page, size, callUri, Call.class);
         
         calls.setClient(client);
@@ -94,47 +97,46 @@ public class Call extends ResourceBase {
     
     /**
      * Convenience factory method to make an outbound call
-     * @param to
-     * @param from
-     * @return
-     * @throws Exception
+     * @param to the to number
+     * @param from the from number
+     * @return the call
+     * @throws Exception error.
      */
-    public static Call create(String to, String from) throws Exception {
-    	
+    public static Call create(final String to, final String from) throws Exception {
     	return create(to, from, "none", null);
     }
         
     /**
      * Convenience method to dials a call from a phone number to a phone number
-     * @param to
-     * @param from
-     * @param callbackUrl
-     * @param maps
-     * @return
-     * @throws IOException
+     * @param to the to number
+     * @param from the from number
+     * @param callbackUrl the callback URL
+     * @param tag the call tag
+     * @return the call
+     * @throws IOException unexpected error.
      */
-    public static Call create(String to, String from, String callbackUrl, String tag)  throws Exception
+    public static Call create(final String to, final String from, final String callbackUrl, final String tag)  throws Exception
     {
     	assert(to != null && from != null);
     	    	
-    	Map<String, Object> params = new HashMap<String, Object>();
+    	final Map<String, Object> params = new HashMap<String, Object>();
     	params.put("to", to);
     	params.put("from", from);
     	params.put("callbackUrl", callbackUrl);
     	params.put("tag", tag);
     	    	
-    	Call call = create(params);
+    	final Call call = create(params);
     	    	
     	return call;
     }
     
     /**
      * Dials a call, from a phone number to a phone number.
-     * @param params
-     * @return
-     * @throws IOException
+     * @param params the call params
+     * @return the call
+     * @throws IOException unexpected error.
      */
-    public static Call create(Map <String, Object>params)  throws Exception
+    public static Call create(final Map <String, Object>params)  throws Exception
     {
     	assert (params != null);
     	
@@ -143,60 +145,52 @@ public class Call extends ResourceBase {
     
     /**
      * Dials a call, from a phone number to a phone number.
-     * @param params
-     * @return
-     * @throws IOException
+     * @param client the client
+     * @param params the call params
+     * @return the call
+     * @throws IOException unexpected error.
      */
-    public static Call create(BandwidthClient client, Map <String, Object>params)  throws Exception
-    {
+    public static Call create(final BandwidthClient client, final Map <String, Object>params) 
+            throws Exception {
     	assert (client != null && params != null);
-    	    	
-        String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
-    	
-    	RestResponse response = client.post(callUri, params);
-
+        final String callUri = client.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH);
+    	final RestResponse response = client.post(callUri, params);
         if (response.getStatus() > 400) {
             throw new AppPlatformException(response.getResponseText());
         }
-    	// success here, otherwise an exception is generated
-    	
-    	String callId = response.getLocation().substring(client.getPath(callUri).length() + 1);
-    	
-    	Call call = get(client, callId);
-    	    	    	
+
+        // success here, otherwise an exception is generated
+    	final String callId = response.getLocation().substring(client.getPath(callUri).length() + 1);
+    	final Call call = get(client, callId);
     	return call;
     }
-    
 
-    public Call(BandwidthClient client, JSONObject jsonObject) {
+    public Call(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
     
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
         this.id = (String) jsonObject.get("id");
         updateProperties(jsonObject);
     }      
 
     protected String getUri() {
         return client.getUserResourceInstanceUri(BandwidthConstants.CALLS_URI_PATH, getId());
-
     }
 
-    public void speakSentence(Map params) throws IOException {
+    public void speakSentence(final Map<String, Object> params) throws IOException {
 		assert (params != null);
-	
-		String audioUrl = getUri() + "/audio";
-	
+		final String audioUrl = getUri() + "/audio";
 		client.post(audioUrl, params);
     }
 
-    public void speakSentence(String sentence) throws IOException {
+    public void speakSentence(final String sentence) throws IOException {
     	speakSentence(sentence, null);
     }
 
-    public void speakSentence(String sentence, String tag) throws IOException {
-		JSONObject params = new JSONObject();
+    public void speakSentence(final String sentence, final String tag) throws IOException {
+		final JSONObject params = new JSONObject();
 		params.put("sentence", sentence);
 		params.put("voice", "kate");
 		params.put("gender", "female");
@@ -208,56 +202,54 @@ public class Call extends ResourceBase {
 		speakSentence(params);
     }
 
-    public void playRecording(String recordingUrl) throws IOException {
+    public void playRecording(final String recordingUrl) throws IOException {
 		assert (recordingUrl != null);
 	
-		String audioUrl = getUri() + "/audio";
+		final String audioUrl = getUri() + "/audio";
 	
-		JSONObject params = new JSONObject();
+		final JSONObject params = new JSONObject();
 		params.put("fileUrl", recordingUrl);
 	
 		client.post(audioUrl, params);
     }
 
-    public void playAudio(Map<String, Object> params) throws IOException {
+    public void playAudio(final Map<String, Object> params) throws IOException {
 		assert (params != null);
 	
-		String audioUrl = getUri() + "/audio";
+		final String audioUrl = getUri() + "/audio";
 	
 		client.post(audioUrl, params);
     }
 
-    public void createGather(String promptSentence) throws IOException {
-		assert (promptSentence != null);
-	
-		String gatherUrl = getUri() + "/gather";
-	
-		JSONObject params = new JSONObject();
+    public void createGather(final String promptSentence) throws IOException {
+		
+        assert (promptSentence != null);
+		final String gatherUrl = getUri() + "/gather";
+		final JSONObject params = new JSONObject();
 	
 		params.put("tag", getId());
 		params.put("maxDigits", "1");
 	
-		JSONObject prompt = new JSONObject();
+		final JSONObject prompt = new JSONObject();
 		prompt.put("sentence", promptSentence);
 		prompt.put("gender", "female");
 		prompt.put("voice", "kate");
 		prompt.put("locale", "en_US");
 		prompt.put("bargeable", "true");
-	
 		params.put("prompt", prompt);
 	
 		client.post(gatherUrl, params);
 
     }
 
-    public void createGather(Map<String, Object> gatherParams,
-	    Map<String, Object> promptParams) throws IOException {
-		String gatherUrl = getUri() + "/gather";
+    public void createGather(final Map<String, Object> gatherParams,
+	    final Map<String, Object> promptParams) throws IOException {
+		
+        final String gatherUrl = getUri() + "/gather";
 		assert (gatherParams != null);
-
-		if (promptParams != null && !promptParams.isEmpty())
+		if (promptParams != null && !promptParams.isEmpty()) {
 		    gatherParams.put("prompt", promptParams);
-	
+		}
 		getClient().post(gatherUrl, gatherParams);
     }
     
@@ -309,18 +301,18 @@ public class Call extends ResourceBase {
     /**
      * Retrieve all recordings related to the call.
      *
-     * @return recordings
-     * @throws IOException
+     * @return recordings the recordings
+     * @throws IOException unexpected error.
      */
     public List<Recording> getRecordings() throws Exception {
-        String recordingsPath = StringUtils.join(new String[]{
+        final String recordingsPath = StringUtils.join(new String[]{
                 getUri(),
                 "recordings"
         }, '/');
-        JSONArray array = toJSONArray(client.get(recordingsPath, null));
+        final JSONArray array = toJSONArray(client.get(recordingsPath, null));
 
-        List<Recording> list = new ArrayList<Recording>();
-        for (Object object : array) {
+        final List<Recording> list = new ArrayList<Recording>();
+        for (final Object object : array) {
             list.add(new Recording(client, recordingsPath, (JSONObject) object));
         }
         return list;
@@ -329,18 +321,18 @@ public class Call extends ResourceBase {
     /**
      * Gets the events that occurred during the call.
      *
-     * @return events
-     * @throws IOException
+     * @return events the events list
+     * @throws IOException unexpected error.
      */
     public List<EventBase> getEventsList() throws Exception {
-        String eventsPath = StringUtils.join(new String[]{
+        final String eventsPath = StringUtils.join(new String[]{
                 getUri(),
                 "events"
         }, '/');
-        JSONArray array = toJSONArray(client.get(eventsPath, null));
+        final JSONArray array = toJSONArray(client.get(eventsPath, null));
 
-        List<EventBase> list = new ArrayList<EventBase>();
-        for (Object object : array) {
+        final List<EventBase> list = new ArrayList<EventBase>();
+        for (final Object object : array) {
             list.add(new EventBase((JSONObject) object));
         }
         return list;
@@ -351,99 +343,95 @@ public class Call extends ResourceBase {
      *
      * @param eventId event id
      * @return information about event
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public EventBase getEvent(String eventId) throws Exception {
-        String eventPath = StringUtils.join(new String[]{
+    public EventBase getEvent(final String eventId) throws Exception {
+        final String eventPath = StringUtils.join(new String[]{
                 getUri(),
                 "events",
                 eventId
         }, '/');
-        JSONObject jsonObject = toJSONObject(client.get(eventPath, null));
-        String eventsPath = StringUtils.join(new String[]{
-                getUri(),
-                "events"
-        }, '/');
+        final JSONObject jsonObject = toJSONObject(client.get(eventPath, null));
         return new EventBase(jsonObject);
     }
 
     /**
      * Hang up a phone call.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void hangUp() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "completed");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
     /**
      * Answer an incoming phone call.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void answerOnIncoming() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "active");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
     /**
      * Reject an incoming phone call
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void rejectIncoming() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("state", "rejected");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
     /**
      * Turn call recording ON.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void recordingOn() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "true");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
     /**
      * Turn call recording OFF.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void recordingOff() throws Exception {
-        Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("recordingEnabled", "false");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -455,7 +443,7 @@ public class Call extends ResourceBase {
      * @param transferTo number for transferring
      * @return new builder
      */
-    public CallTransferBuilder callTransferBuilder(String transferTo) {
+    public CallTransferBuilder callTransferBuilder(final String transferTo) {
         return new CallTransferBuilder(transferTo);
     }
 
@@ -473,7 +461,7 @@ public class Call extends ResourceBase {
     /**
      * Stop an audio file playing.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void stopAudioFilePlaying() throws IOException {
         new CallAudioBuilder().fileUrl(StringUtils.EMPTY).create();
@@ -482,7 +470,7 @@ public class Call extends ResourceBase {
     /**
      * Stop an audio sentence.
      *
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public void stopSentence() throws IOException {
         new CallAudioBuilder().sentence(StringUtils.EMPTY).create();
@@ -492,13 +480,13 @@ public class Call extends ResourceBase {
      * Sends DTMF.
      *
      * @param dtmf DTMF value
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public void sendDtmf(String dtmf) throws IOException {
-        Map<String, Object> params = new HashMap<String, Object>();
+    public void sendDtmf(final String dtmf) throws IOException {
+        final Map<String, Object> params = new HashMap<String, Object>();
         params.put("dtmfOut", dtmf);
 
-        String uri = StringUtils.join(new String[]{
+        final String uri = StringUtils.join(new String[]{
                 getUri(),
                 "dtmf"
         }, '/');
@@ -521,45 +509,41 @@ public class Call extends ResourceBase {
      *
      * @param gatherId gather id
      * @return gather DTMF parameters and results
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
-    public Gather getGather(String gatherId) throws Exception {
-        String gatherPath = StringUtils.join(new String[]{
+    public Gather getGather(final String gatherId) throws Exception {
+        final String gatherPath = StringUtils.join(new String[]{
                 getUri(),
                 "gather",
                 gatherId
         }, '/');
-        JSONObject jsonObject = toJSONObject(client.get(gatherPath, null));
-        String gathersPath = StringUtils.join(new String[]{
-                getUri(),
-                "events"
-        }, '/');
+        final JSONObject jsonObject = toJSONObject(client.get(gatherPath, null));
         return new Gather(client,jsonObject);
     }
 
-    private void createGather(Map<String, Object> params) throws IOException {
-        String uri = StringUtils.join(new String[]{
+    private void createGather(final Map<String, Object> params) throws IOException {
+        final String uri = StringUtils.join(new String[]{
                 getUri(),
                 "gather"
         }, '/');
         client.post(uri, params);
     }
 
-    private void createCallAudio(Map<String, Object> params) throws IOException {
-        String audioPath = StringUtils.join(new String[]{
+    private void createCallAudio(final Map<String, Object> params) throws IOException {
+        final String audioPath = StringUtils.join(new String[]{
                 getUri(),
                 "audio"
         }, '/');
         client.post(audioPath, params);
     }
 
-    private void transfer(Map<String, Object> params) throws Exception {
+    private void transfer(final Map<String, Object> params) throws Exception {
         params.put("state", "transferring");
 
-        String uri = getUri();
+        final String uri = getUri();
         client.post(uri, params);
 
-        JSONObject jsonObject = toJSONObject(client.get(uri, null));
+        final JSONObject jsonObject = toJSONObject(client.get(uri, null));
         updateProperties(jsonObject);
     }
 
@@ -583,39 +567,39 @@ public class Call extends ResourceBase {
 
     public class CallTransferBuilder {
 
-        private Map<String, Object> params = new HashMap<String, Object>();
-        private Map<String, Object> whisperAudio = new HashMap<String, Object>();
+        private final Map<String, Object> params = new HashMap<String, Object>();
+        private final Map<String, Object> whisperAudio = new HashMap<String, Object>();
 
-        public CallTransferBuilder(String number) {
+        public CallTransferBuilder(final String number) {
             params.put("transferTo", number);
         }
 
-        public CallTransferBuilder callbackUrl(String callbackUrl) {
+        public CallTransferBuilder callbackUrl(final String callbackUrl) {
             params.put("callbackUrl", callbackUrl);
             return this;
         }
 
-        public CallTransferBuilder transferCallerId(String transferCallerId) {
+        public CallTransferBuilder transferCallerId(final String transferCallerId) {
             params.put("transferCallerId", transferCallerId);
             return this;
         }
 
-        public CallTransferBuilder sentence(String sentence) {
+        public CallTransferBuilder sentence(final String sentence) {
             whisperAudio.put("sentence", sentence);
             return this;
         }
 
-        public CallTransferBuilder gender(Gender gender) {
+        public CallTransferBuilder gender(final Gender gender) {
             whisperAudio.put("gender", gender.name());
             return this;
         }
 
-        public CallTransferBuilder voice(String voice) {
+        public CallTransferBuilder voice(final String voice) {
             whisperAudio.put("voice", voice);
             return this;
         }
 
-        public CallTransferBuilder locale(SentenceLocale locale) {
+        public CallTransferBuilder locale(final SentenceLocale locale) {
             whisperAudio.put("locale", locale);
             return this;
         }
@@ -632,32 +616,32 @@ public class Call extends ResourceBase {
 
         private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public CallAudioBuilder fileUrl(String fileUrl) {
+        public CallAudioBuilder fileUrl(final String fileUrl) {
             params.put("fileUrl", fileUrl);
             return this;
         }
 
-        public CallAudioBuilder sentence(String sentence) {
+        public CallAudioBuilder sentence(final String sentence) {
             params.put("sentence", sentence);
             return this;
         }
 
-        public CallAudioBuilder gender(Gender gender) {
+        public CallAudioBuilder gender(final Gender gender) {
             params.put("gender", gender.name());
             return this;
         }
 
-        public CallAudioBuilder locale(SentenceLocale locale) {
+        public CallAudioBuilder locale(final SentenceLocale locale) {
             params.put("locale", locale.restValue);
             return this;
         }
 
-        public CallAudioBuilder voice(String voice) {
+        public CallAudioBuilder voice(final String voice) {
             params.put("voice", voice);
             return this;
         }
 
-        public CallAudioBuilder loopEnabled(boolean loopEnabled) {
+        public CallAudioBuilder loopEnabled(final boolean loopEnabled) {
             params.put("loopEnabled", String.valueOf(loopEnabled));
             return this;
         }
@@ -669,8 +653,8 @@ public class Call extends ResourceBase {
 
     public class CallGatherBuilder {
 
-        private Map<String, Object> params = new HashMap<String, Object>();
-        private Map<String, Object> prompt = new HashMap<String, Object>();
+        private final Map<String, Object> params = new HashMap<String, Object>();
+        private final Map<String, Object> prompt = new HashMap<String, Object>();
 
         public void create() throws IOException {
             if (!prompt.isEmpty()) params.put("prompt", prompt);
@@ -678,57 +662,57 @@ public class Call extends ResourceBase {
             createGather(params);
         }
 
-        public CallGatherBuilder maxDigits(int maxDigits) {
+        public CallGatherBuilder maxDigits(final int maxDigits) {
             params.put("maxDigits", String.valueOf(maxDigits));
             return this;
         }
 
-        public CallGatherBuilder interDigitTimeout(int maxDigits) {
+        public CallGatherBuilder interDigitTimeout(final int maxDigits) {
             params.put("interDigitTimeout", String.valueOf(maxDigits));
             return this;
         }
 
-        public CallGatherBuilder terminatingDigits(String terminatingDigits) {
+        public CallGatherBuilder terminatingDigits(final String terminatingDigits) {
             params.put("terminatingDigits", terminatingDigits);
             return this;
         }
 
-        public CallGatherBuilder suppressDtmf(boolean suppressDtmf) {
+        public CallGatherBuilder suppressDtmf(final boolean suppressDtmf) {
             params.put("suppressDtmf", String.valueOf(suppressDtmf));
             return this;
         }
 
-        public CallGatherBuilder tag(String tag) {
+        public CallGatherBuilder tag(final String tag) {
             params.put("tag", tag);
             return this;
         }
 
-        public CallGatherBuilder promptSentence(String promptSentence) {
+        public CallGatherBuilder promptSentence(final String promptSentence) {
             prompt.put("sentence", promptSentence);
             return this;
         }
 
-        public CallGatherBuilder promptGender(Gender gender) {
+        public CallGatherBuilder promptGender(final Gender gender) {
             prompt.put("gender", gender.name());
             return this;
         }
 
-        public CallGatherBuilder promptLocale(SentenceLocale locale) {
+        public CallGatherBuilder promptLocale(final SentenceLocale locale) {
             prompt.put("locale", locale.restValue);
             return this;
         }
 
-        public CallGatherBuilder promptFileUrl(String promptFileUrl) {
+        public CallGatherBuilder promptFileUrl(final String promptFileUrl) {
             prompt.put("fileUrl", promptFileUrl);
             return this;
         }
 
-        public CallGatherBuilder promptLoopEnabled(boolean promptLoopEnabled) {
+        public CallGatherBuilder promptLoopEnabled(final boolean promptLoopEnabled) {
             prompt.put("loopEnabled", String.valueOf(promptLoopEnabled));
             return this;
         }
 
-        public CallGatherBuilder promptBargeable(boolean promptBargeable) {
+        public CallGatherBuilder promptBargeable(final boolean promptBargeable) {
             prompt.put("bargeable", String.valueOf(promptBargeable));
             return this;
         }

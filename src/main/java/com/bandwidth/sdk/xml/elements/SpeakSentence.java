@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(name = "SpeakSentence")
 public class SpeakSentence implements Elements {
+    
     private String voice;
     private String gender;
     private String locale;

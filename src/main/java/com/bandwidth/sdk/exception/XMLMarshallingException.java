@@ -1,8 +1,11 @@
 package com.bandwidth.sdk.exception;
 
 public class XMLMarshallingException extends Exception {
-    public XMLMarshallingException(String s) { super(); }
-    public XMLMarshallingException (String message, Throwable exception) {
+
+    private static final long serialVersionUID = 1557359792155861255L;
+    
+    public XMLMarshallingException(final String s) { super(); }
+    public XMLMarshallingException (final String message, final Throwable exception) {
         super(message, exception);
     }
 }

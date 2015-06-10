@@ -25,11 +25,10 @@ public class Redirect implements Elements {
     }
 
     public void setRequestUrl(final String requestUrl) throws XMLInvalidAttributeException {
-        if ((requestUrl != null) && (!requestUrl.trim().isEmpty())) {
-            this.requestUrl = requestUrl;
-        } else {
+        if ((requestUrl == null) || (requestUrl.trim().isEmpty())) {
             throw new XMLInvalidAttributeException("requestUrl mustn't not be empty or null");
         }
+        this.requestUrl = requestUrl;
     }
 
     @XmlAttribute(name = "timeout", required = true)
@@ -38,11 +37,10 @@ public class Redirect implements Elements {
     }
 
     public void setTimeout(final int timeout) throws XMLInvalidAttributeException {
-        if (timeout > 0) {
-            this.timeout = timeout;
-        } else {
+        if (timeout <= 0) {
             throw new XMLInvalidAttributeException("timeout must be greater than 0");
         }
+        this.timeout = timeout;
     }
 
     @Override

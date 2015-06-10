@@ -1,12 +1,11 @@
 package com.bandwidth.sdk.model;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.junit.Test;
 
 public class ConferenceMemberTest extends BaseModelTest {
 
@@ -22,7 +21,7 @@ public class ConferenceMemberTest extends BaseModelTest {
                 "      \"leavingTone\": false,\n" +
                 "      \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId1}\"\n" +
                 "  }");
-        ConferenceMember member = new ConferenceMember(mockRestClient, jsonObject);
+        ConferenceMember member = new ConferenceMember(mockClient, jsonObject);
 
         assertThat(member.getId(), equalTo("{memberId1}"));
         assertThat(member.getCall(), equalTo("https://localhost:8444/v1/users/{userId}/calls/{callId1}"));

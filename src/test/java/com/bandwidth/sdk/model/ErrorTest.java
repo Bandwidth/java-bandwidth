@@ -1,5 +1,10 @@
 package com.bandwidth.sdk.model;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -9,12 +14,6 @@ import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
-
-import java.util.HashMap;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class ErrorTest extends BaseModelTest {
     private MockClient mockClient;

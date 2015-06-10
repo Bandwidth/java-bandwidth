@@ -1,18 +1,21 @@
 package com.bandwidth.sdk;
 
 public class AppPlatformException extends Exception {
-	public AppPlatformException() {
+
+    private static final long serialVersionUID = 1044495525539824275L;
+
+    public AppPlatformException() {
 	}
 
-	public AppPlatformException(String message) {
+	public AppPlatformException(final String message) {
 		super(message);
 	}
 
-	public AppPlatformException(Throwable cause) {
+	public AppPlatformException(final Throwable cause) {
 		super(cause);
 	}
 
-	public AppPlatformException(String message, Throwable cause) {
+	public AppPlatformException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 

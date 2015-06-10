@@ -18,20 +18,22 @@ public class Account extends ResourceBase {
 	
 	/**
 	 * Account factory method. Returns Account object
+	 * 
+	 * @return the account
 	 */
 	
 	public static Account get() {
-		BandwidthClient client = BandwidthClient.getInstance();
+		final BandwidthClient client = BandwidthClient.getInstance();
 		
 		return new Account(client);
 	}
 
-    public Account(BandwidthClient client){
+    public Account(final BandwidthClient client){
         super(client, null);
     }
 
     @Override
-    protected void setUp(JSONObject jsonObject) {
+    protected void setUp(final JSONObject jsonObject) {
     }
 
 
@@ -39,11 +41,11 @@ public class Account extends ResourceBase {
      * Gets your current account information.
      *
      * @return information account information
-     * @throws IOException
+     * @throws IOException unexpected error.
      */
     public AccountInfo getAccountInfo() throws Exception {
 
-        JSONObject jsonObject = toJSONObject(client.get(getUri(), null));
+        final JSONObject jsonObject = toJSONObject(client.get(getUri(), null));
 
 
         return new AccountInfo(client, jsonObject);
@@ -52,7 +54,7 @@ public class Account extends ResourceBase {
     /**
      * Creates builder for getting transactions of the account.
      * <br>Example:<br>
-     * <code>List<AccountTransaction> list = account.queryTransactionsBuilder().maxItems(5).type("charge").list();</code>
+     * <code>List{@literal <AccountTransaction>} list = account.queryTransactionsBuilder().maxItems(5).type("charge").list();</code>
      *
      * @return builder for getting transactions
      */
@@ -60,12 +62,12 @@ public class Account extends ResourceBase {
         return new TransactionsQueryBuilder();
     }
 
-    private List<AccountTransaction> getTransactions(Map<String, Object> params) throws Exception {
-        String transactionsUri = getAccountTransactionsUri();
-        JSONArray array = toJSONArray(client.get(transactionsUri, params));
+    private List<AccountTransaction> getTransactions(final Map<String, Object> params) throws Exception {
+        final String transactionsUri = getAccountTransactionsUri();
+        final JSONArray array = toJSONArray(client.get(transactionsUri, params));
 
-        List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
-        for (Object obj : array) {
+        final List<AccountTransaction> transactions = new ArrayList<AccountTransaction>();
+        for (final Object obj : array) {
             transactions.add(new AccountTransaction(client, (JSONObject) obj));
         }
         return transactions;
@@ -84,34 +86,34 @@ public class Account extends ResourceBase {
 
     public class TransactionsQueryBuilder {
 
-        private Map<String, Object> params = new HashMap<String, Object>();
+        private final Map<String, Object> params = new HashMap<String, Object>();
 
-        public TransactionsQueryBuilder maxItems(int maxItems) {
+        public TransactionsQueryBuilder maxItems(final int maxItems) {
             params.put("maxItems", maxItems);
             return this;
         }
 
-        public TransactionsQueryBuilder fromDate(Date fromDate) {
+        public TransactionsQueryBuilder fromDate(final Date fromDate) {
             params.put("fromDate", dateFormat.format(fromDate));
             return this;
         }
 
-        public TransactionsQueryBuilder toDate(Date toDate) {
+        public TransactionsQueryBuilder toDate(final Date toDate) {
             params.put("toDate", dateFormat.format(toDate));
             return this;
         }
 
-        public TransactionsQueryBuilder type(String type) {
+        public TransactionsQueryBuilder type(final String type) {
             params.put("type", type);
             return this;
         }
 
-        public TransactionsQueryBuilder page(int page) {
+        public TransactionsQueryBuilder page(final int page) {
             params.put("page", page);
             return this;
         }
 
-        public TransactionsQueryBuilder size(int size) {
+        public TransactionsQueryBuilder size(final int size) {
             params.put("size", size);
             return this;
         }

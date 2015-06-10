@@ -3,12 +3,10 @@ package com.bandwidth.sdk.model;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.bandwidth.sdk.MockRestClient;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -112,7 +110,6 @@ public class ApplicationTest {
         
         ResourceList<Application> applicationList = Application.list(mockClient, 0, 5);
                 
-        Application application = applicationList.get(0);
         assertThat(applicationList.size(), equalTo(2));
         assertThat(applicationList.get(0).getId(), equalTo("id1"));
         assertThat(applicationList.get(0).isAutoAnswer(), equalTo(false));

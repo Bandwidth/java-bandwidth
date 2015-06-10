@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(name = "PlayAudio")
 public class PlayAudio implements Elements {
+    
     private String audioUrl;
     private String digits;
 
@@ -29,11 +30,10 @@ public class PlayAudio implements Elements {
     }
 
     public void setAudioUrl(final String audioUrl) throws XMLInvalidTagContentException {
-        if ((audioUrl != null) && (!audioUrl.trim().isEmpty())) {
-            this.audioUrl = audioUrl;
-        } else {
+        if ((audioUrl == null) || (audioUrl.trim().isEmpty())) {
             throw new XMLInvalidTagContentException("Tag <PlayAudio> content (audioUrl) mustn't not be empty or null");
         }
+        this.audioUrl = audioUrl;
     }
 
     @XmlAttribute(name = "digits")

@@ -1,7 +1,7 @@
 package com.bandwidth.sdk.model;
 
-public interface Resource {
+public interface Resource<E> {
 	
-	public ResourceList getList();
+	public ResourceList<E> getList();
 
 }

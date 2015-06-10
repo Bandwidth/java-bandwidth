@@ -5,15 +5,12 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
-import com.bandwidth.sdk.MockClient;
 
 public class RecordingTest extends BaseModelTest {
 	
