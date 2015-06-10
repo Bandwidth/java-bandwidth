@@ -96,11 +96,4 @@ public abstract class ModelBase {
         return map;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ModelBase{");
-        sb.append("properties=").append(properties);
-        sb.append('}');
-        return sb.toString();
-    }
 }

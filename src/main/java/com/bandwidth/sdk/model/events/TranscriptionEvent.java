@@ -40,16 +40,4 @@ public class TranscriptionEvent extends EventBase {
         return getPropertyAsString("transcriptionUri");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
 }
