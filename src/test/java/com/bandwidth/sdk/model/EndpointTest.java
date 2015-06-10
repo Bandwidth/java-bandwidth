@@ -47,7 +47,7 @@ public class EndpointTest {
 
         Endpoint.delete(mockClient, "111111", "23323");
     }
-
+    
     @Test(expected = AppPlatformException.class)
     public void deleteEndpointByInvalidEndpointId() throws Exception {
         final RestResponse response = new RestResponse();

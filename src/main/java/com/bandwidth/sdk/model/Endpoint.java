@@ -1,10 +1,15 @@
 package com.bandwidth.sdk.model;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.RestResponse;
-import org.codehaus.jackson.map.ObjectMapper;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

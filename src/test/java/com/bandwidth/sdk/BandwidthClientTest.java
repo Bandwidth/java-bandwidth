@@ -3,11 +3,20 @@ package com.bandwidth.sdk;
 
 import com.bandwidth.sdk.model.NumberInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.hamcrest.CoreMatchers;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.json.simple.JSONObject;
+
+import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -57,33 +66,33 @@ public class BandwidthClientTest {
         assertEquals("users/userId/calls/myId", resourceInstanceUri);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void getResourceUriShouldFailWithNullPath() throws Exception{
+    @Test(expected = IllegalArgumentException.class)
+    public void getResourceUriShouldFailWithNullPath() throws Exception {
         client.getUserResourceUri(null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void getResourceInstanceUriShouldFailWithNullPath() throws Exception{
+    @Test(expected = IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithNullPath() throws Exception {
         client.getUserResourceInstanceUri(null, "myId");
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void getResourceInstanceUriShouldFailWithEmptyPath() throws Exception{
+    @Test(expected = IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithEmptyPath() throws Exception {
         client.getUserResourceInstanceUri("", "myId");
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void getResourceInstanceUriShouldFailWithNullId() throws Exception{
+    @Test(expected = IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithNullId() throws Exception {
         client.getUserResourceInstanceUri("path", null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void getResourceInstanceUriShouldFailWithEmptyId() throws Exception{
+    @Test(expected = IllegalArgumentException.class)
+    public void getResourceInstanceUriShouldFailWithEmptyId() throws Exception {
         client.getUserResourceInstanceUri("path", "");
     }
-    
+
     @Test
-    public void getPathForPartial() throws Exception{
+    public void getPathForPartial() throws Exception {
         final String partial = "users";
         final String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
@@ -96,9 +105,9 @@ public class BandwidthClientTest {
         // a full uri should be returned
         assertEquals(path, uri);
     }
-    
+
     @Test
-    public void getPathForFullUri() throws Exception{
+    public void getPathForFullUri() throws Exception {
         final String[] parts = new String[]{
                 BandwidthConstants.API_ENDPOINT,
                 BandwidthConstants.API_VERSION,
@@ -110,5 +119,4 @@ public class BandwidthClientTest {
         // uri is already a full uri, so it should be returned
         assertEquals(path, uri);
     }
-
 }
