@@ -98,7 +98,7 @@ public class Message extends ResourceBase {
      * @return the message
      * @throws IOException unexpected error
      */
-    public static Message create(final String to, final String from, final String text) throws Exception{
+    public static Message create(final String to, final String from, final String text) throws Exception {
     	
     	final Map<String, Object> params = new HashMap<String, Object>();
     	params.put("to", to);
@@ -109,7 +109,31 @@ public class Message extends ResourceBase {
     }
 
     /**
-     * Convience factory method to send MMS messages. Create a MediaFile object using the Media upload method
+     * Convenience factory method to send a message with receipt, given the to number, the from number and the text
+     * @param to the from number
+     * @param from the to number
+     * @param text the text
+     * @param receiptRequest the receipt request option
+     * @return the message
+     * @throws IOException unexpected error
+     */
+    public static Message create(final String to, final String from, final String text, final ReceiptRequest receiptRequest) throws Exception {
+
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("to", to);
+        params.put("from", from);
+        params.put("text", text);
+
+        if (receiptRequest != null) {
+            params.put("receiptRequested", receiptRequest.toString());
+        } else {
+            params.put("receiptRequested", ReceiptRequest.NONE.toString());
+        }
+        return create(params);
+    }
+
+    /**
+     * Convenience factory method to send MMS messages. Create a MediaFile object using the Media upload method
      * and pass that in.
      *
      * @param to the from number
@@ -212,6 +236,10 @@ public class Message extends ResourceBase {
         return getPropertyAsLong("callbackTimeout");
     }
 
+    public String getReceiptRequested() {
+        return getPropertyAsString("receiptRequested");
+    }
+
     @Override
     public String toString() {
         return "Message{" +
@@ -226,6 +254,7 @@ public class Message extends ResourceBase {
                 ", text='" + getText() + '\'' +
                 ", time=" + getTime() +
                 ", callbackTimeout=" + getCallbackTimeout() +
+                ", receiptRequested=" + getReceiptRequested() +
                 '}';
     }
 }
