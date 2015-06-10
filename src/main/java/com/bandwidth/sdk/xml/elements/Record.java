@@ -9,8 +9,10 @@ import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(name = "Record")
 public class Record implements Elements {
+
     private String requestUrl;
     private Integer requestUrlTimeout;
+    private String fileFormat;
     private String terminatingDigits;
     private Integer maxDuration;
     private Boolean transcribe;
@@ -25,7 +27,7 @@ public class Record implements Elements {
         setRequestUrlTimeout(requestUrlTimeout);
     }
 
-    @XmlAttribute(name = "requestUrl", required = true)
+    @XmlAttribute(name = "requestUrl")
     public String getRequestUrl() {
         return requestUrl;
     }
@@ -38,7 +40,7 @@ public class Record implements Elements {
         }
     }
 
-    @XmlAttribute(name = "requestUrlTimeout", required = true)
+    @XmlAttribute(name = "requestUrlTimeout")
     public Integer getRequestUrlTimeout() {
         return requestUrlTimeout;
     }
@@ -48,6 +50,19 @@ public class Record implements Elements {
             this.requestUrlTimeout = requestUrlTimeout;
         } else {
             throw new XMLInvalidAttributeException("requestUrlTimeout must be greater than zero");
+        }
+    }
+
+    @XmlAttribute(name = "fileFormat")
+    public String getFileFormat() {
+        return fileFormat;
+    }
+
+    public void setFileFormat(String fileFormat) throws XMLInvalidAttributeException {
+        if (fileFormat != null) {
+            this.fileFormat = fileFormat;
+        } else {
+            throw new XMLInvalidAttributeException("fileFormat must not be null");
         }
     }
 
@@ -108,6 +123,7 @@ public class Record implements Elements {
         final StringBuilder sb = new StringBuilder("Record{");
         sb.append("requestUrl='").append(requestUrl).append('\'');
         sb.append(", requestUrlTimeout=").append(requestUrlTimeout);
+        sb.append(", fileFormat=").append(fileFormat);
         sb.append(", terminatingDigits='").append(terminatingDigits).append('\'');
         sb.append(", maxDuration=").append(maxDuration);
         sb.append(", transcribe=").append(transcribe);
