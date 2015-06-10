@@ -16,6 +16,7 @@ import java.util.Map;
 public abstract class ModelBase {
 
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(BandwidthConstants.TRANSACTION_DATE_TIME_PATTERN);
+
     protected final Map<String, Object> properties = new HashMap<String, Object>();
 
     protected void updateProperties(final JSONObject jsonObject) {
@@ -25,11 +26,6 @@ public abstract class ModelBase {
             }
         }
     }
-
-    public String getId() {
-        return getPropertyAsString("id");
-    }
-
 
     protected String getPropertyAsString(final String key) {
         return (String) properties.get(key);
@@ -98,5 +94,11 @@ public abstract class ModelBase {
         return map;
     }
 
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ModelBase{");
+        sb.append("properties=").append(properties);
+        sb.append('}');
+        return sb.toString();
+    }
 }
