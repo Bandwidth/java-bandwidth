@@ -16,6 +16,5 @@ public class EventTest {
 
         EventBase event = new EventBase(jsonObject);
         assertThat(event.getId(), CoreMatchers.equalTo("ce-hsdbdbdhd"));
-        assertThat(event.getData().toString(), CoreMatchers.equalTo("Call Id wasn't found on FreeSWITCH anymore"));
     }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Gather requestUrl="/baml/gather" requestUrlTimeout="500" terminatingDigits="#" maxDigits="1" interDigitTimeout="5" bargeable="true">
+        <SpeakSentence gender="male" locale="en_US" voice="paul" >
+            This is a test of spoken sentence
+        </SpeakSentence>
+    </Gather>
+</Response>

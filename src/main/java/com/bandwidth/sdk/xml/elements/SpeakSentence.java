@@ -81,11 +81,12 @@ public class SpeakSentence implements Elements {
 
     @Override
     public String toString() {
-        return "SpeakSentence{" +
-                "voice='" + voice + '\'' +
-                ", gender='" + gender + '\'' +
-                ", locale='" + locale + '\'' +
-                ", sentence='" + sentence + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("SpeakSentence{");
+        sb.append("voice='").append(voice).append('\'');
+        sb.append(", gender='").append(gender).append('\'');
+        sb.append(", locale='").append(locale).append('\'');
+        sb.append(", sentence='").append(sentence).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

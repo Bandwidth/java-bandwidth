@@ -8,11 +8,25 @@ public class SpeakEvent extends EventBase {
 
 	public SpeakEvent(final JSONObject json) {
 		super(json);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void execute(final Visitor visitor) {
 		visitor.processEvent(this);
 	}
 
+    public String getCallId() {
+        return getPropertyAsString("callId");
+    }
+
+    public String getCallUri() {
+        return getPropertyAsString("callUri");
+    }
+
+    public String getStatus() {
+        return getPropertyAsString("status");
+    }
+
+    public String getState() {
+        return getPropertyAsString("state");
+    }
 }
