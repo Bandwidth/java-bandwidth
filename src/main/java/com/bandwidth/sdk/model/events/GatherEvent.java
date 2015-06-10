@@ -6,11 +6,30 @@ public class GatherEvent extends EventBase{
 
 	public GatherEvent(final JSONObject json) {
 		super(json);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void execute(final Visitor visitor) {
 		visitor.processEvent(this);
 	}
+
+    public String getState() {
+        return getPropertyAsString("state");
+    }
+
+    public String getDigits() {
+        return getPropertyAsString("digits");
+    }
+
+    public String getReason() {
+        return getPropertyAsString("reason");
+    }
+
+    public String getCallId() {
+        return getPropertyAsString("callId");
+    }
+
+    public String getGatherId() {
+        return getPropertyAsString("gatherId");
+    }
 
 }

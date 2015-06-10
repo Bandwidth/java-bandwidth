@@ -1,16 +1,17 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
+import org.apache.http.HttpStatus;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class RecordingTest extends BaseModelTest {
 	
@@ -94,6 +95,16 @@ public class RecordingTest extends BaseModelTest {
 
         assertThat(mockClient.requests.get(0).name, equalTo("get"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/recordings/{recordingId2}"));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetRecordingById() throws Exception {
+
+        RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Recording.get(mockClient, "{recordingId2}");
     }
     
 }

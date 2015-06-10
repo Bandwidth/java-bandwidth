@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.RestResponse;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Information about endpoint.
@@ -239,9 +243,6 @@ public class Endpoint extends ResourceBase {
         assert (client!= null && params != null);
         final String endpointsUri = String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId);
         final RestResponse response = client.post(endpointsUri, params);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
         final JSONObject callObj = toJSONObject(client.get(response.getLocation(), null));
         return new Endpoint(client, callObj);
     }
@@ -414,9 +415,6 @@ public class Endpoint extends ResourceBase {
         
         final String domainsUri =  String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId)+ "/"+endpointId;
         final RestResponse response = client.post(domainsUri, params);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
         final JSONObject jsonObject = toJSONObject(client.get(domainsUri, null));
         return new Endpoint(client, jsonObject);
     }
@@ -431,10 +429,7 @@ public class Endpoint extends ResourceBase {
     public static void delete(final String domainId, final String endpointId) throws AppPlatformException, IOException {
         assert(endpointId != null);
         final BandwidthClient client = BandwidthClient.getInstance();
-        final RestResponse response = client.delete(String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId)+ "/"+endpointId);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
+        client.delete(String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId)+ "/"+endpointId);
     }
     
     /**
@@ -447,10 +442,7 @@ public class Endpoint extends ResourceBase {
      */
     public static void delete(final BandwidthClient client, final String domainId, final String endpointId) throws AppPlatformException, IOException {
         assert(endpointId != null);
-        final RestResponse response = client.delete(String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId)+ "/"+endpointId);
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
+        client.delete(String.format(client.getUserResourceUri(BandwidthConstants.ENDPOINTS_URI_PATH), domainId)+ "/"+endpointId);
     }
     
     public String getName() {

@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
@@ -235,7 +236,7 @@ public class Bridge extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void commit() throws IOException {
+    public void commit() throws IOException, AppPlatformException {
         final Map<String, Object> params = new HashMap<String, Object>();
 
         params.put("bridgeAudio", isBridgeAudio());
@@ -289,7 +290,7 @@ public class Bridge extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void stopAudioFilePlaying() throws IOException {
+    public void stopAudioFilePlaying() throws IOException, AppPlatformException {
         new NewBridgeAudioBuilder().fileUrl(StringUtils.EMPTY).create();
     }
 
@@ -298,11 +299,11 @@ public class Bridge extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void stopSentence() throws IOException {
+    public void stopSentence() throws IOException, AppPlatformException {
         new NewBridgeAudioBuilder().sentence(StringUtils.EMPTY).create();
     }
 
-    private void createAudio(final Map<String, Object> params) throws IOException {
+    private void createAudio(final Map<String, Object> params) throws IOException, AppPlatformException {
         final String audioPath = StringUtils.join(new String[]{
                 getUri(),
                 "audio"
@@ -358,7 +359,7 @@ public class Bridge extends ResourceBase {
             return this;
         }
 
-        public void create() throws IOException {
+        public void create() throws IOException, AppPlatformException {
             createAudio(params);
         }
     }

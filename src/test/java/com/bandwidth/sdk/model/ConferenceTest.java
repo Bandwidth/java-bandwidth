@@ -1,9 +1,11 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
 
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
@@ -212,7 +214,14 @@ public class ConferenceTest extends BaseModelTest{
         assertThat(mockClient.requests.get(0).name, equalTo("get"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/conf-id1"));
     }
-    
-    
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetConferenceById() throws Exception {
+        RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Conference.getConference(mockClient, "conf-id1");
+    }
     
 }

@@ -1,22 +1,22 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class DomainTest {
 
@@ -38,7 +38,7 @@ public class DomainTest {
     }
     
     @Test
-    public void shouldGetDomainById() throws ParseException, Exception {
+    public void shouldGetDomainById() throws Exception {
         
         final String domainName = RandomStringUtils.randomAlphabetic(12);
         
@@ -53,7 +53,7 @@ public class DomainTest {
     }
     
     @Test
-    public void shouldCreateDomain() throws ParseException, Exception {
+    public void shouldCreateDomain() throws Exception {
         mockClient.result = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"name\":\"domainName\",\"description\":\"description of the domain\"}");
 
         final RestResponse restResponse = new RestResponse();
@@ -104,7 +104,7 @@ public class DomainTest {
         final String domainDescription = "Domain Description";
         
         final RestResponse restResponse = new RestResponse();
-        restResponse.setResponseText("{\"id\":\"id1\",\"name\":\"domainName\",\"description\":\"description of the domain\"}");        
+        restResponse.setResponseText("{\"id\":\"id1\",\"name\":\"domainName\",\"description\":\"description of the domain\"}");
         restResponse.setContentType("application/json");
         restResponse.setStatus(201);
          
@@ -122,5 +122,15 @@ public class DomainTest {
         final Domain domainUpdate = Domain.update(mockClient, domainGet.getId(), "");
         assertThat(createdDomain.getId(), equalTo(domainUpdate.getId()));
         assertThat("", equalTo(domainUpdate.getDescription()));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetDomainById() throws Exception {
+
+        final RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Domain.get(mockClient, "id1");
     }
 }

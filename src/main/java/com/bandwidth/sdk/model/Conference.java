@@ -71,16 +71,9 @@ public class Conference extends ResourceBase {
         final String conferencesUri = client.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH);
         final RestResponse response = client.post(conferencesUri, params);
 
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
-
         final String id = response.getLocation().substring(client.getPath(conferencesUri).length() + 1);
 
-        final Conference conference = getConference(client, id);
-
-
-        return conference;
+        return getConference(client, id);
     }
 
 
@@ -194,7 +187,7 @@ public class Conference extends ResourceBase {
         return new ConferenceAudioBuilder();
     }
 
-    private void createConferenceAudio(final Map<String, Object> params) throws IOException {
+    private void createConferenceAudio(final Map<String, Object> params) throws IOException, AppPlatformException {
         final String audioPath = StringUtils.join(new String[]{
                 getUri(),
                 "audio"
@@ -246,7 +239,7 @@ public class Conference extends ResourceBase {
             return this;
         }
 
-        public void create() throws IOException {
+        public void create() throws IOException, AppPlatformException {
             createConferenceAudio(params);
         }
     }

@@ -29,11 +29,6 @@ public abstract class ModelBase {
         }
     }
 
-    public String getId() {
-        return getPropertyAsString("id");
-    }
-
-
     protected String getPropertyAsString(final String key) {
         return (String) properties.get(key);
     }
@@ -101,5 +96,11 @@ public abstract class ModelBase {
         return map;
     }
 
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ModelBase{");
+        sb.append("properties=").append(properties);
+        sb.append('}');
+        return sb.toString();
+    }
 }

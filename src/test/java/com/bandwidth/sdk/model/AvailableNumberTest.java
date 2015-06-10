@@ -1,12 +1,9 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,8 +11,12 @@ import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class AvailableNumberTest extends BaseModelTest {
 
@@ -99,6 +100,20 @@ public class AvailableNumberTest extends BaseModelTest {
         assertThat(mockClient.requests.get(0).name, equalTo("get"));
         assertThat(mockClient.requests.get(0).uri, equalTo("availableNumbers/tollFree"));
         assertThat(mockClient.requests.get(0).params.get("quantity").toString(), equalTo("2"));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetLocalNumbers() throws Exception {
+        RestResponse restResponse = new RestResponse();
+        restResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+
+        mockClient.setRestResponse(restResponse);
+
+        Map<String, Object> params = new HashMap <String, Object>();
+        params.put("state", "NC");
+        params.put("quantity", "2");
+
+        AvailableNumber.searchLocal(mockClient, params);
     }
 
 }

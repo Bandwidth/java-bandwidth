@@ -1,5 +1,6 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.RestResponse;
@@ -221,7 +222,7 @@ public class Application extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void commit() throws IOException {
+    public void commit() throws IOException, AppPlatformException {
         final Map<String, Object> params = toMap();
         params.remove("id");
 
@@ -233,7 +234,7 @@ public class Application extends ResourceBase {
      *
      * @throws IOException unexpected error.
      */
-    public void delete() throws IOException {
+    public void delete() throws IOException, AppPlatformException {
         client.delete(getUri());
     }
 
