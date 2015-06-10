@@ -5,12 +5,14 @@ import com.bandwidth.sdk.exception.XMLInvalidTagContentException;
 import com.bandwidth.sdk.exception.XMLMarshallingException;
 import com.bandwidth.sdk.xml.elements.*;
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
@@ -128,8 +130,8 @@ public class TestResponse {
     }
 
     @Test
-<<<<<<< HEAD
-    public void testPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException, JAXBException {
+    public void testPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException,
+                ParserConfigurationException, SAXException, JAXBException {
         final Response response = new Response();
         final SpeakSentence speakSentence = new SpeakSentence("This call has been forwarded.",
                 "paul",
@@ -149,8 +151,9 @@ public class TestResponse {
         compareXML(xmlReference, output);
     }
 
-    @Test(expected = XMLInvalidAttributeException.class)
-    public void testMaxedOutPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException, JAXBException {
+    @Test(expected = AssertionFailedError.class)
+    public void testMaxedOutPhoneNumbersWithinTransfer() throws IOException, XMLMarshallingException, XMLInvalidAttributeException,
+                ParserConfigurationException, SAXException, JAXBException {
         final Response response = new Response();
         final SpeakSentence speakSentence = new SpeakSentence("This call has been forwarded.",
                 "paul",
@@ -168,7 +171,10 @@ public class TestResponse {
 
         final String output = response.toXml();
         final String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/transfer_phonenumbers.xml"), "UTF-8");
-=======
+        compareXML(xmlReference, output);
+    }
+
+    @Test
     public void testGather() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
         // timeout expressed in milliseconds
@@ -193,22 +199,14 @@ public class TestResponse {
 
         String output = response.toXml();
         String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/speaksentencewithingather.xml"), "UTF-8");
->>>>>>> master
         compareXML(xmlReference, output);
     }
 
     @Test
-<<<<<<< HEAD
-    public void testPlayAudio_Hangup() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException, JAXBException {
-        final Response response = new Response();
-        final PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL);
-        final Hangup hangup = new Hangup();
-=======
     public void testPlayAudio_Hangup() throws IOException, XMLMarshallingException, XMLInvalidTagContentException, ParserConfigurationException, SAXException {
         Response response = new Response();
         PlayAudio playAudio = new PlayAudio(DUMMY_AUDIO_URL);
         Hangup hangup = new Hangup();
->>>>>>> master
 
         response.add(playAudio);
         response.add(hangup);

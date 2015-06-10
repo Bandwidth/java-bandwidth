@@ -15,10 +15,6 @@ public class Transfer implements Elements {
 
     protected String transferTo;
     protected String transferCallerId;
-<<<<<<< HEAD
-    protected SpeakSentence speakSentence = null;
-    protected List<PhoneNumber> phoneNumberList;
-=======
     protected Integer callTimeout;
     protected Boolean recordingEnabled;
     protected String recordingCallbackUrl;
@@ -27,10 +23,10 @@ public class Transfer implements Elements {
     protected String fileFormat;
     protected Boolean transcribe;
     protected String transcribeCallbackUrl;
+    protected List<PhoneNumber> phoneNumberList;
 
     protected SpeakSentence speakSentence;
     protected PlayAudio playAudio;
->>>>>>> master
 
     public Transfer() {
         super();
@@ -51,6 +47,14 @@ public class Transfer implements Elements {
         setTransferTo(transferTo);
         setTransferCallerId(transferCallerId);
         setSpeakSentence(speakSentence);
+    }
+
+    public Transfer(final String transferTo,
+                    final String transferCallerId,
+                    final PlayAudio playAudio) throws XMLInvalidAttributeException {
+        setTransferTo(transferTo);
+        setTransferCallerId(transferCallerId);
+        setPlayAudio(playAudio);
     }
 
     @XmlAttribute(name = "transferCallerId", required = true)
@@ -78,6 +82,31 @@ public class Transfer implements Elements {
             }
         }
         this.transferTo = transferTo;
+    }
+
+    @XmlElement(name = "PhoneNumber")
+    public List<PhoneNumber> getPhoneNumberList() {
+        if(phoneNumberList == null || phoneNumberList.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        return phoneNumberList;
+    }
+
+    public void setPhoneNumberList(List<PhoneNumber> phoneNumberList) throws XMLInvalidAttributeException {
+        if(phoneNumberList != null && phoneNumberList.size() > MAX_PHONE_NUMBERS) {
+            throw new XMLInvalidAttributeException(String.format("Transfer can only hold %s phone numbers", MAX_PHONE_NUMBERS));
+        }
+        this.phoneNumberList = phoneNumberList;
+    }
+
+    public void addPhoneNumber(String phoneNumber) throws XMLInvalidAttributeException {
+        if(this.phoneNumberList == null) {
+            this.phoneNumberList = new ArrayList<PhoneNumber>();
+        }
+        if(phoneNumberList.size() == MAX_PHONE_NUMBERS) {
+            throw new XMLInvalidAttributeException(String.format("Transfer can only hold %s phone numbers", MAX_PHONE_NUMBERS));
+        }
+        this.phoneNumberList.add(new PhoneNumber(phoneNumber));
     }
 
     @XmlAttribute(name = "callTimeout")
@@ -185,31 +214,6 @@ public class Transfer implements Elements {
         this.speakSentence = speakSentence;
     }
 
-<<<<<<< HEAD
-    @XmlElement(name = "PhoneNumber")
-    public List<PhoneNumber> getPhoneNumberList() {
-        if(phoneNumberList == null || phoneNumberList.isEmpty()) {
-            return Collections.EMPTY_LIST;
-        }
-        return phoneNumberList;
-    }
-
-    public void setPhoneNumberList(List<PhoneNumber> phoneNumberList) throws XMLInvalidAttributeException {
-        if(phoneNumberList != null && phoneNumberList.size() > MAX_PHONE_NUMBERS) {
-            throw new XMLInvalidAttributeException(String.format("Transfer can only hold %s phone numbers", MAX_PHONE_NUMBERS));
-        }
-        this.phoneNumberList = phoneNumberList;
-    }
-
-    public void addPhoneNumber(String phoneNumber) throws XMLInvalidAttributeException {
-        if(this.phoneNumberList == null) {
-            this.phoneNumberList = new ArrayList<PhoneNumber>();
-        }
-        if(phoneNumberList.size() == MAX_PHONE_NUMBERS) {
-            throw new XMLInvalidAttributeException(String.format("Transfer can only hold %s phone numbers", MAX_PHONE_NUMBERS));
-        }
-        this.phoneNumberList.add(new PhoneNumber(phoneNumber));
-=======
     @XmlElement(name = "PlayAudio")
     public PlayAudio getPlayAudio() {
         return playAudio;
@@ -217,22 +221,14 @@ public class Transfer implements Elements {
 
     public void setPlayAudio(final PlayAudio playAudio) {
         this.playAudio = playAudio;
->>>>>>> master
     }
 
     @Override
     public String toString() {
-<<<<<<< HEAD
-        return "Transfer{" +
-                "transferTo='" + transferTo + '\'' +
-                ", transferCallerId='" + transferCallerId + '\'' +
-                ", speakSentence=" + speakSentence +
-                ", phoneNumbers=" + phoneNumberList +
-                '}';
-=======
         final StringBuilder sb = new StringBuilder("Transfer{");
         sb.append("transferTo='").append(transferTo).append('\'');
         sb.append(", transferCallerId='").append(transferCallerId).append('\'');
+        sb.append(", phoneNumberList='").append(phoneNumberList).append('\'');
         sb.append(", callTimeout='").append(callTimeout).append('\'');
         sb.append(", recordingEnabled='").append(recordingEnabled).append('\'');
         sb.append(", recordingCallbackUrl='").append(recordingCallbackUrl).append('\'');
@@ -245,6 +241,5 @@ public class Transfer implements Elements {
         sb.append(", playAudio=").append(playAudio);
         sb.append('}');
         return sb.toString();
->>>>>>> master
     }
 }
