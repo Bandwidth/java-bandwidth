@@ -34,6 +34,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
+
 /**
  * Helper class to abstract the HTTP interface. This class wraps the HttpClient and the HTTP methods POST, GET, PUT
  * and DELETE.
@@ -48,11 +52,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class BandwidthClient implements Client{
 
+    private final static Logger LOG = LoggerFactory.getLogger(BandwidthClient.class);
+
     protected String token;
     protected String secret;
     protected String apiVersion;
     protected String apiEndpoint;
     protected String usersUri;
+    protected int maxTotal;
+    protected int defaultMaxPerRoute;
 
     protected HttpClient httpClient;
 
@@ -60,7 +68,7 @@ public class BandwidthClient implements Client{
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private IdleConnectionMonitorThread idleConnectionMonitorThread;
+    private IdleConnectionMonitorRunnable idleConnectionMonitorRunnable;
 
     /**
      * getInstance() method returns a singleton instance of the BandwidthClient. Looks for user-id, api-token and
@@ -70,38 +78,45 @@ public class BandwidthClient implements Client{
      */
     public synchronized static BandwidthClient getInstance() {
         if (INSTANCE == null) {
-            final Map<String, String> env = System.getenv();
-
-            String userId = env.get(BandwidthConstants.BANDWIDTH_USER_ID);
-            String apiToken = env.get(BandwidthConstants.BANDWIDTH_API_TOKEN);
-            String apiSecret = env.get(BandwidthConstants.BANDWIDTH_API_SECRET);
-            String apiEndpoint = env.get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
-            String apiVersion = env.get(BandwidthConstants.BANDWIDTH_API_VERSION);
-
-            // http connection settings
-            String maxTotal = env.get(BandwidthConstants.BANDWIDTH_HTTP_MAX_TOTAL_CONNECTIONS);
-            String defaultMaxPerRoute = env.get(BandwidthConstants.BANDWIDTH_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
-
+            String userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
+            String apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
+            String apiSecret = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_SECRET);
+            String apiEndpoint = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_ENDPOINT);
+            String apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
+            String maxTotal = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_HTTP_MAX_TOTAL_CONNECTIONS);
+            String defaultMaxPerRoute = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
 
             if (userId == null || apiToken == null || apiSecret == null || apiEndpoint == null || apiVersion == null) {
-                userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
-                apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
-                apiSecret = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_SECRET);
-                apiEndpoint = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_ENDPOINT);
-                apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
+                userId = System.getenv().get(BandwidthConstants.BANDWIDTH_USER_ID);
+                apiToken = System.getenv().get(BandwidthConstants.BANDWIDTH_API_TOKEN);
+                apiSecret = System.getenv().get(BandwidthConstants.BANDWIDTH_API_SECRET);
+                apiEndpoint = System.getenv().get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
+                apiVersion = System.getenv().get(BandwidthConstants.BANDWIDTH_API_VERSION);
             }
 
+            Integer maxTotalNum=null;
             if (maxTotal == null) {
-                maxTotal = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_HTTP_MAX_TOTAL_CONNECTIONS,
-                                              BandwidthConstants.HTTP_MAX_TOTAL_CONNECTIONS);
+                maxTotal = System.getenv().get(BandwidthConstants.BANDWIDTH_HTTP_MAX_TOTAL_CONNECTIONS);
+            } else {
+                try {
+                    maxTotalNum = Integer.parseInt(maxTotal);
+                } catch (NumberFormatException ex) {
+                    throw new RuntimeException(String.format("Invalid parameter for MAX_TOTAL_CONNECTIONS %s", maxTotal), ex);
+                }
             }
 
+            Integer defaultMaxPerRouteNum=null;
             if (defaultMaxPerRoute == null) {
-                defaultMaxPerRoute = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE,
-                                                        BandwidthConstants.HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
+                defaultMaxPerRoute = System.getenv().get(BandwidthConstants.BANDWIDTH_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
+            } else {
+                try {
+                    defaultMaxPerRouteNum = Integer.parseInt(defaultMaxPerRoute);
+                } catch (NumberFormatException ex) {
+                    throw new RuntimeException(String.format("Invalid parameter for MAX_DEFAULT_CONNECTIONS_PER_ROUTE %s", defaultMaxPerRoute), ex);
+                }
             }
 
-            INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion, maxTotal, defaultMaxPerRoute);
+            INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion, maxTotalNum, defaultMaxPerRouteNum);
         }
         return INSTANCE;
     }
@@ -122,8 +137,8 @@ public class BandwidthClient implements Client{
                               final String apiSecret,
                               final String apiEndpoint,
                               final String apiVersion,
-                              final String maxTotal,
-                              final String defaultMaxPerRoute) {
+                              final Integer maxTotal,
+                              final Integer defaultMaxPerRoute) {
         this.usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
         this.token = apiToken;
         this.secret = apiSecret;
@@ -136,7 +151,19 @@ public class BandwidthClient implements Client{
             this.apiVersion = BandwidthConstants.API_VERSION;
         }
 
-        this.httpClient = createHttpClient(maxTotal, defaultMaxPerRoute);
+        this.maxTotal = maxTotal;
+
+        if (maxTotal == null) {
+            this.maxTotal = BandwidthConstants.HTTP_MAX_TOTAL_CONNECTIONS;
+        }
+
+        this.defaultMaxPerRoute = defaultMaxPerRoute;
+
+        if (defaultMaxPerRoute == null) {
+            this.defaultMaxPerRoute = BandwidthConstants.HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE;
+        }
+
+        this.httpClient = createHttpClient();
     }
 
     /**
@@ -165,6 +192,21 @@ public class BandwidthClient implements Client{
         this.apiVersion = apiVersion;
     }
 
+    public int getMaxTotal() {
+        return maxTotal;
+    }
+
+    public void setMaxTotal(int maxTotal) {
+        this.maxTotal = maxTotal;
+    }
+
+    public int getDefaultMaxPerRoute() {
+        return defaultMaxPerRoute;
+    }
+
+    public void setDefaultMaxPerRoute(int defaultMaxPerRoute) {
+        this.defaultMaxPerRoute = defaultMaxPerRoute;
+    }
 
     /**
      * Convenience method to return the resource URL with the users credentials, e.g.
@@ -513,22 +555,21 @@ public class BandwidthClient implements Client{
         }
     }
 
-    private HttpClient createHttpClient( final String maxTotal,
-                                         final String defaultMaxPerRoute) {
+    private HttpClient createHttpClient() {
         // Following recommendations from
         // https://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
 
-        cm.setMaxTotal(Integer.parseInt(maxTotal));
-        cm.setDefaultMaxPerRoute(Integer.parseInt(defaultMaxPerRoute));
+        cm.setMaxTotal(this.maxTotal);
+        cm.setDefaultMaxPerRoute(this.defaultMaxPerRoute);
 
         HttpClient httpClient = HttpClients.custom()
                 .setConnectionManager(cm)
                 .setKeepAliveStrategy(getStrategy())
                 .setBackoffManager(new AIMDBackoffManager(cm))
                 .build();
-        this.idleConnectionMonitorThread = new IdleConnectionMonitorThread(cm);
-        this.executorService.execute(this.idleConnectionMonitorThread);
+        this.idleConnectionMonitorRunnable = new IdleConnectionMonitorRunnable(cm);
+        this.executorService.execute(this.idleConnectionMonitorRunnable);
 
         return httpClient;
     }
@@ -553,12 +594,12 @@ public class BandwidthClient implements Client{
         };
     }
 
-    public static class IdleConnectionMonitorThread implements Runnable {
+    public static class IdleConnectionMonitorRunnable implements Runnable {
 
         private final HttpClientConnectionManager connMgr;
         private volatile boolean shutdown;
 
-        public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
+        public IdleConnectionMonitorRunnable(HttpClientConnectionManager connMgr) {
             super();
             this.connMgr = connMgr;
         }
@@ -577,7 +618,7 @@ public class BandwidthClient implements Client{
                     }
                 }
             } catch (InterruptedException ex) {
-                // terminate
+                LOG.error("IdleConnectionMonitorRunnable failed.", ex);
             }
         }
 
@@ -593,7 +634,7 @@ public class BandwidthClient implements Client{
     protected void finalize() throws Throwable
     {
         try{
-            this.idleConnectionMonitorThread.shutdown();
+            this.idleConnectionMonitorRunnable.shutdown();
         }catch(Throwable t){
             throw t;
         }finally{

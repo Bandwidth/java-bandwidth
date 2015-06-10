@@ -32,8 +32,8 @@ public interface BandwidthConstants {
     String GATHER_URI_PATH = "gather";
 
     // Http connection constants
-    String HTTP_MAX_TOTAL_CONNECTIONS = "200";
-    String HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE = "20";
+    int HTTP_MAX_TOTAL_CONNECTIONS = 200;
+    int HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE = 20;
 
     String BANDWIDTH_USER_ID = "BANDWIDTH_USER_ID";
     String BANDWIDTH_API_TOKEN = "BANDWIDTH_API_TOKEN";

@@ -48,7 +48,7 @@ public class EndpointTest {
         Endpoint.delete(mockClient, "111111", "23323");
     }
     
-    @Test(expected = AppPlatformException.class)
+    @Test(expected = NullPointerException.class)
     public void deleteEndpointByInvalidEndpointId() throws Exception {
         Endpoint.delete(domain.getId(), "111111");
     }

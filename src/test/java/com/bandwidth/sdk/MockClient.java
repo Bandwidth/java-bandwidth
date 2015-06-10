@@ -22,7 +22,7 @@ public class MockClient extends BandwidthClient {
     private String version;
 
 	public MockClient() {
-		super(TestsHelper.TEST_USER_ID, "", "", "", "", "200", "20");
+		super(TestsHelper.TEST_USER_ID, "", "", "", "", 200, 20);
 	}
 
     public MockClient(final String userId,
@@ -30,8 +30,8 @@ public class MockClient extends BandwidthClient {
                       final String secret,
                       final String endpoint,
                       final String version,
-                      final String maxConnections,
-                      final String defaultMaxPerRoute){
+                      final int maxConnections,
+                      final int defaultMaxPerRoute){
         super(userId, token, secret, endpoint, version, maxConnections, defaultMaxPerRoute);
         this.userId = userId;
         this.token = token;
