@@ -53,6 +53,7 @@ import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 public class BandwidthClient implements Client{
 
     private final static Logger LOG = LoggerFactory.getLogger(BandwidthClient.class);
+    public static final int MONITOR_TIMER = 5000;
 
     protected String token;
     protected String secret;
@@ -196,19 +197,11 @@ public class BandwidthClient implements Client{
         return maxTotal;
     }
 
-    public void setMaxTotal(int maxTotal) {
-        this.maxTotal = maxTotal;
-    }
-
     public int getDefaultMaxPerRoute() {
         return defaultMaxPerRoute;
     }
 
-    public void setDefaultMaxPerRoute(int defaultMaxPerRoute) {
-        this.defaultMaxPerRoute = defaultMaxPerRoute;
-    }
-
-    /**
+     /**
      * Convenience method to return the resource URL with the users credentials, e.g.
      *
      * @param path the path.
@@ -595,7 +588,6 @@ public class BandwidthClient implements Client{
     }
 
     public static class IdleConnectionMonitorRunnable implements Runnable {
-
         private final HttpClientConnectionManager connMgr;
         private volatile boolean shutdown;
 
@@ -609,7 +601,7 @@ public class BandwidthClient implements Client{
             try {
                 while (!shutdown) {
                     synchronized (this) {
-                        wait(5000);
+                        wait(MONITOR_TIMER);
                         // Close expired connections
                         connMgr.closeExpiredConnections();
                         // Optionally, close connections
@@ -633,11 +625,11 @@ public class BandwidthClient implements Client{
     @Override
     protected void finalize() throws Throwable
     {
-        try{
+        try {
             this.idleConnectionMonitorRunnable.shutdown();
-        }catch(Throwable t){
+        } catch(Throwable t){
             throw t;
-        }finally{
+        } finally {
             super.finalize();
         }
     }
