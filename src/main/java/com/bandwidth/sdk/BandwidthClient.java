@@ -109,10 +109,12 @@ public class BandwidthClient implements Client{
                 apiVersion = System.getenv().get(BandwidthConstants.BANDWIDTH_API_VERSION);
             }
 
-            Integer maxTotalNum=null;
             if (maxTotal == null) {
                 maxTotal = System.getenv().get(BandwidthConstants.BANDWIDTH_HTTP_MAX_TOTAL_CONNECTIONS);
-            } else {
+            }
+
+            Integer maxTotalNum=null;
+            if (maxTotal != null) {
                 try {
                     maxTotalNum = Integer.parseInt(maxTotal);
                 } catch (NumberFormatException ex) {
@@ -120,10 +122,12 @@ public class BandwidthClient implements Client{
                 }
             }
 
-            Integer defaultMaxPerRouteNum=null;
             if (defaultMaxPerRoute == null) {
                 defaultMaxPerRoute = System.getenv().get(BandwidthConstants.BANDWIDTH_HTTP_MAX_DEFAULT_CONNECTIONS_PER_ROUTE);
-            } else {
+            }
+
+            Integer defaultMaxPerRouteNum=null;
+            if (defaultMaxPerRoute != null) {
                 try {
                     defaultMaxPerRouteNum = Integer.parseInt(defaultMaxPerRoute);
                 } catch (NumberFormatException ex) {
