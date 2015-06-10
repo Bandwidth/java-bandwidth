@@ -106,7 +106,17 @@ public class Bridge extends ResourceBase {
     	final HashMap<String, Object> params = new HashMap<String, Object>();
 
     	params.put("bridgeAudio", "true");
-    	final String[] callIds = new String[] { callId1, callId2 };
+
+        String[] callIds = null;
+
+        if (callId1 != null && callId2 != null) {
+            callIds = new String[] { callId1, callId2 };
+        } else if (callId1 != null && callId2 == null) {
+            callIds = new String[] { callId1 };
+        } else if (callId1 == null && callId2 != null) {
+            callIds = new String[] { callId2 };
+        }
+
     	params.put("callIds", callIds == null ? Collections.emptyList()
     		: Arrays.asList(callIds));
 
