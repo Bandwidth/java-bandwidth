@@ -1,12 +1,10 @@
 package com.bandwidth.sdk.model;
 
-import java.util.Map;
-import java.util.HashMap;
-
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.MockClient;
 import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
-
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -14,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -69,7 +69,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void shouldBeDeleted() throws ParseException, IOException {
+    public void shouldBeDeleted() throws ParseException, IOException, AppPlatformException {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"autoAnswer\":true,\"incomingSmsUrl\":\"http:\\/\\/sms\\/callback.json\",\"name\":\"App1\",\"incomingCallUrl\":\"http:\\/\\/call\\/callback.json\"}");
         Application application = new Application(mockClient, jsonObject);
 
@@ -82,7 +82,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void shouldUpdateAttributesOnServer() throws ParseException, IOException {
+    public void shouldUpdateAttributesOnServer() throws ParseException, IOException, AppPlatformException {
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"autoAnswer\":true,\"incomingSmsUrl\":\"http:\\/\\/sms\\/callback.json\",\"name\":\"App1\",\"incomingCallUrl\":\"http:\\/\\/call\\/callback.json\"}");
         Application application = new Application(mockClient, jsonObject);
@@ -120,6 +120,18 @@ public class ApplicationTest {
 
         assertThat(mockClient.getRequests().get(0).name, equalTo("get"));
         assertThat(mockClient.getRequests().get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/applications"));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailCreateApplication() throws Exception {
+        RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Map<String, Object>params = new HashMap<String, Object>();
+        params.put("name", "App1");
+
+        Application.create(mockClient, params);
     }
 
 }

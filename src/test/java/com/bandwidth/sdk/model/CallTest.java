@@ -1,14 +1,12 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
+import com.bandwidth.sdk.model.events.EventBase;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,11 +14,14 @@ import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
-import com.bandwidth.sdk.model.events.EventBase;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class CallTest {
 
@@ -116,7 +117,8 @@ public class CallTest {
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
         assertThat(mockClient.requests.get(0).params.get("recordingEnabled").toString(), equalTo("true"));
         assertThat(mockClient.requests.get(1).name, equalTo("get"));
-        assertThat(mockClient.requests.get(1).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(1).uri,
+                equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
 
         mockClient.requests.clear();
         call.recordingOff();
@@ -166,7 +168,8 @@ public class CallTest {
         final Call call = new Call(mockClient, jsonObject);
         call.newAudioBuilder().fileUrl("url").create();
         assertThat(mockClient.requests.get(0).name, equalTo("post"));
-        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
+        assertThat(mockClient.requests.get(0).uri,
+                equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111/audio"));
         assertThat(mockClient.requests.get(0).params.get("fileUrl").toString(), equalTo("url"));
 
         mockClient.requests.clear();
@@ -409,7 +412,15 @@ public class CallTest {
         assertThat(mockClient.requests.get(0).params.get("to").toString(), equalTo("+11111111111"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls"));
     }
-    
-    
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetCallById() throws Exception {
+
+        final RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        Call.get(mockClient, "id1");
+    }
 
 }

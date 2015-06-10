@@ -1,21 +1,21 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.List;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import java.io.IOException;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class BridgeTest {
     private MockClient mockClient;
@@ -40,7 +40,7 @@ public class BridgeTest {
     }
 
     @Test
-    public void shouldUpdateAttributesOnServer() throws ParseException, IOException {
+    public void shouldUpdateAttributesOnServer() throws ParseException, IOException, AppPlatformException {
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
         Bridge bridge = new Bridge(mockClient, jsonObject);
@@ -54,7 +54,7 @@ public class BridgeTest {
     }
 
     @Test
-    public void shouldPostAudioOnServer() throws ParseException, IOException {
+    public void shouldPostAudioOnServer() throws ParseException, IOException, AppPlatformException {
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
         Bridge bridge = new Bridge(mockClient, jsonObject);
@@ -67,7 +67,7 @@ public class BridgeTest {
     }
 
     @Test
-    public void shouldStopAudioOnServer() throws ParseException, IOException {
+    public void shouldStopAudioOnServer() throws ParseException, IOException, AppPlatformException {
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
         Bridge bridge = new Bridge(mockClient, jsonObject);
@@ -80,7 +80,7 @@ public class BridgeTest {
     }
 
     @Test
-    public void shouldStopSentenceOnServer() throws ParseException, IOException {
+    public void shouldStopSentenceOnServer() throws ParseException, IOException, AppPlatformException {
 
         JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"id\":\"id1\",\"createdTime\":\"2014-08-11T11:18:48Z\",\"state\":\"created\",\"bridgeAudio\":true,\"calls\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/userId\\/bridges\\/bridgId\\/calls\"}");
         Bridge bridge = new Bridge(mockClient, jsonObject);

@@ -1,19 +1,20 @@
 package com.bandwidth.sdk.model;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.File;
-import java.util.List;
-
+import com.bandwidth.sdk.AppPlatformException;
+import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
+import com.bandwidth.sdk.TestsHelper;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bandwidth.sdk.MockClient;
-import com.bandwidth.sdk.RestResponse;
-import com.bandwidth.sdk.TestsHelper;
+import java.io.File;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class MediaTest extends BaseModelTest{
 
@@ -101,5 +102,15 @@ public class MediaTest extends BaseModelTest{
         assertThat(mockClient.requests.get(0).name, equalTo("uploadFile"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName3}"));
         assertThat(mockClient.requests.get(0).params.get("filePath").toString(), equalTo("path_to_file"));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailGetMediaById() throws Exception {
+        RestResponse restResponse = new RestResponse();
+        restResponse.setStatus(HttpStatus.SC_BAD_REQUEST);
+
+        mockClient.setRestResponse(restResponse);
+
+        Media.get(mockClient, "media_id");
     }
 }

@@ -1,16 +1,14 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.BandwidthClient;
+import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.RestResponse;
+import org.json.simple.JSONObject;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.simple.JSONObject;
-
-import com.bandwidth.sdk.AppPlatformException;
-import com.bandwidth.sdk.BandwidthClient;
-import com.bandwidth.sdk.BandwidthConstants;
-import com.bandwidth.sdk.RestResponse;
 
 /**
  * Information about message.
@@ -177,20 +175,10 @@ public class Message extends ResourceBase {
      */
     public static Message create(final BandwidthClient client, final Map<String, Object> params) throws Exception {
         final String messageUri = client.getUserResourceUri(BandwidthConstants.MESSAGES_URI_PATH);
-        
         final RestResponse response = client.post(messageUri, params);
-                
-        if (response.getStatus() > 400) {
-            throw new AppPlatformException(response.getResponseText());
-        }
-        // success here, otherwise an exception is generated
-
-
     	final String messageId = response.getLocation().substring(client.getPath(messageUri).length() + 1);
 
-    	final Message message = get(client, messageId);
-        
-        return message;
+        return get(client, messageId);
     }
 	
 

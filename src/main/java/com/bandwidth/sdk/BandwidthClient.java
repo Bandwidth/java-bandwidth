@@ -1,11 +1,19 @@
 package com.bandwidth.sdk;
 
+import com.bandwidth.sdk.exception.MissingCredentialsException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
@@ -16,7 +24,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -57,20 +69,20 @@ public class BandwidthClient implements Client{
      */
     public synchronized static BandwidthClient getInstance() {
         if (INSTANCE == null) {
-            final Map<String, String> env = System.getenv();
-
-            String userId = env.get(BandwidthConstants.BANDWIDTH_USER_ID);
-            String apiToken = env.get(BandwidthConstants.BANDWIDTH_API_TOKEN);
-            String apiSecret = env.get(BandwidthConstants.BANDWIDTH_API_SECRET);
-            String apiEndpoint = env.get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
-            String apiVersion = env.get(BandwidthConstants.BANDWIDTH_API_VERSION);
+            String userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
+            String apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
+            String apiSecret = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_SECRET);
+            String apiEndpoint = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_ENDPOINT);
+            String apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
 
             if (userId == null || apiToken == null || apiSecret == null || apiEndpoint == null || apiVersion == null) {
-                userId = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_USER_ID);
-                apiToken = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_TOKEN);
-                apiSecret = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_SECRET);
-                apiEndpoint = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_ENDPOINT);
-                apiVersion = System.getProperty(BandwidthConstants.BANDWIDTH_SYSPROP_API_VERSION);
+                final Map<String, String> env = System.getenv();
+
+                userId = env.get(BandwidthConstants.BANDWIDTH_USER_ID);
+                apiToken = env.get(BandwidthConstants.BANDWIDTH_API_TOKEN);
+                apiSecret = env.get(BandwidthConstants.BANDWIDTH_API_SECRET);
+                apiEndpoint = env.get(BandwidthConstants.BANDWIDTH_API_ENDPOINT);
+                apiVersion = env.get(BandwidthConstants.BANDWIDTH_API_VERSION);
             }
 
             INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion);
@@ -211,7 +223,8 @@ public class BandwidthClient implements Client{
      * @return the post response.
      * @throws IOException unexpected exception.
      */
-    public RestResponse post(final String uri, final Map<String, Object> params) throws IOException {
+    public RestResponse post(final String uri, final Map<String, Object> params)
+            throws IOException, AppPlatformException {
         return request(getPath(uri), HttpPost.METHOD_NAME, params);
     }
 
@@ -240,7 +253,8 @@ public class BandwidthClient implements Client{
      * @return the put response.
      * @throws IOException unexpected exception.
      */
-    public RestResponse put(final String uri, final Map<String, Object> params) throws IOException {
+    public RestResponse put(final String uri, final Map<String, Object> params) throws IOException,
+            AppPlatformException {
         return request(getPath(uri), HttpPut.METHOD_NAME, params);
     }
 
@@ -250,7 +264,7 @@ public class BandwidthClient implements Client{
      * @return the response.
      * @throws IOException unexpected exception.
      */
-    public RestResponse delete(final String uri) throws IOException {
+    public RestResponse delete(final String uri) throws IOException, AppPlatformException {
         return request(getPath(uri), HttpDelete.METHOD_NAME);
     }
 
@@ -262,7 +276,8 @@ public class BandwidthClient implements Client{
      * @param contentType the content type.
      * @throws IOException unexpected exception.
      */
-    public void upload(final String uri, final File sourceFile, final String contentType) throws IOException {
+    public void upload(final String uri, final File sourceFile, final String contentType)
+            throws IOException, AppPlatformException {
         final String path = getPath(uri);
         final HttpPut request = (HttpPut) setupRequest(path, HttpPut.METHOD_NAME, null);
         request.setEntity(contentType == null ? new FileEntity(sourceFile) : new FileEntity(sourceFile, ContentType.parse(contentType)));
@@ -317,7 +332,7 @@ public class BandwidthClient implements Client{
      * @return the request response.
      * @throws IOException unexpected exception.
      */
-    protected RestResponse request(final String path, final String method) throws IOException {
+    protected RestResponse request(final String path, final String method) throws IOException, AppPlatformException {
         return request(path, method, null);
     }
 
@@ -329,7 +344,8 @@ public class BandwidthClient implements Client{
      * @return the response.
      * @throws IOException unexpected exception.
      */
-    protected RestResponse request(final String path, final String method, Map<String, Object> paramList) throws IOException {
+    protected RestResponse request(final String path, final String method, Map<String, Object> paramList)
+            throws IOException, AppPlatformException {
         if (paramList == null) {
             paramList = Collections.emptyMap();
         }
@@ -345,14 +361,22 @@ public class BandwidthClient implements Client{
      * @return the response.
      * @throws IOException unexpected exception.
      */
-    protected RestResponse performRequest(final HttpUriRequest request) throws IOException {
-        try {
-            return RestResponse.createRestResponse(httpClient.execute(request)); 
-        } catch (final ClientProtocolException e1) {
-            throw new IOException(e1);
-        } catch (final IOException e1) {
-            throw new IOException(e1);
+    protected RestResponse performRequest(final HttpUriRequest request) throws IOException, AppPlatformException {
+
+        if (this.usersUri == null || this.usersUri.isEmpty()
+                || this.token == null || this.token.isEmpty()
+                || this.secret == null || this.secret.isEmpty()) {
+
+            throw new MissingCredentialsException();
         }
+
+        RestResponse restResponse = RestResponse.createRestResponse(httpClient.execute(request));
+
+        if (restResponse.getStatus() >= 400) {
+            throw new AppPlatformException(restResponse.getResponseText());
+        }
+
+        return restResponse;
     }
 
     /**

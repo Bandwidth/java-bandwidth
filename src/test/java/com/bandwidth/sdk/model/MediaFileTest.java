@@ -1,7 +1,10 @@
 package com.bandwidth.sdk.model;
 
+import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.MockClient;
+import com.bandwidth.sdk.RestResponse;
 import com.bandwidth.sdk.TestsHelper;
+import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -64,5 +67,21 @@ public class MediaFileTest extends BaseModelTest {
 
         assertThat(mockClient.requests.get(0).name, equalTo("delete"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/media/{mediaName1}"));
+    }
+
+    @Test(expected = AppPlatformException.class)
+    public void shouldFailDelete() throws Exception {
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
+                "    \"contentLength\": 561276,\n" +
+                "    \"mediaName\": \"{mediaName1}\",\n" +
+                "    \"content\": \"https://api.com/v1/users/users/{userId}/media/{mediaName1}\"\n" +
+                "  }");
+
+        RestResponse response = new RestResponse();
+        response.setStatus(HttpStatus.SC_BAD_REQUEST);
+        mockClient.setRestResponse(response);
+
+        MediaFile mediaFile = new MediaFile(mockClient, jsonObject);
+        mediaFile.delete();
     }
 }
