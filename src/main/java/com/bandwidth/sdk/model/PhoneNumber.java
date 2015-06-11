@@ -166,6 +166,7 @@ public class PhoneNumber extends ResourceBase {
      * it will not immediately become available for re-use, so be careful.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void delete() throws IOException, AppPlatformException {
         client.delete(getUri());

@@ -121,6 +121,7 @@ public class Media extends ResourceBase {
      * @param contentType MIME type of file or <code>null</code>
      * @return new media file object
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public MediaFile upload(final String mediaName, final File file, final MediaMimeType contentType)
             throws IOException, AppPlatformException {

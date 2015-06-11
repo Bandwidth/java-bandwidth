@@ -245,6 +245,7 @@ public class Bridge extends ResourceBase {
      * Makes changes ob the bridge.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void commit() throws IOException, AppPlatformException {
         final Map<String, Object> params = new HashMap<String, Object>();
@@ -299,6 +300,7 @@ public class Bridge extends ResourceBase {
      * Stop an audio file playing.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void stopAudioFilePlaying() throws IOException, AppPlatformException {
         new NewBridgeAudioBuilder().fileUrl(StringUtils.EMPTY).create();
@@ -308,6 +310,7 @@ public class Bridge extends ResourceBase {
      * Stop an audio sentence.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void stopSentence() throws IOException, AppPlatformException {
         new NewBridgeAudioBuilder().sentence(StringUtils.EMPTY).create();

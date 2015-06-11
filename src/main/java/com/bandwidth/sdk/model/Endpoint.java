@@ -105,11 +105,7 @@ public class Endpoint extends ResourceBase {
             final String description, final boolean enabled) throws AppPlatformException, ParseException, Exception {
         return create(client, domainId, name, password, description, enabled, null);
     }
-    
-    
-    
-    
-    
+
     /**
      * Convenience factory method for Endpoint, returns a created Endpoint object from a name
      * @param domainId the domain id.

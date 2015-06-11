@@ -221,6 +221,7 @@ public class Application extends ResourceBase {
      * Makes changes of the application.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void commit() throws IOException, AppPlatformException {
         final Map<String, Object> params = toMap();
@@ -233,6 +234,7 @@ public class Application extends ResourceBase {
      * Permanently deletes application.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void delete() throws IOException, AppPlatformException {
         client.delete(getUri());
