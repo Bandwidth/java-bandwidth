@@ -66,7 +66,7 @@ public class EndpointToken extends ResourceBase {
      * @param client the bandwidth client.
      * @param domainId the domain id.
      * @param endpointId the endpoint id.
-     * @param expires expiration in ms > 0.
+     * @param expires expiration in ms.
      * @return the created token.
      * @throws AppPlatformException API Exception
      * @throws ParseException Error parsing data
@@ -81,7 +81,7 @@ public class EndpointToken extends ResourceBase {
      * Creates an EndpointToken for the domain/endpoint
      * @param domainId the domain id.
      * @param endpointId the endpoint id.
-     * @param expires expiration in ms > 0.
+     * @param expires expiration in ms.
      * @return the created token.
      * @throws AppPlatformException API Exception
      * @throws ParseException Error parsing data

@@ -299,6 +299,7 @@ public class BandwidthClient implements Client{
      * @param params the parameters.
      * @return the post response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     public RestResponse post(final String uri, final Map<String, Object> params)
             throws IOException, AppPlatformException {
@@ -312,6 +313,7 @@ public class BandwidthClient implements Client{
      * @param params the parameters.
      * @return the post response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     public RestResponse postPlainJson(final String uri, final String params)
             throws IOException, AppPlatformException {
@@ -343,6 +345,7 @@ public class BandwidthClient implements Client{
      * @param params the parameters.
      * @return the put response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     public RestResponse put(final String uri, final Map<String, Object> params) throws IOException,
             AppPlatformException {
@@ -354,6 +357,7 @@ public class BandwidthClient implements Client{
      * @param uri the URI.
      * @return the response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     public RestResponse delete(final String uri) throws IOException, AppPlatformException {
         return request(getPath(uri), HttpDelete.METHOD_NAME);
@@ -366,6 +370,7 @@ public class BandwidthClient implements Client{
      * @param sourceFile the source file
      * @param contentType the content type.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     public void upload(final String uri, final File sourceFile, final String contentType)
             throws IOException, AppPlatformException {
@@ -420,6 +425,7 @@ public class BandwidthClient implements Client{
      * @param method the method.
      * @return the request response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     protected RestResponse request(final String path, final String method) throws IOException, AppPlatformException {
         return request(path, method, null);
@@ -432,6 +438,7 @@ public class BandwidthClient implements Client{
      * @param paramList the parameter list.
      * @return the response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     protected RestResponse request(final String path, final String method, Map<String, Object> paramList)
             throws IOException, AppPlatformException {
@@ -450,6 +457,7 @@ public class BandwidthClient implements Client{
      * @param param payload json string
      * @return the response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     protected RestResponse requestPlainJson(final String path, final String method, final String param)
             throws IOException, AppPlatformException {
@@ -464,6 +472,7 @@ public class BandwidthClient implements Client{
      * @param request the request.
      * @return the response.
      * @throws IOException unexpected exception.
+     * @throws AppPlatformException unexpected exception.
      */
     protected RestResponse performRequest(final HttpUriRequest request) throws IOException, AppPlatformException {
 

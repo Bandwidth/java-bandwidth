@@ -459,6 +459,7 @@ public class Call extends ResourceBase {
      * Stop an audio file playing.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void stopAudioFilePlaying() throws IOException, AppPlatformException {
         new CallAudioBuilder().fileUrl(StringUtils.EMPTY).create();
@@ -468,6 +469,7 @@ public class Call extends ResourceBase {
      * Stop an audio sentence.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void stopSentence() throws IOException, AppPlatformException {
         new CallAudioBuilder().sentence(StringUtils.EMPTY).create();
@@ -478,6 +480,7 @@ public class Call extends ResourceBase {
      *
      * @param dtmf DTMF value
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void sendDtmf(final String dtmf) throws IOException, AppPlatformException {
         final Map<String, Object> params = new HashMap<String, Object>();

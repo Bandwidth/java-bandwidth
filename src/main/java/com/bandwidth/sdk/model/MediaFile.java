@@ -52,6 +52,7 @@ public class MediaFile extends ResourceBase {
      * Deletes media file permanently.
      *
      * @throws IOException unexpected error.
+     * @throws AppPlatformException unexpected exception.
      */
     public void delete() throws IOException, AppPlatformException {
         client.delete(getUri());
