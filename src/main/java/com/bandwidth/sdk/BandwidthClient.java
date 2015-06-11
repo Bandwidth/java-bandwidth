@@ -306,6 +306,20 @@ public class BandwidthClient implements Client{
     }
 
     /**
+     * This method implements an HTTP POST. Use this method to create a new resource.
+     *
+     * @param uri the URI.
+     * @param params the parameters.
+     * @return the post response.
+     * @throws IOException unexpected exception.
+     */
+    public RestResponse postPlainJson(final String uri, final String params)
+            throws IOException, AppPlatformException {
+        return requestPlainJson(getPath(uri), HttpPost.METHOD_NAME, params);
+    }
+
+
+    /**
      * This method implements an HTTP GET. Use this method to retrieve a resource.
      *
      * @param uri the URI.
@@ -430,6 +444,21 @@ public class BandwidthClient implements Client{
     }
 
     /**
+     * Helper method to build the request to the server.
+     * @param path the path
+     * @param method the method
+     * @param param payload json string
+     * @return the response.
+     * @throws IOException unexpected exception.
+     */
+    protected RestResponse requestPlainJson(final String path, final String method, final String param)
+            throws IOException, AppPlatformException {
+        final HttpUriRequest request = setupRequestPlainJson(path, method, param);
+        return performRequest(request);
+    }
+
+
+    /**
      * Helper method that executes the request on the server.
      *
      * @param request the request.
@@ -471,6 +500,22 @@ public class BandwidthClient implements Client{
     }
 
     /**
+     * Helper method to build the request to the server.
+     *
+     * @param path the path.
+     * @param method the method.
+     * @param params the json string.
+     * @return the request.
+     */
+    protected HttpUriRequest setupRequestPlainJson(final String path, final String method, final String params) {
+        final HttpUriRequest request = buildMethod(method, path, params);
+        request.addHeader(new BasicHeader("Accept", "application/json"));
+        request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
+        request.setHeader(new BasicHeader("Authorization", "Basic " + new String(Base64.encodeBase64((this.token + ":" + this.secret).getBytes()))));
+        return request;
+    }
+
+    /**
      * Helper method that builds the request to the server.
      *
      * @param method the method.
@@ -489,6 +534,24 @@ public class BandwidthClient implements Client{
             return generateDeleteRequest(path);
         } else {
             throw new RuntimeException("Must not be here.");
+        }
+    }
+
+    /**
+     * Helper method that builds the request to the server.
+     * Only POST is supported currently since we have cases in the API
+     * like token creation that accepts empty string payload "", instead of {}
+     *
+     * @param method the method.
+     * @param path the path.
+     * @param params json string.
+     * @return the request.
+     */
+    protected HttpUriRequest buildMethod(final String method, final String path, final String params) {
+        if (StringUtils.equalsIgnoreCase(method, HttpPost.METHOD_NAME)) {
+            return generatePostRequest(path, params);
+        } else {
+            throw new RuntimeException(String.format("Method %s not supported.", method));
         }
     }
 
@@ -518,6 +581,19 @@ public class BandwidthClient implements Client{
     protected HttpPost generatePostRequest(final String path, final Map<String, Object> paramMap) {
         final HttpPost post = new HttpPost(buildUri(path));
         post.setEntity(new StringEntity(JSONObject.toJSONString(paramMap), ContentType.APPLICATION_JSON));
+        return post;
+    }
+
+    /**
+     * Helper method to build the POST request for the server.
+     *
+     * @param path the path.
+     * @param param json string.
+     * @return the post object.
+     */
+    protected HttpPost generatePostRequest(final String path, final String param) {
+        final HttpPost post = new HttpPost(buildUri(path));
+        post.setEntity(new StringEntity(param, ContentType.APPLICATION_JSON));
         return post;
     }
 

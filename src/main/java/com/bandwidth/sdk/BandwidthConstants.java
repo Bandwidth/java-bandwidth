@@ -25,6 +25,7 @@ public interface BandwidthConstants {
     String DOMAINS_URI_PATH = "domains";
     String ENDPOINTS_URI_PATH = "domains/%s/endpoints"; //endpoint id as parameter
     String ENDPOINTS_TOKEN = "domains/%s/endpoints/%s/tokens"; // domainId and endpointId as parameter
+    String ENDPOINTS_TOKEN_DELETE = "domains/%s/endpoints/%s/tokens/%s"; // domainId, endpointId and token as parameter
     String RECORDINGS_URI_PATH = "recordings";
     String ACCOUNT_URI_PATH = "account";
     String APPLICATIONS_URI_PATH = "applications";
