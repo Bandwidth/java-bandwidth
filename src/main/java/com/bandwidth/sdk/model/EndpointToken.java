@@ -4,7 +4,6 @@ import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthConstants;
 import com.bandwidth.sdk.RestResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -103,7 +102,7 @@ public class EndpointToken extends ResourceBase {
         if (expires == null) {
             // API gets empty string instead of {} in the case
             // of no parameters
-            response = bandwidthClient.postPlainJson(endpointTokenUri, "");
+            response = bandwidthClient.postJson(endpointTokenUri, "");
         } else {
             final Map<String, Object> params = new HashMap<String, Object>();
             params.put("expires", expires);
@@ -152,7 +151,7 @@ public class EndpointToken extends ResourceBase {
     }
 
     public Long getExpires() {
-        return (Long)getProperty("expires");
+        return getPropertyAsLong("expires");
     }
     
     public String getToken() {

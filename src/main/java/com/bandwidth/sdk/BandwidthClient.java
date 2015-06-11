@@ -50,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 /**
  * Helper class to abstract the HTTP interface. This class wraps the HttpClient and the HTTP methods POST, GET, PUT
@@ -315,9 +314,9 @@ public class BandwidthClient implements Client{
      * @throws IOException unexpected exception.
      * @throws AppPlatformException unexpected exception.
      */
-    public RestResponse postPlainJson(final String uri, final String params)
+    public RestResponse postJson(final String uri, final String params)
             throws IOException, AppPlatformException {
-        return requestPlainJson(getPath(uri), HttpPost.METHOD_NAME, params);
+        return requestJson(getPath(uri), HttpPost.METHOD_NAME, params);
     }
 
 
@@ -459,9 +458,9 @@ public class BandwidthClient implements Client{
      * @throws IOException unexpected exception.
      * @throws AppPlatformException unexpected exception.
      */
-    protected RestResponse requestPlainJson(final String path, final String method, final String param)
+    protected RestResponse requestJson(final String path, final String method, final String param)
             throws IOException, AppPlatformException {
-        final HttpUriRequest request = setupRequestPlainJson(path, method, param);
+        final HttpUriRequest request = setupRequestJson(path, method, param);
         return performRequest(request);
     }
 
@@ -516,7 +515,7 @@ public class BandwidthClient implements Client{
      * @param params the json string.
      * @return the request.
      */
-    protected HttpUriRequest setupRequestPlainJson(final String path, final String method, final String params) {
+    protected HttpUriRequest setupRequestJson(final String path, final String method, final String params) {
         final HttpUriRequest request = buildMethod(method, path, params);
         request.addHeader(new BasicHeader("Accept", "application/json"));
         request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
