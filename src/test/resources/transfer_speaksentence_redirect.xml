@@ -4,5 +4,5 @@
     <SpeakSentence gender="male" locale="en_US" voice="paul">
         Next command will get and run another xml from requestUrl
     </SpeakSentence>
-    <Redirect requestUrl="http://dummy.request.url" timeout="6000" />
+    <Redirect requestUrl="http://dummy.request.url" requestUrlTimeout="6000" />
 </Response>
