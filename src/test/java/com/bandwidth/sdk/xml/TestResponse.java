@@ -62,7 +62,7 @@ public class TestResponse {
     @Test
     public void testRedirect() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Response response = new Response();
-        // timeout expressed in milliseconds
+        // requestUrlTimeout expressed in milliseconds
         Redirect redirect = new Redirect(DUMMY_REQUEST_URL, 6000);
 
         response.add(redirect);

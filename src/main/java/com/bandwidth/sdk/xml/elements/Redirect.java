@@ -8,15 +8,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Redirect implements Elements {
 
     private String requestUrl;
-    private Integer timeout;
+    private Integer requestUrlTimeout;
 
     public Redirect() {
         super();
     }
 
-    public Redirect(final String requestUrl, final int timeout) throws XMLInvalidAttributeException {
+    public Redirect(final String requestUrl, final int requestUrlTimeout) throws XMLInvalidAttributeException {
         setRequestUrl(requestUrl);
-        setTimeout(timeout);
+        setRequestUrlTimeout(requestUrlTimeout);
     }
 
     @XmlAttribute(name = "requestUrl", required = true)
@@ -31,23 +31,23 @@ public class Redirect implements Elements {
         this.requestUrl = requestUrl;
     }
 
-    @XmlAttribute(name = "timeout", required = true)
-    public int getTimeout() {
-        return timeout;
+    @XmlAttribute(name = "requestUrlTimeout", required = true)
+    public int getRequestUrlTimeout() {
+        return requestUrlTimeout;
     }
 
-    public void setTimeout(final int timeout) throws XMLInvalidAttributeException {
-        if (timeout <= 0) {
-            throw new XMLInvalidAttributeException("timeout must be greater than 0");
+    public void setRequestUrlTimeout(final int requestUrlTimeout) throws XMLInvalidAttributeException {
+        if (requestUrlTimeout <= 0) {
+            throw new XMLInvalidAttributeException("requestUrlTimeout must be greater than 0");
         }
-        this.timeout = timeout;
+        this.requestUrlTimeout = requestUrlTimeout;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Redirect{");
-        sb.append("requestUrl='").append(requestUrl).append('\'');
-        sb.append(", timeout=").append(timeout);
+        sb.append("requestUrl='").append(requestUrlTimeout).append('\'');
+        sb.append(", requestUrlTimeout=").append(requestUrlTimeout);
         sb.append('}');
         return sb.toString();
     }
