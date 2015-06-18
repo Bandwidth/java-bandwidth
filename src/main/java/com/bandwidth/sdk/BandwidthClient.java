@@ -1,5 +1,6 @@
 package com.bandwidth.sdk;
 
+import com.bandwidth.sdk.exception.InvalidCredentialsException;
 import com.bandwidth.sdk.exception.MissingCredentialsException;
 import com.bandwidth.sdk.model.Account;
 import org.apache.commons.codec.binary.Base64;
@@ -219,7 +220,7 @@ public class BandwidthClient implements Client{
                 AppPlatformException appEx = (AppPlatformException) e;
 
                 if (appEx.getStatus() == 401){
-                    throw new MissingCredentialsException();
+                    throw new InvalidCredentialsException();
                 }
             } else {
                 throw new RuntimeException(e);
