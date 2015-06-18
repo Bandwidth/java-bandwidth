@@ -1,8 +1,6 @@
 package com.bandwidth.sdk.exception;
 
-import java.io.IOException;
-
-public class MissingCredentialsException extends IOException {
+public class MissingCredentialsException extends RuntimeException {
 
     private static final long serialVersionUID = 8463765824822860908L;
 

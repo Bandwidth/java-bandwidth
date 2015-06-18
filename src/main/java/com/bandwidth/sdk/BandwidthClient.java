@@ -1,10 +1,11 @@
 package com.bandwidth.sdk;
 
 import com.bandwidth.sdk.exception.MissingCredentialsException;
+import com.bandwidth.sdk.model.Account;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HeaderElementIterator;
 import org.apache.http.HeaderElement;
+import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -32,6 +33,8 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -47,9 +50,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to abstract the HTTP interface. This class wraps the HttpClient and the HTTP methods POST, GET, PUT
@@ -135,6 +135,10 @@ public class BandwidthClient implements Client{
             }
 
             INSTANCE = new BandwidthClient(userId, apiToken, apiSecret, apiEndpoint, apiVersion, maxTotalNum, defaultMaxPerRouteNum);
+
+            if (userId != null || apiToken != null || apiSecret != null) {
+                validateCredentials();
+            }
         }
         return INSTANCE;
     }
@@ -196,6 +200,27 @@ public class BandwidthClient implements Client{
         usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
         this.token = apiToken;
         this.secret = apiSecret;
+
+        validateCredentials();
+    }
+
+    /**
+     * Validate if the credentials are set and has access to catapult
+     */
+    private static void validateCredentials() {
+        try {
+            Account.get().getAccountInfo();
+        } catch (Exception e) {
+            if (e instanceof AppPlatformException) {
+                AppPlatformException appEx = (AppPlatformException) e;
+
+                if (appEx.getStatus() == 401){
+                    throw new MissingCredentialsException();
+                }
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -485,7 +510,7 @@ public class BandwidthClient implements Client{
         RestResponse restResponse = RestResponse.createRestResponse(httpClient.execute(request));
 
         if (restResponse.getStatus() >= 400) {
-            throw new AppPlatformException(restResponse.getResponseText());
+            throw new AppPlatformException(restResponse.getResponseText(), restResponse.getStatus());
         }
 
         return restResponse;
