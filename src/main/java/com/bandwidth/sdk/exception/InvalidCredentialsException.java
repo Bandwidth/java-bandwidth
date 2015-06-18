@@ -1,11 +1,12 @@
 package com.bandwidth.sdk.exception;
 
-public class MissingCredentialsException extends RuntimeException {
+public class InvalidCredentialsException extends RuntimeException {
 
-    private static final long serialVersionUID = 8463765824822860908L;
+    private static final long serialVersionUID = 8803931676337048611L;
 
-    public MissingCredentialsException() {
-        super("Missing credentials. \n" +
+    public InvalidCredentialsException() {
+        super("Invalid credentials." +
+                "\n\tThe provided credentials are not valid.\n" +
                 "\tThere are 3 ways to set these credentials:\n\n" +
                 "\t1. Via Java VM System Properties, set as -D arguments on the VM command line:\n" +
                 "\t\t-Dcom.bandwidth.userId=<myUserId>\n" +

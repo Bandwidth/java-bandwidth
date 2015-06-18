@@ -125,9 +125,9 @@ public class CredentialsExamples {
         }
 
         // Finally just set them directly
-        userId = "your User Id here";
-        apiToken = "your API Token here";
-        apiSecret = "your API Secret here";
+        userId = "your_User_Id_here";
+        apiToken = "your_API_Token_here";
+        apiSecret = "your_API_Secret_here";
 
         try {
             BandwidthClient.getInstance().setCredentials(userId, apiToken, apiSecret);

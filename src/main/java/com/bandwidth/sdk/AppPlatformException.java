@@ -4,6 +4,8 @@ public class AppPlatformException extends Exception {
 
     private static final long serialVersionUID = 1044495525539824275L;
 
+	private int status;
+
     public AppPlatformException() {
 	}
 
@@ -19,4 +21,12 @@ public class AppPlatformException extends Exception {
 		super(message, cause);
 	}
 
+	public AppPlatformException(String message, int status) {
+		super(message);
+		this.status = status;
+	}
+
+	public int getStatus() {
+		return status;
+	}
 }
