@@ -192,16 +192,20 @@ public class BandwidthClient implements Client{
      * The setCredentials() provides a convenience method to pass the userId, API-token and API-secret after
      * a client has been instantiated.
      *
-     * @param userId the user id.
-     * @param apiToken the API token.
+     * @param userId    the user id.
+     * @param apiToken  the API token.
      * @param apiSecret the API secret.
      */
     public void setCredentials(final String userId, final String apiToken, final String apiSecret) {
-        usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId);
-        this.token = apiToken;
-        this.secret = apiSecret;
+        if (userId != null && apiToken != null && apiSecret != null) {
+            this.usersUri = String.format(BandwidthConstants.USERS_URI_PATH, userId.replaceAll(" ", ""));
+            this.token = apiToken.replaceAll(" ", "");
+            this.secret = apiSecret.replaceAll(" ", "");
 
-        validateCredentials();
+            validateCredentials();
+        } else {
+            throw new MissingCredentialsException();
+        }
     }
 
     /**
