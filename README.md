@@ -9,7 +9,7 @@ Use the following dependency in your project:
        <dependency>
           <groupId>com.bandwidth.sdk</groupId>
           <artifactId>bandwidth-java-sdk</artifactId>
-          <version>1.0</version>
+          <version>1.10</version>
           <scope>compile</scope>
        </dependency>
 
