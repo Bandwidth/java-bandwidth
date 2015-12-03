@@ -1,5 +1,12 @@
 # Bandwidth Java SDK API
 
+Java SDK for [Bandwidth's App Platform](ap.bandwidth.com/?utm_medium=social&utm_source=github&utm_campaign=dtolb&utm_content=)
+
+# Documentation
+[More Coming Soon]
+
+[Code Examples](https://github.com/bandwidthcom/java-bandwidth-examples)
+
 # Installing
 
 Bandwidth Java SDK API is now using Maven.  At present the jars *are* available from a public [maven](http://maven.apache.org/download.html) repository.
@@ -38,3 +45,6 @@ There are 3 ways to set these credentials:
 Notice: if credentials are not set explicitly, the sdk will first look for VM properties. 
 If those are not present, it will look for environments vars.
 To override VM properties and env vars, use client's method as described on 3th option.
+
+# Bugs/Issues
+Please open an issue in this repository and we'll handle it directly. If you have any questions please contact us at openapi@bandwidth.com.
