@@ -184,13 +184,13 @@ public class Conference extends ResourceBase {
      * @throws Exception
      */
     public ConferenceMember addMember(Map<String, Object> params) throws Exception {
-        final String membersPath = StringUtils.join(new String[]{
+        String membersPath = StringUtils.join(new String[]{
                 getUri(),
                 "members"
         }, '/');
 
-        final RestResponse response = client.post(membersPath, params);
-        final JSONObject memberObj = toJSONObject(client.get(response.getLocation(), null));
+        RestResponse response = client.post(membersPath, params);
+        JSONObject memberObj = toJSONObject(client.get(response.getLocation(), null));
         return new ConferenceMember(client, memberObj);
     }
 

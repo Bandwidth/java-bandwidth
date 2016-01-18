@@ -170,7 +170,7 @@ public class ConferenceTest extends BaseModelTest{
 
     @Test
     public void shouldAddMember() throws Exception {
-        final RestResponse response = new RestResponse();
+        RestResponse response = new RestResponse();
         response.setResponseText(
                 "{\n" +
                 "   \"addedTime\": \"2013-07-12T15:56:12Z\",\n" +
@@ -184,7 +184,7 @@ public class ConferenceTest extends BaseModelTest{
                 "}"
         );
         response.setStatus(201);
-        final String mockUri = mockClient.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH + "/{conferenceId}/members/{memberId}");
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH + "/{conferenceId}/members/{memberId}");
         response.setLocation(mockUri);
         mockClient.setRestResponse(response);
 
@@ -201,7 +201,7 @@ public class ConferenceTest extends BaseModelTest{
         Map<String, Object> memberOptions = new HashMap<String, Object>();
         memberOptions.put("callId", "{callId}");
 
-        final ConferenceMember member = conference.addMember(memberOptions);
+        ConferenceMember member = conference.addMember(memberOptions);
         assertThat(member.getCall(), equalTo("https://localhost:8444/v1/users/{userId}/calls/{callId}"));
         assertThat(mockClient.requests.get(0).name, equalTo("post"));
         assertThat(mockClient.requests.get(0).uri, equalTo(mockClient.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH + "/{conferenceId}/members")));
