@@ -24,7 +24,23 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class CallTest {
-
+    private static final String NEW_CALL_JSON =
+            "{\n" +
+            "   \"to\":\"+11111111111\",\n" +
+            "   \"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\n" +
+            "   \"transcriptionEnabled\":false,\n" +
+            "   \"direction\":\"in\",\n" +
+            "   \"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\n" +
+            "   \"chargeableDuration\":300,\n" +
+            "   \"state\":\"completed\",\n" +
+            "   \"from\":\"+22222222222\",\n" +
+            "   \"endTime\":\"2014-08-12T10:22:54Z\",\n" +
+            "   \"id\":\"c-11111111111111111111111\",\n" +
+            "   \"recordingEnabled\":true,\n" +
+            "   \"startTime\":\"2014-08-12T10:17:54Z\",\n" +
+            "   \"activeTime\":\"2014-08-12T10:17:54Z\",\n" +
+            "   \"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"\n" +
+            "}";
     private MockClient mockClient;
 
     @Before
@@ -34,7 +50,7 @@ public class CallTest {
 
     @Test
     public void shouldBeCreatedFromJson() throws ParseException {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
         final Call call = new Call(mockClient, jsonObject);
 
         assertThat(call.getId(), equalTo("c-11111111111111111111111"));
@@ -49,8 +65,7 @@ public class CallTest {
 
     @Test
     public void shouldHangUp() throws ParseException, Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse
-        		("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
@@ -68,7 +83,7 @@ public class CallTest {
 
     @Test
     public void shouldAnswerOnIncoming() throws ParseException, IOException, Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
@@ -86,7 +101,7 @@ public class CallTest {
 
     @Test
     public void shouldRejectIncoming() throws ParseException, IOException, Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
@@ -104,7 +119,7 @@ public class CallTest {
 
     @Test
     public void shouldSwitchRecordingState() throws ParseException, IOException, Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
@@ -130,7 +145,7 @@ public class CallTest {
 
     @Test
     public void shouldTransferCall() throws ParseException, IOException, Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
@@ -161,7 +176,7 @@ public class CallTest {
 
     @Test
     public void shouldCreateAudio() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         mockClient.result = jsonObject;
 
@@ -187,7 +202,7 @@ public class CallTest {
 
     @Test
     public void shouldSendDtmf() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         mockClient.result = jsonObject;
 
@@ -201,7 +216,7 @@ public class CallTest {
 
     @Test
     public void shouldGetEventsList() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final JSONArray arrayResult = (JSONArray) new JSONParser().parse("[{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}]");
 
@@ -227,7 +242,7 @@ public class CallTest {
 
     @Test
     public void shouldGetEventById() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final JSONObject eventObj = (JSONObject) new JSONParser().parse("{\"id\":\"ce-hsdbdbdhd\",\"time\":1407916959116,\"name\":\"error\",\"data\":\"Call Id wasn't found on FreeSWITCH anymore\"}");
 
@@ -252,7 +267,7 @@ public class CallTest {
 
     @Test
     public void shouldGetRecordingsList() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final JSONArray arrayResult = (JSONArray) new JSONParser().parse("[\n" +
                 "  {\n" +
@@ -297,7 +312,7 @@ public class CallTest {
 
     @Test
     public void shouldCreateGather() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         mockClient.result = jsonObject;
 
@@ -311,7 +326,7 @@ public class CallTest {
 
     @Test
     public void shouldGetGatherById() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https://api.catapult.inetwork.com/v1/users/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https://api.catapult.inetwork.com/v1/users/calls/events\",\"chargeableDuration\":300,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:22:54Z\",\"id\":\"c-11111111111111111111111\",\"recordingEnabled\":true,\"startTime\":\"2014-08-12T10:17:54Z\",\"activeTime\":\"2014-08-12T10:17:54Z\",\"transcriptions\":\"https://api.catapult.inetwork.com/v1/users/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final JSONObject gatherObj = (JSONObject) new JSONParser().parse("{\n" +
                         "  \"id\": \"gtr-kj4xloaq5vbpfxyeypndgxa\",\n" +
@@ -371,7 +386,7 @@ public class CallTest {
     
     @Test
     public void shouldGetCallById() throws Exception {
-        final JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse response = new RestResponse();
         response.setResponseText(jsonObject.toString());
@@ -386,11 +401,11 @@ public class CallTest {
     
     @Test
     public void shouldCreateNewCall() throws Exception {
-        mockClient.result = (JSONObject) new JSONParser().parse("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
+        mockClient.result = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
 
         final RestResponse restResponse = new RestResponse();
 		
-        restResponse.setResponseText("{\"to\":\"+11111111111\",\"recordings\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\",\"transcriptionEnabled\":false,\"direction\":\"in\",\"events\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\",\"chargeableDuration\":360,\"state\":\"completed\",\"from\":\"+22222222222\",\"endTime\":\"2014-08-12T10:59:30Z\",\"id\":\"id1\",\"recordingEnabled\":false,\"startTime\":\"2014-08-12T10:54:29Z\",\"activeTime\":\"2014-08-12T10:54:29Z\",\"transcriptions\":\"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"}");
+        restResponse.setResponseText(NEW_CALL_JSON);
         
         restResponse.setContentType("application/json");
         final String mockUri = mockClient.getUserResourceUri(BandwidthConstants.CALLS_URI_PATH) + "/id1";
@@ -423,4 +438,41 @@ public class CallTest {
         Call.get(mockClient, "id1");
     }
 
+    @Test
+    public void shouldUpdateCall() throws Exception {
+        RestResponse response = new RestResponse();
+        response.setResponseText(
+                "{\n" +
+                "   \"to\": \"+11111111111\"," +
+                "   \"recordings\": \"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/recordings\"," +
+                "   \"transcriptionEnabled\": false," +
+                "   \"direction\": \"in\"," +
+                "   \"events\": \"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls/events\"," +
+                "   \"chargeableDuration\": 360," +
+                "   \"state\": \"completed\"," +
+                "   \"from\": \"+22222222222\"," +
+                "   \"id\": \"{callId}\"," +
+                "   \"endTime\":\"2014-08-12T10:59:30Z\"," +
+                "   \"recordingEnabled\": false," +
+                "   \"startTime\": \"2014-08-12T10:54:29Z\"," +
+                "   \"activeTime\": \"2014-08-12T10:54:29Z\"," +
+                "   \"transcriptions\": \"https:\\/\\/api.catapult.inetwork.com\\/v1\\/users\\/calls\\/transcriptions\"" +
+                "}"
+        );
+        response.setContentType("application/json");
+        mockClient.setRestResponse(response);
+
+        Map<String, Object> updateParams = new HashMap<String, Object>();
+        updateParams.put("tag", "tag1");
+
+        JSONObject callJson = (JSONObject) new JSONParser().parse(NEW_CALL_JSON);
+
+        Call call = new Call(mockClient, callJson);
+
+        call.update(updateParams);
+
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/calls/c-11111111111111111111111"));
+        assertThat(mockClient.requests.get(0).params.get("tag").toString(), equalTo("tag1"));
+    }
 }

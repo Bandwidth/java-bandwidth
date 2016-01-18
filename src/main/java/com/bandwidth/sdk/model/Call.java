@@ -165,6 +165,17 @@ public class Call extends ResourceBase {
     public Call(final BandwidthClient client, final JSONObject jsonObject) {
         super(client, jsonObject);
     }
+
+    /**
+     * Updates an existing call. This is an additive operation; you only need to include parameters you want to update.
+     * See documentation for update properties: http://ap.bandwidth.com/docs/rest-api/calls/#resourcePOSTv1usersuserIdcallscallId
+     * @param params Map of call parameters you wish to update
+     * @throws IOException
+     * @throws AppPlatformException
+     */
+    public void update(Map<String, Object> params) throws IOException, AppPlatformException {
+        client.post(getUri(), params);
+    }
     
     @Override
     protected void setUp(final JSONObject jsonObject) {
