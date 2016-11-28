@@ -177,6 +177,24 @@ public class Conference extends ResourceBase {
     }
 
     /**
+     * Adds a call to the conference as a conference member. The call must be created with the conference ID.
+     *
+     * @param params parameter map for the request. see http://ap.bandwidth.com/docs/rest-api/conferences/#resourcePOSTv1usersuserIdconferencesconferenceIdmembers
+     * @return the model for the conference member
+     * @throws Exception
+     */
+    public ConferenceMember addMember(Map<String, Object> params) throws Exception {
+        String membersPath = StringUtils.join(new String[]{
+                getUri(),
+                "members"
+        }, '/');
+
+        RestResponse response = client.post(membersPath, params);
+        JSONObject memberObj = toJSONObject(client.get(response.getLocation(), null));
+        return new ConferenceMember(client, memberObj);
+    }
+
+    /**
      * Creates new builder for playing an audio file or speaking a sentence in a conference.
      * <br>Example:<br>
      * <code>conference.conferenceAudioBuilder().fileUrl("url_to_file").create();</code>

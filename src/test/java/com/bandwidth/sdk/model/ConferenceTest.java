@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -166,7 +167,47 @@ public class ConferenceTest extends BaseModelTest{
         assertThat(mockClient.requests.get(0).name, equalTo("get"));
         assertThat(mockClient.requests.get(0).uri, equalTo("users/" + TestsHelper.TEST_USER_ID + "/conferences/{conferenceId}/members"));
     }
-    
+
+    @Test
+    public void shouldAddMember() throws Exception {
+        RestResponse response = new RestResponse();
+        response.setResponseText(
+                "{\n" +
+                "   \"addedTime\": \"2013-07-12T15:56:12Z\",\n" +
+                "   \"hold\": false,\n" +
+                "   \"id\": \"{memberId}\",\n" +
+                "   \"mute\": false,\n" +
+                "   \"state\": \"active\",\n" +
+                "   \"joinTone\": false,\n" +
+                "   \"leavingTone\": false,\n" +
+                "   \"call\": \"https://localhost:8444/v1/users/{userId}/calls/{callId}\"\n" +
+                "}"
+        );
+        response.setStatus(201);
+        String mockUri = mockClient.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH + "/{conferenceId}/members/{memberId}");
+        response.setLocation(mockUri);
+        mockClient.setRestResponse(response);
+
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse("{\n" +
+                "    \"activeMembers\": 0,\n" +
+                "    \"createdTime\": \"2013-07-12T15:22:47Z\",\n" +
+                "    \"from\": \"+19703255647\",\n" +
+                "    \"id\": \"{conferenceId}\",\n" +
+                "    \"state\": \"created\"\n" +
+                "}");
+
+        Conference conference = new Conference(mockClient, jsonObject);
+
+        Map<String, Object> memberOptions = new HashMap<String, Object>();
+        memberOptions.put("callId", "{callId}");
+
+        ConferenceMember member = conference.addMember(memberOptions);
+        assertThat(member.getCall(), equalTo("https://localhost:8444/v1/users/{userId}/calls/{callId}"));
+        assertThat(mockClient.requests.get(0).name, equalTo("post"));
+        assertThat(mockClient.requests.get(0).uri, equalTo(mockClient.getUserResourceUri(BandwidthConstants.CONFERENCES_URI_PATH + "/{conferenceId}/members")));
+        assertThat(mockClient.requests.get(0).params.get("callId").toString(), equalTo("{callId}"));
+    }
+
     @Test
     public void shouldCreateNewConference() throws Exception {
         JSONObject jsonObject = (JSONObject) new JSONParser().parse(
