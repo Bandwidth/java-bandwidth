@@ -15,7 +15,7 @@ public class TextMessageExample {
 	public static void main(final String[] args) {
 		// There are two ways to set your creds, e.g. your App Platform userId, api token and api secret
 		// you can set these as environment variables or set them with the 
-		// BandwidthClient.getInstance(userId, apiToken, apiSecret) method.
+		// BandwidthClient.getInstance().setCredentials(userId, apiToken, apiSecret) method.
 		//
 		// Use the setenv.sh script to set the env variables
 		// BANDWIDTH_USER_ID
@@ -23,7 +23,7 @@ public class TextMessageExample {
 		// BANDWIDTH_API_SECRET
 		//
 		// or uncomment this line and set them here
-		// BandwidthClient.getInstance(userId, apiToken, apiSecret);
+		// BandwidthClient.getInstance().setCredentials(userId, apiToken, apiSecret);
 
 		// put your numbers in here
 		final String toNumber = "+1";// your phone number here
