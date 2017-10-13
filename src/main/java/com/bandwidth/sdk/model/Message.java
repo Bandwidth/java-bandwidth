@@ -133,6 +133,28 @@ public class Message extends ResourceBase {
     }
 
     /**
+     * Convenience factory method to send MMS messages.
+     *
+     * @param to the from number
+     * @param from the to number
+     * @param text the text
+     * @param media the url of the media item to send
+     * @return the message
+     * @throws Exception error.
+    */
+    public static Message create(final String to, final String from, final String text, final String media) throws Exception {
+
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("to", to);
+        params.put("from", from);
+        params.put("text", text);
+		params.put("media", media);
+
+        return create(params);
+    }
+
+	
+    /**
      * Convenience factory method to send MMS messages. Create a MediaFile object using the Media upload method
      * and pass that in.
      *
@@ -145,7 +167,7 @@ public class Message extends ResourceBase {
      */
     public static Message create(final String to, final String from, final String text, final MediaFile media) throws Exception {
 
-        final Map<String, Object> params = new HashMap<String, Object>();
+    	final Map<String, Object> params = new HashMap<String, Object>();
         params.put("to", to);
         params.put("from", from);
         params.put("text", text);
