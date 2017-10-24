@@ -98,6 +98,8 @@ public class NumberAllocationExample {
         for (final AvailableNumber availableNumber : availableNumbers) {
             final Map<String, Object> orderParams = new HashMap<String, Object>();
             orderParams.put("number", availableNumber.getNumber());
+            //To associate with an application, uncomment the following and add your app id:
+            //orderParams.put("applicationId", "YOUR_APPLICATION_ID");
 
             orderedNumbers.add(PhoneNumber.create(orderParams));
         }
