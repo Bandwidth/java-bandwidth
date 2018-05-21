@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class BandwidthClientTest {
 
@@ -51,6 +52,19 @@ public class BandwidthClientTest {
 
         assertThat(client.requests.get(0).name, CoreMatchers.equalTo("get"));
         assertThat(client.requests.get(0).uri, CoreMatchers.equalTo("phoneNumbers/numberInfo/number"));
+    }
+
+    @Test
+    public void shouldSetUserAgent() throws Exception {
+        final HttpUriRequest request = client.setupNewRequest("/test", "GET", null);
+        final Header[] headers = request.getHeaders();
+        for (int i = 0; i < headers.length; i++) {
+            if (headers[i].getName() == "User-Agent") {
+                assertTrue(headers[i].getValue().startsWith("bandwidth-java-sdk"));
+                return;
+            }
+        }
+        throw new Exception("Header .User-Agent is missing")
     }
 
 

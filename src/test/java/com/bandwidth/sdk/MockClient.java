@@ -153,6 +153,10 @@ public class MockClient extends BandwidthClient {
 		return requests;
 	}
 
+    public HttpUriRequest setupNewRequest(final String path, final String method, final Map<String, Object> params) {
+        return setupRequest(path, method, params);
+    }
+
 
     public static class RestRequest {
 

@@ -534,6 +534,9 @@ public class BandwidthClient implements Client{
         request.addHeader(new BasicHeader("Accept", "application/json"));
         request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
         request.setHeader(new BasicHeader("Authorization", "Basic " + new String(Base64.encodeBase64((this.token + ":" + this.secret).getBytes()))));
+        final Properties properties = new Properties();
+        properties.load(this.getClass().getResourceAsStream("project.properties"));
+        request.setHeader(new BasicHeader("User-Agent", properties.getProperty("artifactId") + "/" + properties.getProperty("version")));
         return request;
     }
 
