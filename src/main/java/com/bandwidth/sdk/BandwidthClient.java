@@ -530,17 +530,20 @@ public class BandwidthClient implements Client{
      * @param method the method.
      * @param params the parameters.
      * @return the request.
-     * @throws IOException
      */
-    protected HttpUriRequest setupRequest(final String path, final String method, final Map<String, Object> params) throws IOException {
+    protected HttpUriRequest setupRequest(final String path, final String method, final Map<String, Object> params) {
         final HttpUriRequest request = buildMethod(method, path, params);
         request.addHeader(new BasicHeader("Accept", "application/json"));
         request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
         request.setHeader(new BasicHeader("Authorization", "Basic " + new String(Base64.encodeBase64((this.token + ":" + this.secret).getBytes()))));
         final Properties properties = new Properties();
-        InputStream stream = this.getClass().getResourceAsStream("project.properties");
-        properties.load(stream);
-        request.setHeader(new BasicHeader("User-Agent", properties.getProperty("artifactId") + "/" + properties.getProperty("version")));
+        InputStream stream = BandwidthClient.class.getClassLoader().getResourceAsStream("project.properties");
+        try {
+            properties.load(stream);
+            request.setHeader(new BasicHeader("User-Agent", properties.getProperty("artifactId") + "/" + properties.getProperty("version")));
+        } catch(IOException ex) {
+            LOG.warn("Error on seting user agent", ex);
+        }
         return request;
     }
 

@@ -19,6 +19,8 @@ import org.junit.Test;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -58,10 +60,10 @@ public class BandwidthClientTest {
 
     @Test
     public void shouldSetUserAgent() throws Exception {
-        final HttpUriRequest request = client.setupNewRequest("/test", "GET", null);
+        
+        final HttpUriRequest request = client.setupNewRequest("/test", "GET", new HashMap<String, Object>());
         final Header[] headers = request.getHeaders("User-Agent");
         assertTrue(headers[0].getValue().startsWith("bandwidth-java-sdk"));
-        throw new Exception("Header .User-Agent is missing");
     }
 
 
