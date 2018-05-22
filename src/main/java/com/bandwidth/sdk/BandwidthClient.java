@@ -542,7 +542,7 @@ public class BandwidthClient implements Client{
             properties.load(stream);
             request.setHeader(new BasicHeader("User-Agent", properties.getProperty("artifactId") + "/" + properties.getProperty("version")));
         } catch(IOException ex) {
-            LOG.warn("Error on seting user agent", ex);
+            LOG.warn("Error on set user agent", ex);
         }
         return request;
     }
