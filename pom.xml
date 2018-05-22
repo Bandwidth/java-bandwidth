@@ -192,7 +192,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-    </resources>
     </build>
 
 </project>

@@ -41,6 +41,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -528,14 +530,16 @@ public class BandwidthClient implements Client{
      * @param method the method.
      * @param params the parameters.
      * @return the request.
+     * @throws IOException
      */
-    protected HttpUriRequest setupRequest(final String path, final String method, final Map<String, Object> params) {
+    protected HttpUriRequest setupRequest(final String path, final String method, final Map<String, Object> params) throws IOException {
         final HttpUriRequest request = buildMethod(method, path, params);
         request.addHeader(new BasicHeader("Accept", "application/json"));
         request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
         request.setHeader(new BasicHeader("Authorization", "Basic " + new String(Base64.encodeBase64((this.token + ":" + this.secret).getBytes()))));
         final Properties properties = new Properties();
-        properties.load(this.getClass().getResourceAsStream("project.properties"));
+        InputStream stream = this.getClass().getResourceAsStream("project.properties");
+        properties.load(stream);
         request.setHeader(new BasicHeader("User-Agent", properties.getProperty("artifactId") + "/" + properties.getProperty("version")));
         return request;
     }

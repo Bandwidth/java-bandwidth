@@ -3,9 +3,11 @@ package com.bandwidth.sdk;
 
 import com.bandwidth.sdk.model.NumberInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -57,14 +59,9 @@ public class BandwidthClientTest {
     @Test
     public void shouldSetUserAgent() throws Exception {
         final HttpUriRequest request = client.setupNewRequest("/test", "GET", null);
-        final Header[] headers = request.getHeaders();
-        for (int i = 0; i < headers.length; i++) {
-            if (headers[i].getName() == "User-Agent") {
-                assertTrue(headers[i].getValue().startsWith("bandwidth-java-sdk"));
-                return;
-            }
-        }
-        throw new Exception("Header .User-Agent is missing")
+        final Header[] headers = request.getHeaders("User-Agent");
+        assertTrue(headers[0].getValue().startsWith("bandwidth-java-sdk"));
+        throw new Exception("Header .User-Agent is missing");
     }
 
 
