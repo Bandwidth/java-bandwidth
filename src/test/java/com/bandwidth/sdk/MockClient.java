@@ -15,13 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MockClient extends BandwidthClient {
-    private String userId;
     private String token;
     private String secret;
-    private String endpoint;
-    private String version;
 
-	public MockClient() {
+    public MockClient() {
 		super(TestsHelper.TEST_USER_ID, "", "", "", "", 200, 20);
 	}
 
@@ -33,11 +30,8 @@ public class MockClient extends BandwidthClient {
                       final int maxConnections,
                       final int defaultMaxPerRoute){
         super(userId, token, secret, endpoint, version, maxConnections, defaultMaxPerRoute);
-        this.userId = userId;
         this.token = token;
         this.secret = secret;
-        this.endpoint = endpoint;
-        this.version = version;
     }
 
     public final List<RestRequest> requests = new ArrayList<RestRequest>();

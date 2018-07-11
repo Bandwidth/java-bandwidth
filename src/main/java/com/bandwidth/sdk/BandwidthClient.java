@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Created by sbarstow on 10/3/14.
  */
-public class BandwidthClient implements Client{
+public class BandwidthClient implements Client, Closeable {
 
     private final static Logger LOG = LoggerFactory.getLogger(BandwidthClient.class);
     public static final int MONITOR_TIMER = 5000;
@@ -144,6 +145,12 @@ public class BandwidthClient implements Client{
         return INSTANCE;
     }
 
+    public synchronized static void shutdown() {
+        if (INSTANCE != null) {
+            INSTANCE.close();
+            INSTANCE = null;
+        }
+    }
 
     /**
      * Constructor. Instances are created through getInstance() method.
@@ -767,14 +774,9 @@ public class BandwidthClient implements Client{
     }
 
     @Override
-    protected void finalize() throws Throwable
-    {
-        try {
-            this.idleConnectionMonitorRunnable.shutdown();
-        } catch(Throwable t){
-            throw t;
-        } finally {
-            super.finalize();
-        }
+    public void close() {
+        this.idleConnectionMonitorRunnable.shutdown();
+        this.executorService.shutdown();
     }
+
 }
