@@ -774,9 +774,23 @@ public class BandwidthClient implements Client, Closeable {
     }
 
     @Override
+    protected void finalize() throws Throwable
+    {
+        try {
+            close();
+        } finally {
+            super.finalize();
+        }
+    }
+
+    @Override
     public void close() {
-        this.idleConnectionMonitorRunnable.shutdown();
-        this.executorService.shutdown();
+        if (!this.idleConnectionMonitorRunnable.shutdown) {
+            this.idleConnectionMonitorRunnable.shutdown();
+        }
+        if (!this.executorService.isShutdown()) {
+            this.executorService.shutdown();
+        }
     }
 
 }
