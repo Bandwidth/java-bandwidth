@@ -4,7 +4,7 @@
 
     <groupId>com.bandwidth.sdk</groupId>
     <artifactId>bandwidth-java-sdk</artifactId>
-    <version>1.11-SNAPSHOT</version>
+    <version>1.11</version>
     <packaging>jar</packaging>
     <name>bandwidth-java-sdk</name>
     <description>Java SDK for use with the Catapult API.</description>
@@ -187,5 +187,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
