@@ -7,6 +7,7 @@ import com.bandwidth.sdk.xml.elements.*;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
@@ -469,6 +470,61 @@ public class TestResponse {
     public void testRecord_InvalidCase_SpaceTranscribeCallbackUrl() throws IOException, XMLMarshallingException, XMLInvalidAttributeException, ParserConfigurationException, SAXException {
         Record record = new Record();
         record.setTranscribeCallbackUrl(" ");
+    }
+
+    @Test
+    public void testPause() throws XMLInvalidAttributeException, XMLMarshallingException, IOException, ParserConfigurationException, SAXException {
+        Pause pause = new Pause(42);
+
+        Response response = new Response();
+        response.add(pause);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/pause.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testPause_InvalidCase_NegativeOne() throws XMLInvalidAttributeException {
+        new Pause(-1);
+    }
+
+    @Test(expected = XMLInvalidAttributeException.class)
+    public void testPause_InvalidCase_3601() throws XMLInvalidAttributeException {
+        new Pause(3601);
+    }
+
+    @Test
+    public void testSendDtmf() throws XMLMarshallingException, IOException, ParserConfigurationException, SAXException, XMLInvalidTagContentException {
+        SendDtmf sendDtmf = new SendDtmf("WW42");
+
+        Response response = new Response();
+        response.add(sendDtmf);
+
+        String output = response.toXml();
+        String xmlReference = IOUtils.toString(getClass().getResourceAsStream("/sendDtmf.xml"), "UTF-8");
+        compareXML(xmlReference, output);
+    }
+
+    @Test(expected = XMLInvalidTagContentException.class)
+    public void testSendDtmf_IsValid_InvalidCase_Null() throws XMLInvalidTagContentException {
+        new SendDtmf(null);
+    }
+
+    @Test(expected = XMLInvalidTagContentException.class)
+    public void testSendDtmf_IsValid_InvalidCase_Empty() throws XMLInvalidTagContentException {
+        new SendDtmf("");
+    }
+
+    @Test(expected = XMLInvalidTagContentException.class)
+    public void testSendDtmf_IsValid_InvalidCase_UnsupportedCharacters() throws XMLInvalidTagContentException {
+        new SendDtmf("invalid");
+    }
+
+    @Test(expected = XMLInvalidTagContentException.class)
+    public void testSendDtmf_IsValid_InvalidCase_TooLong() throws XMLInvalidTagContentException {
+        String tooLong = StringUtils.rightPad("W", 93, 'W');
+        new SendDtmf(tooLong);
     }
 
     private void compareXML (String expected, String current) throws ParserConfigurationException, IOException, SAXException {
