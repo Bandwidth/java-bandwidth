@@ -3,6 +3,7 @@ package com.bandwidth.sdk.model;
 import com.bandwidth.sdk.AppPlatformException;
 import com.bandwidth.sdk.BandwidthClient;
 import com.bandwidth.sdk.BandwidthConstants;
+import com.bandwidth.sdk.RestResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
@@ -25,10 +26,10 @@ public class Media extends ResourceBase {
      * @throws IOException unexpected error.
      */
     public static MediaFile get(final String id) throws Exception {
-    	
+
         return get(BandwidthClient.getInstance(), id);
     }
-    
+
     /**
      * Gets information about a previously sent or received MediaFile.
      * @param client the client.
@@ -37,14 +38,22 @@ public class Media extends ResourceBase {
      * @throws IOException unexpected error.
      */
     public static MediaFile get(final BandwidthClient client, final String id) throws Exception {
-    	
-        final String mediaUri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, id);
 
-        final JSONObject jsonObject = toJSONObject(client.get(mediaUri, null));
+        final String mediaUri = client.getUserResourceInstanceUri(BandwidthConstants.MEDIA_URI_PATH, id);
+        RestResponse response = client.get(mediaUri, null);
+        final JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("id", id);
+        jsonObject.put("content", response.getResponseText());
+        jsonObject.put("content-type", response.getContentType());
+        jsonObject.put("mediaName", id);
+        jsonObject.put("contentLength", response.getResponseText().length());
+
+
         return new MediaFile(client, jsonObject);
     }
-	
-	
+
+
     /**
      * Factory method for MediaFile list, returns a list of MediaFile object with default page, size
      * @return the list
@@ -129,14 +138,14 @@ public class Media extends ResourceBase {
         final String uri = StringUtils.join(new String[]{
                 getUri(),
                 mediaName
-        }, '/');        
+        }, '/');
         client.upload(uri, file, contentType.toString());
 
-        final List<MediaFile> mediaFiles = list(client, 0, 25);
-        for (final MediaFile mediaFile : mediaFiles) {
-            if (StringUtils.equals(mediaFile.getMediaName(), mediaName)) return mediaFile;
+        try {
+            return get(mediaName);
+        } catch (Exception e ){
+            return  null;
         }
-        return null;
     }
 
     /**
