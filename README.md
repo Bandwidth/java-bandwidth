@@ -1,6 +1,7 @@
 # Bandwidth Java SDK API
 
-This project is archived. Please go to https://github.com/Bandwidth/java-sdk
+> # Deprecation Notice
+> This project is deprecated. Please go to https://github.com/Bandwidth/java-sdk
 
 Java SDK for [Bandwidth's App Platform](http://ap.bandwidth.com/?utm_medium=social&utm_source=github&utm_campaign=dtolb&utm_content=)
 
